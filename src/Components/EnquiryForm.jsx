@@ -28,6 +28,51 @@ const EnquiryForm = () => {
     (state) => state.userDetails
   );
 
+
+
+
+  const indianStates = [
+    "Andhra Pradesh",
+    "Arunachal Pradesh",
+    "Assam",
+    "Bihar",
+    "Chhattisgarh",
+    "Goa",
+    "Gujarat",
+    "Haryana",
+    "Himachal Pradesh",
+    "Jharkhand",
+    "Karnataka",
+    "Kerala",
+    "Madhya Pradesh",
+    "Maharashtra",
+    "Manipur",
+    "Meghalaya",
+    "Mizoram",
+    "Nagaland",
+    "Odisha",
+    "Punjab",
+    "Rajasthan",
+    "Sikkim",
+    "Tamil Nadu",
+    "Telangana",
+    "Tripura",
+    "Uttar Pradesh",
+    "Uttarakhand",
+    "West Bengal",
+    "Andaman and Nicobar Islands",
+    "Chandigarh",
+    "Dadra and Nagar Haveli and Daman and Diu",
+    "Lakshadweep",
+    "Delhi",
+    "Puducherry",
+    "Ladakh",
+    "Jammu and Kashmir"
+];
+
+
+
+
   const [errors, setErrors] = useState({
     program: "",
     courseOfIntrested: "",
@@ -36,6 +81,7 @@ const EnquiryForm = () => {
     fatherOccupations: "",
     studentContactNumber: "",
     city: "",
+    state: ""
   });
 
   const programOptions = {
@@ -46,8 +92,11 @@ const EnquiryForm = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    console.log("named", [name], name);
+    console.log("named", value);
+    
 
-    if (name === "program") {
+    if (name === "program" || name === "state") {
       setProgram(value); // Update program selection
       dispatch(updateUserDetails({ program: value })); // Reset course when program changes
     } else {
@@ -129,196 +178,231 @@ const EnquiryForm = () => {
       className="overflow-auto w-full items-center px-6 "
       style={{ backgroundColor: "#c61d23", paddingBottom: "3px" }}
     >
-      {loading && (
-        <Spinner />
-      ) }
-        <div className="grid grid-rows-8 flex-col w-full h-full ">
-          <div className="row-span-2">
-            <FormHeader />
-          </div>
+      {loading && <Spinner />}
+      <div className="grid grid-rows-8 flex-col w-full h-full ">
+        <div className="row-span-2">
+          <FormHeader />
+        </div>
 
-          <div className=" row-span-5 px-9 flex flex-col justify-center items-center gap-6 overflow-auto ">
-            <div className="w-2/3  ">
-              <div
-                className="flex flex-col gap-2"
-                style={{ backgroundColor: "#c61d23" }}
+        <div className=" row-span-5 px-9 flex flex-col justify-center items-center gap-6 overflow-auto ">
+          <div className="w-2/3  ">
+            <div
+              className="flex flex-col gap-2"
+              style={{ backgroundColor: "#c61d23" }}
+            >
+              <h1 className="text-4xl font-normal px-4 pt-5 text-white w-full text-center mb-4">
+                Enquiry Form
+              </h1>
+              <form
+                autoComplete="off"
+                className="flex flex-col gap-4 w-full p-2 "
+                onSubmit={onSubmit}
               >
-                <h1 className="text-4xl font-normal px-4 pt-5 text-white w-full text-center mb-4">
-                  Enquiry Form
-                </h1>
-                <form
-                  autoComplete="off"
-                  className="flex flex-col gap-4 w-full p-2 "
-                  onSubmit={onSubmit}
-                >
-                  <div className="flex flex-col   ">
-                    {/* <label
+                <div className="flex flex-col   ">
+                  {/* <label
                     htmlFor="program"
                     className="text-xl font-semibold mb-1"
                   >
                     Program
                   </label> */}
-                    <select
-                      name="program"
-                      value={userData.program || ""}
-                      onChange={handleChange}
-                      className="border-b-2 border-white text-white py-3 bg-[#c61d23] focus:outline-none appearance-none"
-                      style={{
-                        backgroundImage: `url(${Neeche})`,
-                        backgroundRepeat: "no-repeat",
-                        backgroundPosition: "right 10px center",
-                        backgroundSize: "16px",
-                      }}
-                    >
-                      <option value="" className="bg-white" disabled>
-                        *Program
+                  <select
+                    name="program"
+                    value={userData.program || ""}
+                    onChange={handleChange}
+                    className="border-b-2 border-white text-white py-3 bg-[#c61d23] focus:outline-none appearance-none"
+                    style={{
+                      backgroundImage: `url(${Neeche})`,
+                      backgroundRepeat: "no-repeat",
+                      backgroundPosition: "right 10px center",
+                      backgroundSize: "16px",
+                    }}
+                  >
+                    <option value="" className="bg-white" disabled>
+                      *Program
+                    </option>
+                    {Object.keys(programOptions).map((program) => (
+                      <option
+                        className="bg-white text-black border-2 border-black-2"
+                        key={program}
+                        value={program}
+                      >
+                        {program}
                       </option>
-                      {Object.keys(programOptions).map((program) => (
+                    ))}
+                  </select>
+                  {errors.program && (
+                    <p className="text-black text-xs mt-1 ">{errors.program}</p>
+                  )}
+                </div>
+
+                <div className="flex flex-col    " key="courseOfIntrested">
+                  <select
+                    name="courseOfIntrested"
+                    value={userData.courseOfIntrested || ""}
+                    onChange={handleChange}
+                    className="border-b-2 text-white py-2 bg-[#c61d23] focus:outline-none appearance-none"
+                    style={{
+                      backgroundImage: `url(${Neeche})`,
+
+                      backgroundRepeat: "no-repeat",
+                      backgroundPosition: "right 10px center",
+                      backgroundSize: "16px",
+                    }}
+                  >
+                    <option
+                      key="selectCourse"
+                      className="bg-white text-black"
+                      value=""
+                      disabled
+                    >
+                      *Course interested in
+                    </option>
+                    {program &&
+                      programOptions[program].map((data) => (
                         <option
                           className="bg-white text-black border-2 border-black-2"
-                          key={program}
-                          value={program}
+                          key={data}
+                          value={data}
                         >
-                          {program}
+                          {data}
                         </option>
                       ))}
-                    </select>
-                    {errors.program && (
-                      <p className="text-black text-xs mt-1 ">
-                        {errors.program}
-                      </p>
-                    )}
-                  </div>
+                  </select>
+                  {errors.courseOfIntrested && (
+                    <p className="text-black text-xs mt-1 ">
+                      {errors.courseOfIntrested}
+                    </p>
+                  )}
+                </div>
 
-                  <div className="flex flex-col    " key="courseOfIntrested">
-                    <select
-                      name="courseOfIntrested"
-                      value={userData.courseOfIntrested || ""}
-                      onChange={handleChange}
-                      className="border-b-2 text-white py-2 bg-[#c61d23] focus:outline-none appearance-none"
-                      style={{
-                        backgroundImage: `url(${Neeche})`,
+                {[
+                  { label: "School Name", name: "schoolName", type: "text" },
 
-                        backgroundRepeat: "no-repeat",
-                        backgroundPosition: "right 10px center",
-                        backgroundSize: "16px",
-                      }}
-                    >
-                      <option
-                        key="selectCourse"
-                        className="bg-white text-black"
-                        value=""
-                        disabled
-                      >
-                        *Course interested in
-                      </option>
-                      {program &&
-                        programOptions[program].map((data) => (
-                          <option
-                            className="bg-white text-black border-2 border-black-2"
-                            key={data}
-                            value={data}
-                          >
-                            {data}
-                          </option>
-                        ))}
-                    </select>
-                    {errors.courseOfIntrested && (
-                      <p className="text-black text-xs mt-1 ">
-                        {errors.courseOfIntrested}
-                      </p>
-                    )}
-                  </div>
-
-                  {[
-                    { label: "School Name", name: "schoolName", type: "text" },
-
-                    // {
-                    //   label: "Parent's Occupations",
-                    //   name: "parentsOccupations",
-                    //   type: "text",
-                    // },
-                    {
-                      label: "Student's Contact no (if any)",
-                      name: "studentContactNumber",
-                      type: "tel",
-                    },
-                    { label: "*City/Town/Village", name: "city", type: "text" },
-                    {
-                      label: "State",
-                      name: "state",
-                      type: "text",
-                    },
-                  ].map(({ label, name, type }) => (
-                    <div className="flex flex-col   " key={label}>
-                      {/* <label
+                  // {
+                  //   label: "Parent's Occupations",
+                  //   name: "parentsOccupations",
+                  //   type: "text",
+                  // },
+                  {
+                    label: "Student's Contact no (if any)",
+                    name: "studentContactNumber",
+                    type: "tel",
+                  },
+                  { label: "*City/Town/Village", name: "city", type: "text" },
+                  // {
+                  //   label: "State",
+                  //   name: "state",
+                  //   type: "text",
+                  // },
+                ].map(({ label, name, type }) => (
+                  <div className="flex flex-col   " key={label}>
+                    {/* <label
                       htmlFor={name}
                       className="text-xl font-semibold mb-1"
                     >
                       {label}
                     </label> */}
-                      <input
-                        autoComplete="off"
-                        type={type}
-                        id={name}
-                        name={name}
-                        value={userData[name] || ""}
-                        onChange={handleChange}
-                        placeholder={`${label}`}
-                        className="border-b-2 border-white text-white py-2 bg-[#c61d23] focus:outline-none placeholder-white  appearance-none"
-                      />
+                    <input
+                      autoComplete="off"
+                      type={type}
+                      id={name}
+                      name={name}
+                      value={userData[name] || ""}
+                      onChange={handleChange}
+                      placeholder={`${label}`}
+                      className="border-b-2 border-white text-white py-2 bg-[#c61d23] focus:outline-none placeholder-white  appearance-none"
+                    />
 
-                      {errors[name] && (
-                        <p className="text-white text-xs mt-1  ">
-                          {errors[name]}
-                        </p>
-                      )}
-                    </div>
-                  ))}
-
-                  {/* Submit and Navigation Buttons */}
-                  <div className="flex justify-between items-center text-sm mt-8 ">
-                    <button
-                      disabled
-                      type="button"
-                      className="border border-gray-400 rounded-full bg-[#a71a1f] text-gray-400 font-semibold py-2 px-8 transition duration-200 cursor-not-allowed "
-                    >
-                      Back
-                    </button>
-                    <button
-                      type="submit"
-                      className="border rounded-full bg-[#c61d23] hover:bg-[#a71a1f] text-white py-2 w-1/2 transition duration-200"
-                    >
-                      Next
-                    </button>
+                    {errors[name] && (
+                      <p className="text-white text-xs mt-1  ">
+                        {errors[name]}
+                      </p>
+                    )}
                   </div>
-                </form>
-              </div>
-            </div>
-            {submitMessage && (
-              <div className="w-full text-center">
-                <p
-                  className={`text-sm ${
-                    submitMessage === "successfully"
-                      ? "text-green-500"
-                      : "text-red-500"
-                  }`}
-                >
-                  {submitMessage}
-                </p>
-              </div>
-            )}
-          </div>
+                ))}
 
-          <div className="row-span-1 w-full h-full flex  justify-center items-center ">
-            {/* <div className=""> */}
-            <div className=" w-24 ">
-              <img src={scholarsDenLogo} alt="" />
+                <div className="flex flex-col " key="state">
+                  <select
+                    name="state"
+                    value={userData.state || ""}
+                    onChange={handleChange}
+                    className="border-b-2 text-white py-2 bg-[#c61d23] focus:outline-none appearance-none"
+                    style={{
+                      backgroundImage: `url(${Neeche})`,
+
+                      backgroundRepeat: "no-repeat",
+                      backgroundPosition: "right 10px center",
+                      backgroundSize: "16px",
+                    }}
+                  >
+                    <option
+                      key="state"
+                      className="bg-white text-black"
+                      value=""
+                      disabled
+                    >
+                      State
+                    </option>
+                    {indianStates &&
+                      indianStates.map((data) => (
+                        <option
+                          className="bg-white text-black border-2 border-black-2"
+                          key={data}
+                          value={data}
+                        >
+                          {data}
+                        </option>
+                      ))}
+                  </select>
+                  {errors.state && (
+                    <p className="text-black text-xs mt-1 ">
+                      {errors.state}
+                    </p>
+                  )}
+                </div>
+
+                {/* Submit and Navigation Buttons */}
+                <div className="flex justify-between items-center text-sm mt-8 ">
+                  <button
+                    disabled
+                    type="button"
+                    className="border border-gray-400 rounded-full bg-[#a71a1f] text-gray-400 font-semibold py-2 px-8 transition duration-200 cursor-not-allowed "
+                  >
+                    Back
+                  </button>
+                  <button
+                    type="submit"
+                    className="border rounded-full bg-[#c61d23] hover:bg-[#a71a1f] text-white py-2 w-1/2 transition duration-200"
+                  >
+                    Next
+                  </button>
+                </div>
+              </form>
             </div>
-            {/* </div>  */}
           </div>
+          {submitMessage && (
+            <div className="w-full text-center">
+              <p
+                className={`text-sm ${
+                  submitMessage === "successfully"
+                    ? "text-green-500"
+                    : "text-red-500"
+                }`}
+              >
+                {submitMessage}
+              </p>
+            </div>
+          )}
         </div>
-    
+
+        <div className="row-span-1 w-full h-full flex  justify-center items-center ">
+          {/* <div className=""> */}
+          <div className=" w-24 ">
+            <img src={scholarsDenLogo} alt="" />
+          </div>
+          {/* </div>  */}
+        </div>
+      </div>
     </div>
   );
 };

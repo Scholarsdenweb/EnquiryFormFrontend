@@ -112,6 +112,7 @@ const TakenBy = () => {
 
   useEffect(() => {
     dispatch(fetchUserDetails());
+    console.log("userData from useEffect", userData);
   }, [dispatch]);
 
   const handleChange = (e) => {
@@ -262,22 +263,60 @@ const TakenBy = () => {
     const url = "https://thirdpartyapi.extraaedge.com/api/SaveRequest";
   
     const headers = {
-      "Content-Type": "application/json",
-      AuthToken: "SCHOLARSDEN-30-03-2024",
+      "Content-Type": "application/json"
+      
     };
+
+
+
   
-    const apiData = { ...userData, Source: "scholarsden" };
+    // const apiData = { Source: "scholarsden", AuthToken: "SCHOLARSDEN-30-03-2024", FirstName : userData.studente };
+
+    const apiData = {
+      Source: "scholarsden",
+      AuthToken: "SCHOLARSDEN-30-03-2024",
+      FirstName: userData.studentName || "",
+      FathersName: userData.fatherName || "",
+      Email: userData.email || "",
+      MobileNumber: userData.phone || "",
+      Center: userData.courseOfIntrested || "",
+      Course: userData.program || "", // Assuming 'program' corresponds to 'Center'
+      FathersPhoneNumber: userData.fatherContactNumber || "",
+      State: "", // No mapping in provided data, you may need to add this
+      City: userData.city || "",
+      Remarks: userData.remarks || "",
+
+
+
+// Not added yet
+
+      SchoolName: userData.schoolName || "",
+      EnquiryTakenBy: userData.enquiryTakenBy || "",
+      BrochureGiven: userData.brochureGiven || "",
+      enquiryTakenBy: data?.enquiryTakenBy || "",
+      fatherOccupations: userData.fatherOccupations || "",
+
+
+
+  };
+  
+  console.log(apiData);
+
+
+
+
+
   
     console.log("apiData from putDataOnExtraEdge", apiData);
   
     try {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: headers,
-        body: JSON.stringify(apiData),
-      });
+      // const response = await fetch(url, {
+      //   method: "POST",
+      //   headers: headers,
+      //   body: JSON.stringify(apiData),
+      // });
   
-      console.log("Raw response:", response);
+      // console.log("Raw response:", response);
   
       const contentType = response.headers.get("content-type");
   
@@ -315,6 +354,11 @@ const TakenBy = () => {
     }
     dispatch(setLoading(false));
   };
+
+
+  useEffect(() => {
+    console.log("userData from useEffect", userData);
+  }, [userData])
 
   return (
     // <div className=" flex flex-col justify-center items-center w-full h-screen bg-white p-5 ">
