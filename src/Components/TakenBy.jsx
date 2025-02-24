@@ -22,7 +22,7 @@ const InputField = ({
   error,
   type = "text",
   placeholder,
-}) => (
+}) => ( 
   <div className="flex flex-col">
     {/* <label htmlFor={name} className="text-lg font-semibold mb-1">
       {label}
@@ -95,7 +95,7 @@ const TakenBy = () => {
     "Akansha Verma",
     "Sonali Jain",
     "Urooj Izhar",
-    "Rashmi Pandey",
+    "rashmi@scholarsden.in",
     "Priya",
     "Kavya Verma",
     "Suhail Akhtar",
@@ -276,31 +276,42 @@ const TakenBy = () => {
       Source: "scholarsden",
       AuthToken: "SCHOLARSDEN-30-03-2024",
       FirstName: userData.studentName || "",
-      FathersName: userData.fatherName || "",
       Email: userData.email || "",
-      MobileNumber: userData.phone || "",
       Center: userData.courseOfIntrested || "",
       Course: userData.program || "", // Assuming 'program' corresponds to 'Center'
-      FathersPhoneNumber: userData.fatherContactNumber || "",
       State: "", // No mapping in provided data, you may need to add this
       City: userData.city || "",
       Remarks: userData.remarks || "",
-
-
-
+      leadCampaign: "Walk-in",
+      LeadSource: "140",
+      
+      
+      Field4: userData.BrochureGiven,
+      Field5: userData.howToKnow,
+      ReferredToEmail: userData.enquiryTakenBy,
+      Textb1: userData.intime,
+      
+      
+      
+      Textb3: userData.schoolName,
+      Textb2: userData.fatherOccupations,
+      FathersName: userData.fatherName || "",
+      MobileNumber: userData.fatherContactNumber || "",
+      FathersPhoneNumber: userData.phone || "",
+      
 // Not added yet
 
-      SchoolName: userData.schoolName || "",
-      EnquiryTakenBy: userData.enquiryTakenBy || "",
-      BrochureGiven: userData.brochureGiven || "",
-      enquiryTakenBy: data?.enquiryTakenBy || "",
-      fatherOccupations: userData.fatherOccupations || "",
+      // SchoolName: userData.schoolName || "",
+      // // EnquiryTakenBy: userData.enquiryTakenBy || "",
+      // // BrochureGiven: userData.brochureGiven || "",
+      // enquiryTakenBy: data?.enquiryTakenBy || "",
+      // fatherOccupations: userData.fatherOccupations || "",
 
 
 
   };
   
-  console.log(apiData);
+  console.log("apiData", apiData);
 
 
 
@@ -310,13 +321,13 @@ const TakenBy = () => {
     console.log("apiData from putDataOnExtraEdge", apiData);
   
     try {
-      // const response = await fetch(url, {
-      //   method: "POST",
-      //   headers: headers,
-      //   body: JSON.stringify(apiData),
-      // });
+      const response = await fetch(url, {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(apiData),
+      });
   
-      // console.log("Raw response:", response);
+      console.log("Raw response:", response);
   
       const contentType = response.headers.get("content-type");
   

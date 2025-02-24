@@ -79,7 +79,7 @@ const EnquiryForm = () => {
     schoolName: "",
     fatherName: "",
     fatherOccupations: "",
-    studentContactNumber: "",
+    phone: "",
     city: "",
     state: ""
   });
@@ -96,10 +96,16 @@ const EnquiryForm = () => {
     console.log("named", value);
     
 
-    if (name === "program" || name === "state") {
+    if (name === "program" ) {
       setProgram(value); // Update program selection
       dispatch(updateUserDetails({ program: value })); // Reset course when program changes
-    } else {
+    } else if(name === "state"){
+      dispatch(updateUserDetails({state: value}))
+    }
+    else if(name === "phone"){
+      dispatch(updateUserDetails({phone: value}))
+    }
+     else {
       dispatch(updateUserDetails({ [name]: value }));
     }
 
@@ -126,15 +132,15 @@ const EnquiryForm = () => {
     });
 
     console.log(
-      "userData.studentContactNumber",
-      userData[studentContactNumber]
+      "userData.phone",
+      userData[phone]
     );
 
     if (
-      userData.studentContactNumber !== undefined &&
-      !/^\d{10}$/.test(userData.studentContactNumber)
+      userData.phone !== undefined &&
+      !/^\d{10}$/.test(userData.phone)
     ) {
-      formErrors.studentContactNumber =
+      formErrors.phone =
         "Student's Contact Number must be a valid 10-digit number";
       isValid = false;
     }
@@ -163,6 +169,14 @@ const EnquiryForm = () => {
   useEffect(() => {
     dispatch(fetchUserDetails());
   }, []);
+
+
+  useEffect(() => {
+
+
+    console.log("userData from useEffect", userData);
+
+  }, [userData]);
 
   useEffect(() => {
     if (document.cookie === "") {
@@ -285,7 +299,7 @@ const EnquiryForm = () => {
                   // },
                   {
                     label: "Student's Contact no (if any)",
-                    name: "studentContactNumber",
+                    name: "phone",
                     type: "tel",
                   },
                   { label: "*City/Town/Village", name: "city", type: "text" },

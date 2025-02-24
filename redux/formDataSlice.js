@@ -24,8 +24,9 @@ export const fetchUserDetails = createAsyncThunk(
                     dataExist: true, // Indicate data exists
                     userData: {
                         studentName: data?.studentName || '',
-                        phone: data?.studentContactNumber || '',
+                        phone: data?.phone || '',
                         email: data?.email || '',
+                        parentsName: data?.parentsName || '',
                         schoolName: data?.schoolName || '',
                         program: data?.program || '',
                         courseOfIntrested: data?.courseOfIntrested || '',

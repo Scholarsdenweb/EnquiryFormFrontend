@@ -48,6 +48,11 @@ const SignupForm = () => {
     }
   };
 
+
+useEffect(() => {
+  console.log("userData from useEffect", userData);
+}, [userData]);
+
   const validateForm = () => {
     const formErrors = {};
     let isValid = true;
