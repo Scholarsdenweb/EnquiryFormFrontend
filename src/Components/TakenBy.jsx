@@ -92,15 +92,11 @@ const TakenBy = () => {
   ];
 
   const enquiryTakenBy = [
-    "Akansha Verma",
-    "Sonali Jain",
-    "Urooj Izhar",
+    "Sonali@scholarsden.in",
+    "Urooj@scholarsden.in",
     "rashmi@scholarsden.in",
-    "Priya",
-    "Kavya Verma",
-    "Suhail Akhtar",
-    "Farman Ali",
-    "Naved Saifi",
+    "Priya@scholarsden.in",
+    "admission@scholarsden.in",
   ];
   const { loading } = useSelector((state) => state.loadingDetails);
 
