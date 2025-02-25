@@ -143,7 +143,7 @@ const EnquiryForm = () => {
     );
 
     if (
-      userData.studentContactNumber !== undefined &&
+      userData.studentContactNumber !== "" &&
       !/^\d{10}$/.test(userData.studentContactNumber)
     ) {
       formErrors.studentContactNumber =
