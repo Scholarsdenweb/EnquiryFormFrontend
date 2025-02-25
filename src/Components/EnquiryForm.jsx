@@ -79,31 +79,37 @@ const EnquiryForm = () => {
     schoolName: "",
     fatherName: "",
     fatherOccupations: "",
-    phone: "",
+    studentContactNumber: "",
     city: "",
     state: ""
   });
 
   const programOptions = {
-    Foundation: ["6th", "7th", "8th", "9th", "10th"],
-    "IIT-JEE": ["11th Engineering", "12th Engineering"],
-    NEET: ["11th Medical", "12th Medical"],
+    "Foundation": ["6th", "7th", "8th", "9th", "10th"],
+    "JEE(Main & Adv.)": ["11th Engineering", "12th Engineering"],
+    "NEET(UG)": ["11th Medical", "12th Medical"],
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     console.log("named", [name], name);
     console.log("named", value);
+
+    if(name === "state"){
+
+      console.log("userData[name]", userData[name]);
+    }
     
 
     if (name === "program" ) {
       setProgram(value); // Update program selection
       dispatch(updateUserDetails({ program: value })); // Reset course when program changes
-    } else if(name === "state"){
-      dispatch(updateUserDetails({state: value}))
     }
-    else if(name === "phone"){
-      dispatch(updateUserDetails({phone: value}))
+    //  else if(name === "state"){
+    //   dispatch(updateUserDetails({state: value}))
+    // }
+    else if(name === "studentContactNumber"){
+      dispatch(updateUserDetails({studentContactNumber: value}))
     }
      else {
       dispatch(updateUserDetails({ [name]: value }));
@@ -132,15 +138,15 @@ const EnquiryForm = () => {
     });
 
     console.log(
-      "userData.phone",
-      userData[phone]
+      "userData.studentContactNumber",
+      userData[studentContactNumber]
     );
 
     if (
-      userData.phone !== undefined &&
-      !/^\d{10}$/.test(userData.phone)
+      userData.studentContactNumber !== undefined &&
+      !/^\d{10}$/.test(userData.studentContactNumber)
     ) {
-      formErrors.phone =
+      formErrors.studentContactNumber =
         "Student's Contact Number must be a valid 10-digit number";
       isValid = false;
     }
@@ -299,7 +305,7 @@ const EnquiryForm = () => {
                   // },
                   {
                     label: "Student's Contact no (if any)",
-                    name: "phone",
+                    name: "studentContactNumber",
                     type: "tel",
                   },
                   { label: "*City/Town/Village", name: "city", type: "text" },

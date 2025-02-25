@@ -27,15 +27,15 @@ const SignupForm = () => {
   const [submitMessage, setSubmitMessage] = useState("");
 
   const phoneRegex = /^\+91[0-9]{10}$/;
-  const [codeVerified, setCodeVerified] = useState(true);
-  // const [codeVerified, setCodeVerified] = useState(false);
+  // const [codeVerified, setCodeVerified] = useState(true);
+  const [codeVerified, setCodeVerified] = useState(false);
 
   // State hooks
   const [errors, setErrors] = useState({
     studentName: "",
     email: "",
-    phone: "",
-    parentsName: "",
+    fatherContactNumber: "",
+    fatherName: "",
   });
 
   const handleChange = (e) => {
@@ -58,7 +58,7 @@ useEffect(() => {
     let isValid = true;
 
     // Field validation
-    ["studentName", "email", "phone", "parentsName"].forEach((field) => {
+    ["studentName", "email", "fatherContactNumber", "fatherName"].forEach((field) => {
       if (!userData[field]?.trim()) {
         const formattedField = field
           .replace(/([A-Z])/g, " $1")
@@ -73,8 +73,8 @@ useEffect(() => {
       isValid = false;
     }
 
-    if (!phoneRegex.test(`+91${userData.phone}`)) {
-      formErrors.phone = "Phone must be a valid 10-digit number";
+    if (!phoneRegex.test(`+91${userData.fatherContactNumber}`)) {
+      formErrors.fatherContactNumber = "fatherContactNumber must be a valid 10-digit number";
       isValid = false;
     }
 
@@ -102,7 +102,7 @@ useEffect(() => {
       // setShowCodeBox(true);
 
       const response = await axios.post("/user/sendVerification", {
-        mobileNumber: `${userData.phone}`,
+        mobileNumber: `${userData.fatherContactNumber}`,
       });
       if (response.status === 200) {
         setShowCodeBox(true);
@@ -121,12 +121,12 @@ useEffect(() => {
     try {
       dispatch(setLoading(true));
       const response = await axios.post("/user/verifyNumber", {
-        mobileNumber: `${userData.phone}`,
+        mobileNumber: `${userData.fatherContactNumber}`,
         otp: code,
       });
       console.log("response from checkVerificationCode", response);
       if (response.status === 200) {
-        setSubmitMessage("Phone number verified successfully!");
+        setSubmitMessage("fatherContactNumber number verified successfully!");
         setCodeVerified(true);
         setShowCodeBox(false);
         return true;
@@ -136,7 +136,7 @@ useEffect(() => {
       // return true;
     } catch (error) {
       console.log("Error messagefor checkVerificationCode", error);
-      setSubmitMessage("Error verifying phone number");
+      setSubmitMessage("Error verifying fatherContactNumber number");
       return false;
     } finally {
       dispatch(setLoading(false));
@@ -146,18 +146,18 @@ useEffect(() => {
   const onSubmit = async (e) => {
     e.preventDefault();
     try {
-      // let codeChecked = await checkVerificationCode();
+      let codeChecked = await checkVerificationCode();
 
-      // console.log("codeChecked", codeChecked);
-      // dispatch(setLoading(true));
-      // setSubmitMessage("");
-      // console.log("Button Clicked");
-      // if (codeChecked === false) {
-      //   setShowCodeBox(false);
-      //   setCodeVerified(false);
-      //   return setSubmitMessage("Please Verify Your Phone Number");
+      console.log("codeChecked", codeChecked);
+      dispatch(setLoading(true));
+      setSubmitMessage("");
+      console.log("Button Clicked");
+      if (codeChecked === false) {
+        setShowCodeBox(false);
+        setCodeVerified(false);
+        return setSubmitMessage("Please Verify Your Phone Number");
 
-      // }
+      }
 
       // if (validateForm() && codeChecked === true) {
       if (validateForm() ) {
@@ -219,17 +219,17 @@ useEffect(() => {
                 <input
                   autoComplete="off"
                   type="text"
-                  id="parentsName"
-                  name="parentsName"
-                  value={userData?.parentsName || ""}
+                  id="fatherName"
+                  name="fatherName"
+                  value={userData?.fatherName || ""}
                   onChange={handleChange}
                   placeholder="*Parents Name"
                   className="border-b-2 border-gray-300  py-2 focus:outline-none w-full p-1 placeholder-white"
                   style={{ backgroundColor: "#c61d23" }}
                 />
-                {errors.parentsName && (
+                {errors.fatherName && (
                   <p className="text-white text-xs mt-1">
-                    {errors.parentsName}
+                    {errors.fatherName}
                   </p>
                 )}
               </div>
@@ -263,8 +263,8 @@ useEffect(() => {
                 autoComplete="off"
                 type="tel"
                 id="phone"
-                name="phone"
-                value={userData?.phone || ""}
+                name="fatherContactNumber"
+                value={userData?.fatherContactNumber || ""}
                 onChange={handleChange}
                 placeholder="*Contact no (Parents)"
                 className="border-b-2 border-gray-300 py-2 focus:outline-none flex-1 my-auto placeholder-white"
@@ -283,8 +283,8 @@ useEffect(() => {
                 </div>
               )}
             </div>
-            {errors.phone && (
-              <p className="text-white text-xs mt-1">{errors.phone}</p>
+            {errors.fatherContactNumber && (
+              <p className="text-white text-xs mt-1">{errors.fatherContactNumber}</p>
             )}
           </div>
 

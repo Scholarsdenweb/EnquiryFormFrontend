@@ -18,7 +18,7 @@ const FormSubmitted = () => {
   const [time, setTime] = useState(3);
   const userdata = {
     studentName: "",
-    phone: "",
+    studentContactNumber: "",
     email: "",
     schoolName: "",
     program: "",

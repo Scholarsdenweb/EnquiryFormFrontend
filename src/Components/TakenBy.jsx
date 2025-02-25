@@ -279,14 +279,14 @@ const TakenBy = () => {
       Email: userData.email || "",
       Center: userData.courseOfIntrested || "",
       Course: userData.program || "", // Assuming 'program' corresponds to 'Center'
-      State: "", // No mapping in provided data, you may need to add this
+      State: userData.state || "", // No mapping in provided data, you may need to add this
       City: userData.city || "",
       Remarks: userData.remarks || "",
       leadCampaign: "Walk-in",
       LeadSource: "140",
       
       
-      Field4: userData.BrochureGiven,
+      Field4: userData.brochureGiven,
       Field5: userData.howToKnow,
       ReferredToEmail: userData.enquiryTakenBy,
       Textb1: userData.intime,
@@ -296,8 +296,8 @@ const TakenBy = () => {
       Textb3: userData.schoolName,
       Textb2: userData.fatherOccupations,
       FathersName: userData.fatherName || "",
-      MobileNumber: userData.fatherContactNumber || "",
-      FathersPhoneNumber: userData.phone || "",
+      MobileNumber: userData.studentContactNumber || "",
+      FathersPhoneNumber: userData.fatherContactNumber || "",
       
 // Not added yet
 
