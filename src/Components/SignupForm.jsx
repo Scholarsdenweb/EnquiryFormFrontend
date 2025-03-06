@@ -33,7 +33,6 @@ const SignupForm = () => {
   // State hooks
   const [errors, setErrors] = useState({
     studentName: "",
-    email: "",
     fatherContactNumber: "",
     fatherName: "",
   });
@@ -58,7 +57,7 @@ useEffect(() => {
     let isValid = true;
 
     // Field validation
-    ["studentName", "email", "fatherContactNumber", "fatherName"].forEach((field) => {
+    ["studentName", "fatherContactNumber", "fatherName"].forEach((field) => {
       if (!userData[field]?.trim()) {
         const formattedField = field
           .replace(/([A-Z])/g, " $1")
@@ -246,13 +245,11 @@ useEffect(() => {
                 name="email"
                 value={userData?.email || ""}
                 onChange={handleChange}
-                placeholder="*Email ID"
+                placeholder="Email ID"
                 className="border-b-2 border-gray-300  py-2 focus:outline-none w-full p-1 placeholder-white"
                 style={{ backgroundColor: "#c61d23" }}
               />
-              {errors.email && (
-                <p className="text-white text-xs mt-1">{errors.email}</p>
-              )}
+          
             </div>
           </div>
 
