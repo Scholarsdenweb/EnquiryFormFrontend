@@ -11,7 +11,6 @@ import FormSubmitted from "./Components/FormSumited";
 import Spinner from "./Components/Spinner";
 
 function App() {
-  const [count, setCount] = useState(0);
 
   return (
     <Provider store={store}>
