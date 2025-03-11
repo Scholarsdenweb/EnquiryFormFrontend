@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import{ useState, useEffect } from "react";
 
 // 2sFOzXAu3htadEMdLt6pMWh1Nk4_6oNB6RFWJqFqsEBdpP2EG
 
@@ -86,8 +86,8 @@ const EnquiryForm = () => {
 
   const programOptions = {
     "Foundation": ["6th", "7th", "8th", "9th", "10th"],
-    "JEE(Main & Adv.)": ["11th Engineering", "12th Engineering"],
-    "NEET(UG)": ["11th Medical", "12th Medical"],
+    "JEE(Main & Adv.)": ["11th Engineering", "12th Engineering", "12th Pass Engineering"],
+    "NEET(UG)": ["11th Medical", "12th Medical", "12th Pass Medical"],
   };
 
   const handleChange = (e) => {
@@ -137,10 +137,10 @@ const EnquiryForm = () => {
       }
     });
 
-    console.log(
-      "userData.studentContactNumber",
-      userData[studentContactNumber]
-    );
+    // console.log(
+    //   "userData.studentContactNumber",
+    //   userData[studentContactNumber]
+    // );
 
     if (
       userData.studentContactNumber !== "" &&
