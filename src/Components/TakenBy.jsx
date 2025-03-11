@@ -92,10 +92,10 @@ const TakenBy = () => {
   ];
 
   const enquiryTakenBy = [
-    "Sonali@scholarsden.in",
-    "Urooj@scholarsden.in",
+    "sonali@scholarsden.in",
+    "urooj@scholarsden.in",
     "rashmi@scholarsden.in",
-    "Priya@scholarsden.in",
+    "priya@scholarsden.in",
     "admission@scholarsden.in",
   ];
   const { loading } = useSelector((state) => state.loadingDetails);
