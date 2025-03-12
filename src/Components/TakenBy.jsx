@@ -22,7 +22,7 @@ const InputField = ({
   error,
   type = "text",
   placeholder,
-}) => ( 
+}) => (
   <div className="flex flex-col">
     {/* <label htmlFor={name} className="text-lg font-semibold mb-1">
       {label}
@@ -94,6 +94,7 @@ const TakenBy = () => {
   const enquiryTakenBy = [
     "sonali@scholarsden.in",
     "urooj@scholarsden.in",
+
     "rashmi@scholarsden.in",
     "priya@scholarsden.in",
     "admission@scholarsden.in",
@@ -165,17 +166,13 @@ const TakenBy = () => {
   //   const headers = {
   //     "Content-Type": "application/json", // Define the content type as JSON
   //     AuthToken: "SCHOLARSDEN-30-03-2024", // Add the AuthToken
-    
+
   //   };
 
   //   // API Data (Replace this with your actual payload if necessary)
   //   const apiData = {...userData, "Source": "scholarsden"};
 
-
   //   console.log("apiData.............................................. from putDataOnExtraEdge", apiData);
-      
- 
-   
 
   //   // Sending the POST request using fetch
   // fetch(url, {
@@ -185,7 +182,7 @@ const TakenBy = () => {
   //   })
   //     .then((response) => {
   //       // Check if the response status is OK (status code 200)
- 
+
   //       if (response.ok) {
   //         console.log("Request was successful!");
   //         return response.json(); // Parse the response body as JSON
@@ -202,27 +199,22 @@ const TakenBy = () => {
   //     });
   // };
 
-
-
-
-
-
   // const putDataOnExtraEdge = async () => {
   //   console.log("userData from putDataOnExtraEdge", userData);
   //   // API URL
   //   const url = "https://thirdpartyapi.extraaedge.com/api/SaveRequest";
-  
+
   //   // Request Headers
   //   const headers = {
   //     "Content-Type": "application/json", // Define the content type as JSON
   //     AuthToken: "SCHOLARSDEN-30-03-2024", // Add the AuthToken
   //   };
-  
+
   //   // API Data (Replace this with your actual payload if necessary)
   //   const apiData = {...userData, "Source": "scholarsden"};
-    
+
   //   console.log("apiData.............................................. from putDataOnExtraEdge", apiData);
-  
+
   //   // Sending the POST request using fetch
   //   fetch(url, {
   //     method: "POST", // Request type is POST
@@ -246,26 +238,16 @@ const TakenBy = () => {
   //       console.log("Error:", error); // Log any errors
   //     });
   // };
-  
-
-
-
-
-
 
   const putDataOnExtraEdge = async () => {
     console.log("userData from putDataOnExtraEdge", userData);
-    
+
     const url = "https://thirdpartyapi.extraaedge.com/api/SaveRequest";
-  
+
     const headers = {
-      "Content-Type": "application/json"
-      
+      "Content-Type": "application/json",
     };
 
-
-
-  
     // const apiData = { Source: "scholarsden", AuthToken: "SCHOLARSDEN-30-03-2024", FirstName : userData.studente };
 
     const apiData = {
@@ -280,57 +262,51 @@ const TakenBy = () => {
       Remarks: userData.remarks || "",
       leadCampaign: "Walk-in",
       LeadSource: "140",
-      
-      
+
       Field4: userData.brochureGiven,
       Field5: userData.howToKnow,
       ReferredToEmail: userData.enquiryTakenBy,
       Textb1: userData.intime,
-      
-      
-      
+
       Textb3: userData.schoolName,
       Textb2: userData.fatherOccupations,
       FathersName: userData.fatherName || "",
-      MobileNumber: userData.studentContactNumber || "",
-      FathersPhoneNumber: userData.fatherContactNumber || "",
-      
-// Not added yet
+
+      // imporovement Available
+      // MobileNumber: userData.studentContactNumber || "",
+      // FathersPhoneNumber: userData.fatherContactNumber || "",
+
+      MobileNumber: userData.fatherContactNumber || "",
+      FathersPhoneNumber: userData.studentContactNumber || "",
+
+      // Not added yet
 
       // SchoolName: userData.schoolName || "",
       // // EnquiryTakenBy: userData.enquiryTakenBy || "",
       // // BrochureGiven: userData.brochureGiven || "",
       // enquiryTakenBy: data?.enquiryTakenBy || "",
       // fatherOccupations: userData.fatherOccupations || "",
+    };
 
+    console.log("apiData", apiData);
 
-
-  };
-  
-  console.log("apiData", apiData);
-
-
-
-
-
-  
     console.log("apiData from putDataOnExtraEdge", apiData);
-  
+
     try {
       const response = await fetch(url, {
         method: "POST",
         headers: headers,
         body: JSON.stringify(apiData),
       });
-  
+
       console.log("Raw response:", response);
-  
+
       const contentType = response.headers.get("content-type");
-  
+
       if (!response.ok) {
         throw new Error(`Request failed with status: ${response.status}`);
       }
-  
+
       if (contentType && contentType.includes("application/json")) {
         const responseData = await response.json();
         console.log("Response Data:", responseData);
@@ -338,13 +314,10 @@ const TakenBy = () => {
         const textResponse = await response.text();
         console.log("Non-JSON Response:", textResponse);
       }
-  
     } catch (error) {
       console.log("Error:", error);
     }
   };
-  
-
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -362,10 +335,9 @@ const TakenBy = () => {
     dispatch(setLoading(false));
   };
 
-
   useEffect(() => {
     console.log("userData from useEffect", userData);
-  }, [userData])
+  }, [userData]);
 
   return (
     // <div className=" flex flex-col justify-center items-center w-full h-screen bg-white p-5 ">
@@ -403,7 +375,6 @@ const TakenBy = () => {
                   error={errors.howToKnow}
                 />
 
-      
                 {showOtherInput && (
                   <InputField
                     label="Please Specify"
@@ -415,7 +386,6 @@ const TakenBy = () => {
                   />
                 )}
 
-         
                 <InputField
                   label="Intime"
                   name="intime"
