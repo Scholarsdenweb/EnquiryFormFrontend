@@ -95,7 +95,7 @@ const TakenBy = () => {
     "sonali@scholarsden.in",
     "urooj@scholarsden.in",
 
-    "rashmi@scholarsden.in",
+    "diya@scholarsden.in",
     "priya@scholarsden.in",
     "admission@scholarsden.in",
   ];
