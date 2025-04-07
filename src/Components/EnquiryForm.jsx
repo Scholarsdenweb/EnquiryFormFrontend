@@ -303,11 +303,11 @@ const EnquiryForm = () => {
                   //   name: "parentsOccupations",
                   //   type: "text",
                   // },
-                  {
-                    label: "Student's Contact no (if any)",
-                    name: "studentContactNumber",
-                    type: "tel",
-                  },
+                  // {
+                  //   label: "Student's Contact no (if any)",
+                  //   name: "studentContactNumber",
+                  //   type: "tel",
+                  // },
                   { label: "*City/Town/Village", name: "city", type: "text" },
                   // {
                   //   label: "State",

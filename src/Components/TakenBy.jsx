@@ -94,7 +94,6 @@ const TakenBy = () => {
   const enquiryTakenBy = [
     "sonali@scholarsden.in",
     "urooj@scholarsden.in",
-
     "diya@scholarsden.in",
     "priya@scholarsden.in",
     "admission@scholarsden.in",
@@ -133,7 +132,7 @@ const TakenBy = () => {
       // "howToKnow",
       // "remarks",
       // "intime",
-      // "enquiryTakenBy",
+      "enquiryTakenBy",
       // "brochureGiven",
     ].forEach((field) => {
       if (!userData[field]?.trim()) {
@@ -386,14 +385,14 @@ const TakenBy = () => {
                   />
                 )}
 
-                <InputField
+                {/* <InputField
                   label="Intime"
                   name="intime"
                   value={userData.intime}
                   onChange={handleChange}
                   placeholder="In Times"
                   error={errors.intime}
-                />
+                /> */}
 
                 {/* Enquiry Taken By */}
                 <SelectField
@@ -407,14 +406,14 @@ const TakenBy = () => {
                 />
 
                 {/* Brochure Given */}
-                <SelectField
+                {/* <SelectField
                   label="Brochure Given"
                   name="brochureGiven"
                   value={userData.brochureGiven}
                   options={["Yes", "No"]}
                   onChange={handleChange}
                   error={errors.brochureGiven}
-                />
+                /> */}
                 {/* Remarks */}
                 <InputField
                   label="Remarks"
