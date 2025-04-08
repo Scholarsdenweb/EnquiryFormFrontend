@@ -8,13 +8,11 @@ import {
   updateUserDetails,
 } from "../../redux/formDataSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { loading, setLoading } from "../../redux/loadingSlice";
+import { setLoading } from "../../redux/loadingSlice";
 import Spinner from "./Spinner";
-import LoadingPage from "./LoadingPage";
-
 // import ScholarsDenLogo from "../assets/scholarsDenLogo.png";
 
-const SignupForm = () => {
+const FirstPageContant = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -28,17 +26,14 @@ const SignupForm = () => {
 
   const [submitMessage, setSubmitMessage] = useState("");
 
-  const [showLoadingPage, setShowLoadingPage] = useState(false);
-
   const phoneRegex = /^\+91[0-9]{10}$/;
   // const [codeVerified, setCodeVerified] = useState(true);
   const [codeVerified, setCodeVerified] = useState(false);
 
   // State hooks
   const [errors, setErrors] = useState({
-
-    fatherContactNumber: "",
-    
+    studentName: "",
+    fatherName: ""
   });
 
   const handleChange = (e) => {
@@ -61,24 +56,22 @@ useEffect(() => {
     let isValid = true;
 
     // Field validation
-    [ "fatherContactNumber"].forEach((field) => {
-      const formattedField = field
+    ["studentName", "fatherName"].forEach((field) => {
+      if (!userData[field]?.trim()) {
+        const formattedField = field
           .replace(/([A-Z])/g, " $1")
           .replace(/^./, (str) => str.toUpperCase());
-      if (!userData[field]?.trim()) {
-        
         formErrors[field] = `${formattedField} is required`;
         isValid = false;
       }
-      
-    if (!phoneRegex.test(`+91${userData.fatherContactNumber}`)) {
-      formErrors.fatherContactNumber = `${formattedField} must be a valid 10-digit number`;
-      isValid = false;
-    }
     });
 
+    if (userData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(userData.email)) {
+      formErrors.email = "Email must be valid";
+      isValid = false;
+    }
 
-
+  
 
     setErrors(formErrors);
     return isValid;
@@ -98,98 +91,30 @@ useEffect(() => {
   //   }
   // }, [dataExist, userData]);
 
-  const verifyPhoneNo = async () => {
-    try {
-      if (!validateForm()) {
-        return;
 
-      }
-
-      dispatch(setLoading(true));
-      // setShowCodeBox(true);
-
-      const response = await axios.post("/user/sendVerification", {
-        mobileNumber: `${userData.fatherContactNumber}`,
-      });
-      if (response.status === 200) {
-        setShowCodeBox(true);
-        setSubmitMessage("OTP sent successfully"); // Update the message to "OTP sent successfully" in the set
-      }
-    } catch (error) {
-      console.log("Error message", error);
-      setSubmitMessage(`${error.response.data.message.message}`);
-    } finally {
-      dispatch(setLoading(false));
-      // setShowCodeBox(true);
-    }
-  };
-
-  const checkVerificationCode = async () => {
-    try {
-      dispatch(setLoading(true));
-      const response = await axios.post("/user/verifyNumber", {
-        mobileNumber: `${userData.fatherContactNumber}`,
-        otp: code,
-      });
-      console.log("response from checkVerificationCode", response);
-      if (response.status === 200) {
-        setSubmitMessage("fatherContactNumber number verified successfully!");
-        setCodeVerified(true);
-        setShowCodeBox(false);
-        return true;
-      }
-      // setCodeVerified(true);
-      // setShowCodeBox(false);
-      // return true;
-    } catch (error) {
-      console.log("Error messagefor checkVerificationCode", error);
-      setSubmitMessage("Error verifying fatherContactNumber number");
-      return false;
-    } finally {
-      dispatch(setLoading(false));
-    }
-  };
 
   const onSubmit = async (e) => {
     e.preventDefault();
     try {
-      let codeChecked = await checkVerificationCode();
+    //   let codeChecked = await checkVerificationCode();
 
-      console.log("codeChecked", codeChecked);
-
-
-      console.log("loading", loading )
-      // dispatch(setLoading(true));
+    //   console.log("codeChecked", codeChecked);
+      dispatch(setLoading(true));
       setSubmitMessage("");
       console.log("Button Clicked");
-      if (codeChecked === false) {
-        setShowCodeBox(false);
-        setCodeVerified(false);
-        return setSubmitMessage("Please Verify Your Phone Number");
+    //   if (codeChecked === false) {
+    //     setShowCodeBox(false);
+    //     setCodeVerified(false);
+    //     return setSubmitMessage("Please Verify Your Phone Number");
 
-      }
+    //   }
 
       // if (validateForm() && codeChecked === true) {
       if (validateForm() ) {
         await dispatch(submitFormData(userData));
 
-
-
         if(document.cookie !== ""){
-          setShowLoadingPage(true);
-
-          
-
-          setTimeout(() => {
-            navigate("/firstPage");
-            setShowLoadingPage(false);
-            
-
-          },[3000])
-
-
-
-          
+          navigate("/enquiryform");
         }
 
         console.log("userData for onSubmit", userData);
@@ -197,92 +122,89 @@ useEffect(() => {
       }
     } catch (error) {
       console.log("error from onSubmit", error);
+    } finally {
+      await dispatch(setLoading(false));
     }
-    
-  
   };
 
   return (
     <div className="w-full">
-      {showLoadingPage && (
-        <LoadingPage />
+      {loading && (
+        <Spinner />
       ) 
     }
-
-    {loading && (
-      <Spinner/>
-
-    )}
         <form
-          className="flex flex-col justify-center px-12 items-center gap-2 py-8 text-white"
+          className="flex flex-col justify-center px-12 items-center gap-2 py-2 text-white "
           onSubmit={onSubmit}
         >
-          {/* <div className="flex flex-col justify-center items-center">
+          <div className="flex flex-col justify-center items-center">
             <h2 className="text-4xl text-white ">Enquiry Form</h2>
-          </div> */}
+          </div>
 
           {/* Name Field */}
           <div className="flex flex-col justify-center items-center w-full gap-4">
    
-   
-          
-
-          {/* Phone Field */}
-          <div className="flex gap-3 flex-col w-2/3">
-            <div className="flex-1 flex justify-center items-center w-full">
-              <input
-                autoComplete="off"
-                type="number"
-                id="phone"
-                name="fatherContactNumber"
-                value={userData?.fatherContactNumber || ""}
-                onChange={handleChange}
-                placeholder="*Contact no (Parents)"
-                className="border-b-2 border-gray-300 py-2 focus:outline-none flex-1 my-auto placeholder-white"
-                style={{ backgroundColor: "#c61d23" }}
-              />
-              {!showCodeBox && !codeVerified && (
-                <div className="flex">
-                  <button
-                    type="button"
-                    onClick={verifyPhoneNo}
-                    className="px-4 py-2 border-2 text-white  hover:bg-[#ffdd00] hover:text-black rounded-full"
-                  
-                  >
-                    Send OTP
-                  </button>
-                </div>
-              )}
-            </div>
-            {errors.fatherContactNumber && (
-              <p className="text-white text-xs mt-1">{errors.fatherContactNumber}</p>
-            )}
-          </div>
-
-          <div className="flex gap-3   justify-center w-2/3">
-            <div className="flex-1 flex flex-col">
+          <div className="flex flex-col items-center w-2/3 appearance-none">
+            <div className="w-full">
               <input
                 autoComplete="off"
                 type="text"
-                id="code"
-                name="code"
-                value={code}
-                onChange={(e) => setCode(e.target.value)}
-                placeholder="*Verification Code"
-                className="border-b-2 border-gray-300  py-2 focus:outline-none w-4/5 placeholder-white"
+                id="studentName"
+                name="studentName"
+                value={userData?.studentName || ""}
+                onChange={handleChange}
+                placeholder="*Student Name"
+                className="border-b-2 border-gray-300  py-2 focus:outline-none w-full p-1 placeholder-white "
                 style={{ backgroundColor: "#c61d23" }}
               />
-              {/* <button
-                    type="button"
-                    onClick={checkVerificationCode}
-                    className="px-4 py-2 border-2 text-white bg-blue-500 hover:bg-blue-600 rounded-full"
-                    style={{ backgroundColor: "#c61d23" }}
-                  >
-                    Verify
-                  </button> */}
+              {errors.studentName && (
+                <p className="text-white text-xs">{errors.studentName}</p>
+              )}
             </div>
           </div>
 
+          <div className="flex flex-col items-center w-2/3 appearance-none">
+            <div className="w-full">
+              <div className="flex-1 flex flex-col">
+                <input
+                  autoComplete="off"
+                  type="text"
+                  id="fatherName"
+                  name="fatherName"
+                  value={userData?.fatherName || ""}
+                  onChange={handleChange}
+                  placeholder="*Parents Name"
+                  className="border-b-2 border-gray-300  py-2 focus:outline-none w-full p-1 placeholder-white"
+                  style={{ backgroundColor: "#c61d23" }}
+                />
+                {errors.fatherName && (
+                  <p className="text-white text-xs mt-1">
+                    {errors.fatherName}
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Email Field */}
+          <div className="flex flex-col items-center w-2/3 appearance-none">
+            <div className="w-full">
+              <input
+                autoComplete="off"
+                type="email"
+                id="email"
+                name="email"
+                value={userData?.email || ""}
+                onChange={handleChange}
+                placeholder="Email ID"
+                className="border-b-2 border-gray-300  py-2 focus:outline-none w-full p-1 placeholder-white"
+                style={{ backgroundColor: "#c61d23" }}
+              />
+          
+            </div>
+          </div>
+
+       
           <div className="flex flex-col items-center w-2/3 appearance-none">
             <div
               className={`flex justify-end items-end ${
@@ -353,4 +275,4 @@ useEffect(() => {
   );
 };
 
-export default SignupForm;
+export default FirstPageContant;

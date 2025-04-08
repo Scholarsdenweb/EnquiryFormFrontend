@@ -9,6 +9,10 @@ import { Provider } from "react-redux";
 import store from "./../redux/store";
 import FormSubmitted from "./Components/FormSumited";
 import Spinner from "./Components/Spinner";
+import AdminSignup from "./Components/AdminSignup";
+import AdminDashboard from "./Components/AdminDashboard";
+import FirstPage from "./Components/FirstPage";
+// import { useSelector } from "react-redux";
 
 function App() {
 
@@ -22,6 +26,9 @@ function App() {
             <Route path="/enquiryform/takenBy" element={<TakenBy />} />
             <Route path="/FormSubmitted" element={<FormSubmitted />} />
             <Route path="/spinner" element={<Spinner />} />
+            <Route path ="/adminSignup" element={<AdminSignup />} />
+            <Route path ="/adminDashboard" element={<AdminDashboard />} />
+            <Route path="/firstPage" element={<FirstPage/>}/>
 
           </Routes>
         </div>
