@@ -139,61 +139,61 @@ const AdminSignup = () => {
 
   return (
     <div
-      className="overflow-auto w-full items-center px-6 "
-      style={{ backgroundColor: "#c61d23", paddingBottom: "3px" }}
+      className="overflow-auto w-full items-center px-6"
+      style={{ backgroundColor: "#c61d23" }}
     >
       {loading && <Spinner />}
-      <div className="grid grid-rows-8 flex-col w-full h-full ">
+      <div className="grid grid-rows-8 flex-col w-full h-full">
         <div className="row-span-2">
           <FormHeader />
         </div>
 
-        <div className=" row-span-5 px-9 flex flex-col justify-center items-center gap-6 overflow-auto ">
-          <div className="w-2/3  ">
+        <div className="row-span-4 px-9 flex flex-col justify-center items-center gap-6 overflow-auto">
+          <div className="w-2/3">
             <div
-              className="flex flex-col gap-2"
+              className="flex flex-col gap-4"
               style={{ backgroundColor: "#c61d23" }}
             >
-              <h1 className="text-4xl font-normal px-4 pt-5 text-white w-full text-center mb-4">
-                Enquiry Form
+              <h1 className="text-4xl font-semibold text-white text-center mb-6">
+                Admin Signup
               </h1>
               <form
                 autoComplete="off"
-                className="flex flex-col justify-center items-center gap-4 w-full p-2 "
+                className="bg-white/10 backdrop-blur-md shadow-lg p-6 rounded-xl w-full max-w-lg space-y-6 text-white"
                 onSubmit={onSubmit}
               >
-                <div className="flex gap-3 flex-col w-2/3">
-                  <div className="flex-1 flex justify-center items-center w-full">
-                    <input
-                      autoComplete="off"
-                      type="tel"
-                      id="phone"
-                      name="phone"
-                      value={phone || ""}
-                      onChange={(e) => setPhone(e.target.value)}
-                      placeholder="*Contact no (Parents)"
-                      className="border-b-2 border-gray-300 py-2 focus:outline-none flex-1 my-auto placeholder-white"
-                      style={{ backgroundColor: "#c61d23" }}
-                    />
+                <div className="w-full flex flex-col gap-3">
+                  <div className="flex gap-3">
+                    <div className="flex flex-col justify-center w-full">
+                      <input
+                        autoComplete="off"
+                        type="tel"
+                        id="phone"
+                        name="phone"
+                        value={phone || ""}
+                        onChange={(e) => setPhone(e.target.value)}
+                        placeholder="*Contact no (Parents)"
+                        className="border-b-2 border-gray-300 focus:outline-none w-full text-lg rounded-lg p-3"
+                        style={{ backgroundColor: "#f3f3f3" }}
+                      />
+                      {errors.phone && (
+                        <p className="text-red-600 text-sm mt-1">{errors.phone}</p>
+                      )}
+                    </div>
                     {!showCodeBox && !codeVerified && (
-                      <div className="flex">
-                        <button
-                          type="button"
-                          onClick={verifyPhoneNo}
-                          className="px-4 py-y border-2 text-white bg-blue-500 hover:bg-blue-600 rounded-full"
-                          style={{ backgroundColor: "#c61d23" }}
-                        >
-                          Send OTP
-                        </button>
-                      </div>
+                      <button
+                        type="button"
+                        onClick={verifyPhoneNo}
+                        className="px-4  rounded-md bg-yellow-500 hover:bg-yellow-600 text-black font-semibold"
+                      >
+                        Send OTP
+                      </button>
                     )}
                   </div>
-                  {errors.phone && (
-                    <p className="text-white text-xs mt-1">{errors.phone}</p>
-                  )}
-                </div>
-                <div className="flex gap-3   justify-center w-2/3">
-                  <div className="flex-1 flex flex-col">
+                
+
+                {showCodeBox && (
+                  <div className="flex flex-col w-full max-w-sm gap-3">
                     <input
                       autoComplete="off"
                       type="text"
@@ -202,21 +202,14 @@ const AdminSignup = () => {
                       value={code}
                       onChange={(e) => setCode(e.target.value)}
                       placeholder="*Verification Code"
-                      className="border-b-2 border-gray-300  py-2 focus:outline-none w-4/5 placeholder-white"
-                      style={{ backgroundColor: "#c61d23" }}
+                      className="w-full bg-white/20 text-white border border-white px-4  focus:outline-none placeholder-gray-400"
+                 
                     />
-                    {/* <button
-                    type="button"
-                    onClick={checkVerificationCode}
-                    className="px-4 py-2 border-2 text-white bg-blue-500 hover:bg-blue-600 rounded-full"
-                    style={{ backgroundColor: "#c61d23" }}
-                  >
-                    Verify
-                  </button> */}
                   </div>
-                </div>
+                )}
+</div>
                 <button
-                  className="border text-white p-2 rounded-lg w-1/3"
+                  className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 rounded-xl transition-all"
                   type="submit"
                 >
                   Login
@@ -226,16 +219,15 @@ const AdminSignup = () => {
           </div>
         </div>
 
-        <div className="row-span-1 w-full h-full flex  justify-center items-center ">
-          {/* <div className=""> */}
-          <div className=" w-24 ">
-            <img src={scholarsDenLogo} alt="" />
+        <div className="row-span-1 w-full h-full flex justify-center items-center">
+          <div className="w-24">
+            <img src={scholarsDenLogo} alt="Scholars Den Logo" />
           </div>
-          {/* </div>  */}
         </div>
       </div>
     </div>
   );
+
 };
 
 export default AdminSignup;

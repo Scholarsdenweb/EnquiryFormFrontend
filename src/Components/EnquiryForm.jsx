@@ -1,4 +1,4 @@
-import{ useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 // 2sFOzXAu3htadEMdLt6pMWh1Nk4_6oNB6RFWJqFqsEBdpP2EG
 
@@ -19,6 +19,8 @@ const EnquiryForm = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const [otherCity, setOtherCity] = useState(false);
+
   const { loading } = useSelector((state) => state.loadingDetails);
 
   const [submitMessage, setSubmitMessage] = useState("");
@@ -27,9 +29,6 @@ const EnquiryForm = () => {
   const { userData, dataExist, userDataError } = useSelector(
     (state) => state.userDetails
   );
-
-
-
 
   const indianStates = [
     "Andhra Pradesh",
@@ -67,11 +66,8 @@ const EnquiryForm = () => {
     "Delhi",
     "Puducherry",
     "Ladakh",
-    "Jammu and Kashmir"
-];
-
-
-
+    "Jammu and Kashmir",
+  ];
 
   const [errors, setErrors] = useState({
     program: "",
@@ -81,12 +77,16 @@ const EnquiryForm = () => {
     fatherOccupations: "",
     studentContactNumber: "",
     city: "",
-    state: ""
+    state: "",
   });
 
   const programOptions = {
-    "Foundation": ["6th", "7th", "8th", "9th", "10th"],
-    "JEE(Main & Adv.)": ["11th Engineering", "12th Engineering", "12th Pass Engineering"],
+    Foundation: ["6th", "7th", "8th", "9th", "10th"],
+    "JEE(Main & Adv.)": [
+      "11th Engineering",
+      "12th Engineering",
+      "12th Pass Engineering",
+    ],
     "NEET(UG)": ["11th Medical", "12th Medical", "12th Pass Medical"],
   };
 
@@ -95,23 +95,39 @@ const EnquiryForm = () => {
     console.log("named", [name], name);
     console.log("named", value);
 
-    if(name === "state"){
+    if (name === "city") {
+      console.log("userData[name]", value);
+      if (value === "Other") {
+        setOtherCity(true);
+        dispatch(updateUserDetails({ city: "" }));
+        return;
+      } else if (value === "") {
+        setOtherCity(false);
+        // dispatch(updateUserDetails({ city: "" }));
+        return;
+      } else {
+        if (value === "Moradabad") {
+          setOtherCity(false);
+        }
+        dispatch(updateUserDetails({ city: value }));
+        dispatch(updateUserDetails({ state: "Uttar Pradesh" }));
+      }
+    }
 
+    if (name === "state") {
       console.log("userData[name]", userData[name]);
     }
-    
 
-    if (name === "program" ) {
+    if (name === "program") {
       setProgram(value); // Update program selection
       dispatch(updateUserDetails({ program: value })); // Reset course when program changes
     }
     //  else if(name === "state"){
     //   dispatch(updateUserDetails({state: value}))
     // }
-    else if(name === "studentContactNumber"){
-      dispatch(updateUserDetails({studentContactNumber: value}))
-    }
-     else {
+    else if (name === "studentContactNumber") {
+      dispatch(updateUserDetails({ studentContactNumber: value }));
+    } else {
       dispatch(updateUserDetails({ [name]: value }));
     }
 
@@ -141,6 +157,8 @@ const EnquiryForm = () => {
     //   "userData.studentContactNumber",
     //   userData[studentContactNumber]
     // );
+
+    console.log("studentContactNumber", userData.studentContactNumber);
 
     if (
       userData.studentContactNumber !== "" &&
@@ -174,14 +192,18 @@ const EnquiryForm = () => {
 
   useEffect(() => {
     dispatch(fetchUserDetails());
+
+    console.log("fetchUserDetails called", userData["city"]);
+    console.log("fetchUserDetails called", userData.city);
+    if (userData["city"] !== "Moradabad" && userData["city"] !== "" && userData["city"] !== undefined) {
+      setOtherCity(true);
+    }
   }, []);
 
-
   useEffect(() => {
-
-
     console.log("userData from useEffect", userData);
 
+    console.log("userData.data", userData["city"]);
   }, [userData]);
 
   useEffect(() => {
@@ -195,89 +217,27 @@ const EnquiryForm = () => {
 
   return (
     <div className="min-h-screen w-full bg-[#c61d23] px-2 md:px-8 py-2 overflow-auto">
-    {loading && <Spinner />}
-    
-    <div className="flex flex-col gap-6 max-w-screen-md mx-auto">
-      <div>
-        <FormHeader />
-      </div>
-  
-      <h1 className="text-3xl md:text-4xl font-semibold text-white text-center">Enquiry Form</h1>
-  
-      <form
-        autoComplete="off"
-        onSubmit={onSubmit}
-        className="flex flex-col gap-y-6 w-full bg-[#c61d23]"
-      >
-        {/* PROGRAM */}
+      {loading && <Spinner />}
+
+      <div className="flex flex-col gap-6 max-w-screen-md mx-auto">
         <div>
-          <select
-            name="program"
-            value={userData.program || ""}
-            onChange={handleChange}
-            className="w-full border-b-2 border-white text-white bg-[#c61d23] py-3 pr-8 focus:outline-none appearance-none"
-            style={{
-              backgroundImage: `url(${Neeche})`,
-              backgroundRepeat: "no-repeat",
-              backgroundPosition: "right 10px center",
-              backgroundSize: "16px",
-            }}
-          >
-            <option value="" className="bg-white text-black" disabled>*Program</option>
-            {Object.keys(programOptions).map((program) => (
-              <option className="bg-white text-black" key={program} value={program}>{program}</option>
-            ))}
-          </select>
-          {errors.program && <p className="text-white text-sm mt-1">{errors.program}</p>}
+          <FormHeader />
         </div>
-  
-        {/* COURSE */}
-        <div>
-          <select
-            name="courseOfIntrested"
-            value={userData.courseOfIntrested || ""}
-            onChange={handleChange}
-            className="w-full border-b-2 border-white text-white bg-[#c61d23] py-3 pr-8 focus:outline-none appearance-none"
-            style={{
-              backgroundImage: `url(${Neeche})`,
-              backgroundRepeat: "no-repeat",
-              backgroundPosition: "right 10px center",
-              backgroundSize: "16px",
-            }}
-          >
-            <option value="" className="bg-white text-black" disabled>*Course interested in</option>
-            {program &&
-              programOptions[program].map((course) => (
-                <option className="bg-white text-black" key={course} value={course}>{course}</option>
-              ))}
-          </select>
-          {errors.courseOfIntrested && <p className="text-white text-sm mt-1">{errors.courseOfIntrested}</p>}
-        </div>
-  
-        {/* TEXT INPUTS */}
-        <div className="grid grid-cols-1 gap-x-4 gap-y-6">
-          {[
-            { label: "School Name", name: "schoolName", type: "text" },
-            { label: "*City/Town/Village", name: "city", type: "text" },
-          ].map(({ label, name, type }) => (
-            <div key={name}>
-              <input
-                type={type}
-                name={name}
-                value={userData[name] || ""}
-                onChange={handleChange}
-                placeholder={label}
-                className="w-full border-b-2 border-white text-white py-3 bg-[#c61d23] focus:outline-none placeholder-white appearance-none"
-              />
-              {errors[name] && <p className="text-white text-sm mt-1">{errors[name]}</p>}
-            </div>
-          ))}
-  
-          {/* STATE */}
+
+        <h1 className="text-3xl md:text-4xl font-semibold text-white text-center">
+          Enquiry Form
+        </h1>
+
+        <form
+          autoComplete="off"
+          onSubmit={onSubmit}
+          className="flex flex-col gap-y-6 w-full bg-[#c61d23]"
+        >
+          {/* PROGRAM */}
           <div>
             <select
-              name="state"
-              value={userData.state || ""}
+              name="program"
+              value={userData.program || ""}
               onChange={handleChange}
               className="w-full border-b-2 border-white text-white bg-[#c61d23] py-3 pr-8 focus:outline-none appearance-none"
               style={{
@@ -287,64 +247,218 @@ const EnquiryForm = () => {
                 backgroundSize: "16px",
               }}
             >
-              <option value="" className="bg-white text-black" disabled>State</option>
-              {indianStates.map((state) => (
-                <option className="bg-white text-black" key={state} value={state}>{state}</option>
+              <option value="" className="bg-white text-black" disabled>
+                *Program
+              </option>
+              {Object.keys(programOptions).map((program) => (
+                <option
+                  className="bg-white text-black"
+                  key={program}
+                  value={program}
+                >
+                  {program}
+                </option>
               ))}
             </select>
-            {errors.state && <p className="text-white text-sm mt-1">{errors.state}</p>}
+            {errors.program && (
+              <p className="text-white text-sm mt-1">{errors.program}</p>
+            )}
           </div>
+
+          {/* COURSE */}
+          <div>
+            <select
+              name="courseOfIntrested"
+              value={userData.courseOfIntrested || ""}
+              onChange={handleChange}
+              className="w-full border-b-2 border-white text-white bg-[#c61d23] py-3 pr-8 focus:outline-none appearance-none"
+              style={{
+                backgroundImage: `url(${Neeche})`,
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "right 10px center",
+                backgroundSize: "16px",
+              }}
+            >
+              <option value="" className="bg-white text-black" disabled>
+                *Course interested in
+              </option>
+              {program &&
+                programOptions[program].map((course) => (
+                  <option
+                    className="bg-white text-black"
+                    key={course}
+                    value={course}
+                  >
+                    {course}
+                  </option>
+                ))}
+            </select>
+            {errors.courseOfIntrested && (
+              <p className="text-white text-sm mt-1">
+                {errors.courseOfIntrested}
+              </p>
+            )}
+          </div>
+
+          {/* TEXT INPUTS */}
+          <div className="grid grid-cols-1 gap-x-4 gap-y-6">
+            {[{ label: "School Name", name: "schoolName", type: "text" }].map(
+              ({ label, name, type }) => (
+                <div key={name}>
+                  <input
+                    type={type}
+                    name={name}
+                    value={userData[name] || ""}
+                    onChange={handleChange}
+                    placeholder={label}
+                    className="w-full border-b-2 border-white text-white py-3 bg-[#c61d23] focus:outline-none placeholder-white appearance-none"
+                  />
+                  {errors[name] && (
+                    <p className="text-white text-sm mt-1">{errors[name]}</p>
+                  )}
+                </div>
+              )
+            )}
+
+            <div className="text-white flex gap-4">
+              <div className="flex gap-1">
+                <input
+                  type="radio"
+                  name="city"
+                  value="Moradabad"
+                  checked={userData.city == "Moradabad"}
+                  onChange={handleChange}
+                />
+                <label htmlFor="">Moradabad</label>
+              </div>
+
+              <div className="flex gap-2">
+                <input
+                  type="radio"
+                  name="city"
+                  checked={userData.city !== "Moradabad" && otherCity}
+                  value="Other"
+                  onChange={handleChange}
+                />
+                <label htmlFor="">Other</label>
+              </div>
+            </div>
+
+            {otherCity && (
+              <div>
+                <input
+                  type="text"
+                  name="city"
+                  value={userData.city || ""}
+                  onChange={handleChange}
+                  placeholder="City"
+                  className="w-full border-b-2 border-white text-white py-3 bg-[#c61d23] focus:outline-none placeholder-white appearance-none"
+                />
+
+                {errors["city"] && (
+                  <p className="text-white text-sm mt-1">{errors["city"]}</p>
+                )}
+              </div>
+            )}
+
+            {/* STATE */}
+            {otherCity && (
+              <div>
+                <select
+                  name="state"
+                  value={userData.state || "Uttar Pradesh"}
+                  onChange={handleChange}
+                  className="w-full border-b-2 border-white text-white bg-[#c61d23] py-3 pr-8 focus:outline-none appearance-none"
+                  style={{
+                    backgroundImage: `url(${Neeche})`,
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "right 10px center",
+                    backgroundSize: "16px",
+                  }}
+                >
+                  <option value="" className="bg-white text-black">
+                    State
+                  </option>
+                  <option
+                    value="Uttar Pradesh"
+                    className="bg-white text-black"
+                    selected
+                  >
+                    Uttar Pradesh
+                  </option>
+                  {indianStates.map((state) => (
+                    <option
+                      className="bg-white text-black"
+                      key={state}
+                      value={state}
+                    >
+                      {state}
+                    </option>
+                  ))}
+                </select>
+                {errors.state && (
+                  <p className="text-white text-sm mt-1">{errors.state}</p>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* STUDENT CONTACT */}
+          <div>
+            <input
+              type="tel"
+              name="studentContactNumber"
+              value={userData.studentContactNumber || ""}
+              onChange={handleChange}
+              placeholder="Student's Contact No. (if any)"
+              className="w-full border-b-2 border-white text-white py-3 bg-[#c61d23] focus:outline-none placeholder-white appearance-none"
+            />
+            {errors.studentContactNumber && (
+              <p className="text-white text-sm mt-1">
+                {errors.studentContactNumber}
+              </p>
+            )}
+          </div>
+
+          {/* BUTTONS */}
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mt-6">
+            <button
+              onClick={() => navigate(-1)}
+              type="button"
+              className="w-full sm:w-1/3 border bg-yellow-500 hover:bg-yellow-600 rounded-xl text-black  py-2 px-4 "
+            >
+              Back
+            </button>
+            <button
+              type="submit"
+              className="w-full sm:w-2/3 border bg-yellow-500 hover:bg-yellow-600 text-black py-2 rounded-xl transition-all"
+            >
+              Next
+            </button>
+          </div>
+        </form>
+
+        {/* SUBMIT MESSAGE */}
+        {submitMessage && (
+          <div className="w-full text-center">
+            <p
+              className={`text-sm ${
+                submitMessage === "successfully"
+                  ? "text-green-400"
+                  : "text-red-400"
+              }`}
+            >
+              {submitMessage}
+            </p>
+          </div>
+        )}
+
+        {/* LOGO */}
+        <div className="flex justify-center items-center py-4">
+          <img className="w-24" src={scholarsDenLogo} alt="Scholars Den Logo" />
         </div>
-  
-        {/* STUDENT CONTACT */}
-        <div>
-          <input
-            type="tel"
-            name="studentContactNumber"
-            value={userData.studentContactNumber || ""}
-            onChange={handleChange}
-            placeholder="Student's Contact No. (if any)"
-            className="w-full border-b-2 border-white text-white py-3 bg-[#c61d23] focus:outline-none placeholder-white appearance-none"
-          />
-          {errors.studentContactNumber && (
-            <p className="text-white text-sm mt-1">{errors.studentContactNumber}</p>
-          )}
-        </div>
-  
-        {/* BUTTONS */}
-        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mt-6">
-          <button
-            disabled
-            type="button"
-            className="w-full sm:w-1/3 border border-gray-400 rounded-xl bg-[#a71a1f] text-gray-400 font-semibold py-2 px-4 cursor-not-allowed"
-          >
-            Back
-          </button>
-          <button
-            type="submit"
-            className="w-full sm:w-2/3 border bg-yellow-500 hover:bg-yellow-600 text-black py-2 rounded-xl transition-all"
-          >
-            Next
-          </button>
-        </div>
-      </form>
-  
-      {/* SUBMIT MESSAGE */}
-      {submitMessage && (
-        <div className="w-full text-center">
-          <p className={`text-sm ${submitMessage === "successfully" ? "text-green-400" : "text-red-400"}`}>
-            {submitMessage}
-          </p>
-        </div>
-      )}
-  
-      {/* LOGO */}
-      <div className="flex justify-center items-center py-4">
-      <img className="w-24" src={scholarsDenLogo} alt="Scholars Den Logo" />
+      </div>
     </div>
-    </div>
-  </div>
-  
   );
 };
 

@@ -98,6 +98,16 @@ const TakenBy = () => {
     "priya@scholarsden.in",
     "admission@scholarsden.in",
   ];
+
+  const rendomNumber = Math.floor(Math.random() * 4);
+
+  useEffect(() => {
+    console.log("rendomNumber", rendomNumber);
+    dispatch(
+      updateUserDetails({ enquiryTakenBy: enquiryTakenBy[rendomNumber] })
+    );
+  }, []);
+
   const { loading } = useSelector((state) => state.loadingDetails);
 
   const { userData, dataExist } = useSelector((state) => state.userDetails);
@@ -132,7 +142,7 @@ const TakenBy = () => {
       // "howToKnow",
       // "remarks",
       // "intime",
-      "enquiryTakenBy",
+      // "enquiryTakenBy",
       // "brochureGiven",
     ].forEach((field) => {
       if (!userData[field]?.trim()) {
@@ -238,95 +248,96 @@ const TakenBy = () => {
   //     });
   // };
 
-  const putDataOnExtraEdge = async () => {
-    console.log("userData from putDataOnExtraEdge", userData);
+  // const putDataOnExtraEdge = async () => {
+  //   console.log("userData from putDataOnExtraEdge", userData);
 
-    const url = "https://thirdpartyapi.extraaedge.com/api/SaveRequest";
+  //   const url = "https://thirdpartyapi.extraaedge.com/api/SaveRequest";
 
-    const headers = {
-      "Content-Type": "application/json",
-    };
+  //   const headers = {
+  //     "Content-Type": "application/json",
+  //   };
 
-    // const apiData = { Source: "scholarsden", AuthToken: "SCHOLARSDEN-30-03-2024", FirstName : userData.studente };
+  //   // const apiData = { Source: "scholarsden", AuthToken: "SCHOLARSDEN-30-03-2024", FirstName : userData.studente };
 
-    const apiData = {
-      Source: "scholarsden",
-      AuthToken: "SCHOLARSDEN-30-03-2024",
-      FirstName: userData.studentName || "",
-      Email: userData.email || "",
-      Center: userData.courseOfIntrested || "",
-      Course: userData.program || "", // Assuming 'program' corresponds to 'Center'
-      State: userData.state || "", // No mapping in provided data, you may need to add this
-      City: userData.city || "",
-      Remarks: userData.remarks || "",
-      leadCampaign: "Walk-in",
-      LeadSource: "140",
+  //   const apiData = {
+  //     Source: "scholarsden",
+  //     AuthToken: "SCHOLARSDEN-30-03-2024",
+  //     FirstName: userData.studentName || "",
+  //     Email: userData.email || "",
+  //     Center: userData.courseOfIntrested || "",
+  //     Course: userData.program || "", // Assuming 'program' corresponds to 'Center'
+  //     State: userData.state || "", // No mapping in provided data, you may need to add this
+  //     City: userData.city || "",
+  //     Remarks: userData.remarks || "",
+  //     leadCampaign: "Walk-in",
+  //     LeadSource: "140",
 
-      Field4: userData.brochureGiven,
-      Field5: userData.howToKnow,
-      ReferredToEmail: userData.enquiryTakenBy,
-      Textb1: userData.intime,
+  //     Field4: userData.brochureGiven,
+  //     Field5: userData.howToKnow,
+  //     ReferredToEmail: userData.enquiryTakenBy,
+  //     Textb1: userData.intime,
 
-      Textb3: userData.schoolName,
-      Textb2: userData.fatherOccupations,
-      FathersName: userData.fatherName || "",
+  //     Textb3: userData.schoolName,
+  //     Textb2: userData.fatherOccupations,
+  //     FathersName: userData.fatherName || "",
 
-      // imporovement Available
-      // MobileNumber: userData.studentContactNumber || "",
-      // FathersPhoneNumber: userData.fatherContactNumber || "",
+  //     // imporovement Available
+  //     // MobileNumber: userData.studentContactNumber || "",
+  //     // FathersPhoneNumber: userData.fatherContactNumber || "",
 
-      MobileNumber: userData.fatherContactNumber || "",
-      FathersPhoneNumber: userData.studentContactNumber || "",
+  //     MobileNumber: userData.fatherContactNumber || "",
+  //     FathersPhoneNumber: userData.studentContactNumber || "",
 
-      // Not added yet
+  //     // Not added yet
 
-      // SchoolName: userData.schoolName || "",
-      // // EnquiryTakenBy: userData.enquiryTakenBy || "",
-      // // BrochureGiven: userData.brochureGiven || "",
-      // enquiryTakenBy: data?.enquiryTakenBy || "",
-      // fatherOccupations: userData.fatherOccupations || "",
-    };
+  //     // SchoolName: userData.schoolName || "",
+  //     // // EnquiryTakenBy: userData.enquiryTakenBy || "",
+  //     // // BrochureGiven: userData.brochureGiven || "",
+  //     // enquiryTakenBy: data?.enquiryTakenBy || "",
+  //     // fatherOccupations: userData.fatherOccupations || "",
+  //   };
 
-    console.log("apiData", apiData);
+  //   console.log("apiData", apiData);
 
-    console.log("apiData from putDataOnExtraEdge", apiData);
+  //   console.log("apiData from putDataOnExtraEdge", apiData);
 
-    try {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: headers,
-        body: JSON.stringify(apiData),
-      });
+  //   try {
+  //     const response = await fetch(url, {
+  //       method: "POST",
+  //       headers: headers,
+  //       body: JSON.stringify(apiData),
+  //     });
 
-      console.log("Raw response:", response);
+  //     console.log("Raw response:", response);
 
-      const contentType = response.headers.get("content-type");
+  //     const contentType = response.headers.get("content-type");
 
-      if (!response.ok) {
-        throw new Error(`Request failed with status: ${response.status}`);
-      }
+  //     if (!response.ok) {
+  //       throw new Error(`Request failed with status: ${response.status}`);
+  //     }
 
-      if (contentType && contentType.includes("application/json")) {
-        const responseData = await response.json();
-        console.log("Response Data:", responseData);
-      } else {
-        const textResponse = await response.text();
-        console.log("Non-JSON Response:", textResponse);
-      }
-    } catch (error) {
-      console.log("Error:", error);
-    }
-  };
+  //     if (contentType && contentType.includes("application/json")) {
+  //       const responseData = await response.json();
+  //       console.log("Response Data:", responseData);
+  //     } else {
+  //       const textResponse = await response.text();
+  //       console.log("Non-JSON Response:", textResponse);
+  //     }
+  //   } catch (error) {
+  //     console.log("Error:", error);
+  //   }
+  // };
 
   const onSubmit = async (e) => {
     e.preventDefault();
+
     dispatch(setLoading(true));
     setSubmitMessage("");
 
     if (validateForm()) {
       await dispatch(putFormData(userData));
 
-      await putDataOnExtraEdge();
+      // await putDataOnExtraEdge();
 
       document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
       navigate("/FormSubmitted");
@@ -339,35 +350,84 @@ const TakenBy = () => {
   }, [userData]);
 
   return (
-    <div
-      className="min-h-screen w-full overflow-auto px-4 md:px-8 py-2 bg-[#c61d23]"
-    >
+    <div className="min-h-screen w-full overflow-auto px-4 md:px-8 py-2 bg-[#c61d23]">
       {loading && <Spinner />}
-      <div className="flex flex-col min-h-screen justify-between">
+      <div className="flex flex-col gap-16 justify-between">
         <div>
           <FormHeader />
-  
+
           <div className="flex flex-col items-center mt-6">
             <div className="w-full max-w-2xl">
               <h1 className="text-3xl sm:text-4xl font-semibold text-white text-center mb-6">
                 Enquiry Form
               </h1>
-  
+
               <form
                 autoComplete="off"
                 className="flex flex-col gap-4 w-full"
                 onSubmit={onSubmit}
               >
                 {/* How to Know */}
-                <SelectField
+                {/* <SelectField
                   label="How do you come to know about us?"
                   name="howToKnow"
                   value={userData?.howToKnow}
                   options={options}
                   onChange={handleChange}
                   error={errors.howToKnow}
-                />
-  
+                /> */}
+
+                <div className="flex flex-col flex-wrap">
+                  <label htmlFor="howToKnow" className="text-lg text-white ">
+                    How do you come to know about us?
+                  </label>
+
+                  <div className="flex flex-wrap gap-4 pl-4">
+                    <div className="flex items-center gap-1">
+                      <input
+                        type="radio"
+                        name="howToKnow"
+                        value={"News Paper"}
+                        checked={userData.howToKnow === "News Paper"}
+                        onChange={handleChange}
+                      />
+                      <label className="text-white text-lg ">News Paper</label>
+                    </div>
+                    <div className="flex items-center gap-1 ">
+                      <input
+                        type="radio"
+                        name="howToKnow"
+                        value="Hoading/Banner"
+                        checked={userData.howToKnow === "Hoading/Banner"}
+                        onChange={handleChange}
+                      />
+                      <label className="text-white text-lg ">
+                        Hoading/Banner
+                      </label>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <input
+                        type="radio"
+                        name="howToKnow"
+                        value={"Reference"}
+                        onChange={handleChange}
+                        checked={userData.howToKnow === "Reference"}
+                      />
+                      <label className="text-white text-lg ">Reference</label>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <input
+                        type="radio"
+                        name="howToKnow"
+                        value="Internet"
+                        checked={userData.howToKnow === "Internet"}
+                        onChange={handleChange}
+                      />
+                      <label className="text-white text-lg ">Internet</label>
+                    </div>
+                  </div>
+                </div>
+
                 {showOtherInput && (
                   <InputField
                     label="Please Specify"
@@ -378,9 +438,9 @@ const TakenBy = () => {
                     error={errors.otherSource}
                   />
                 )}
-  
+
                 {/* Enquiry Taken By */}
-                <SelectField
+                {/* <SelectField
                   label="Enquiry Taken By"
                   name="enquiryTakenBy"
                   value={userData.enquiryTakenBy}
@@ -388,8 +448,8 @@ const TakenBy = () => {
                   onChange={handleChange}
                   placeholder="Enquiry Taken By"
                   error={errors.enquiryTakenBy}
-                />
-  
+                /> */}
+
                 {/* Remarks */}
                 <InputField
                   label="Remarks"
@@ -399,24 +459,24 @@ const TakenBy = () => {
                   placeholder="Remark if any"
                   error={errors.remarks}
                 />
-  
+
                 {/* Buttons */}
                 <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mt-8">
                   <button
                     type="button"
                     onClick={() => navigate("/enquiryForm")}
-                    className="w-full sm:w-auto border rounded-full bg-[#c61d23] hover:bg-[#a71a1f] text-white font-semibold py-2 px-6 transition duration-200"
+                    className="w-full sm:w-1/3 border border-gray-400 rounded-xl bg-yellow-500 hover:bg-yellow-600 py-2 px-4 cursor-not-allowed"
                   >
                     Back
                   </button>
                   <button
                     type="submit"
-                    className="w-full sm:w-1/2 border rounded-full bg-[#c61d23] hover:bg-[#a71a1f] text-white font-semibold py-2 transition duration-200"
+                    className="w-full sm:w-2/3 border bg-yellow-500 hover:bg-yellow-600 text-black py-2 rounded-xl transition-all"
                   >
                     Submit
                   </button>
                 </div>
-  
+
                 {submitMessage && (
                   <p
                     className={`mt-4 text-center text-sm ${
@@ -432,15 +492,18 @@ const TakenBy = () => {
             </div>
           </div>
         </div>
-  
+
         {/* Footer Logo */}
-        <div className="flex justify-center items-center mt-8">
-          <img src={scholarsDenLogo} alt="Scholars Den Logo" className="w-20 sm:w-24" />
+        <div className="flex justify-center items-center">
+          <img
+            src={scholarsDenLogo}
+            alt="Scholars Den Logo"
+            className="w-20 sm:w-24"
+          />
         </div>
       </div>
     </div>
   );
-  
 };
 
 export default TakenBy;

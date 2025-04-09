@@ -1,4 +1,4 @@
- {
+{
   "name": "enquiryform",
   "private": true,
   "version": "0.0.0",
@@ -10,8 +10,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@material-tailwind/react": "^3.0.0-beta.24",
     "@reduxjs/toolkit": "^2.5.0",
     "axios": "^1.7.9",
+    "iconoir-react": "^7.10.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-redux": "^9.2.0",

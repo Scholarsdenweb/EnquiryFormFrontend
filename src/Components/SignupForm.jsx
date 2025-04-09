@@ -189,7 +189,7 @@ useEffect(() => {
   
 
   return (
-    <div className=" w-full bg-[#c61d23] flex items-center justify-center px-4 py-8">
+    <div className=" w-full bg-[#c61d23] flex items-center justify-center px-4 py-1">
       {isSubmittingForm && showLoadingPage && <LoadingPage />}
       {!isSubmittingForm && loading && <Spinner />}
 
@@ -200,8 +200,8 @@ useEffect(() => {
         >
           <h2 className="text-center text-2xl md:text-3xl font-semibold">Phone Number Verification</h2>
 
-          {/* Contact Input + Send OTP */}
-          <div className="space-y-2">
+
+          <div className="space-y-4">
             <label htmlFor="fatherContactNumber" className="block text-sm font-medium">
               *Contact Number (Parent)
             </label>
@@ -212,14 +212,14 @@ useEffect(() => {
                 name="fatherContactNumber"
                 value={userData?.fatherContactNumber || ""}
                 onChange={handleChange}
-                placeholder="Enter contact number"
-                className="flex-1 bg-white/20 text-white border border-white rounded-md px-4 py-2 focus:outline-none"
+                placeholder="Enter Contact Number"
+                className="flex-1 bg-white/10 text-white border border-white px-4 py-2 focus:outline-none placeholder-gray-400"
               />
               {!showCodeBox && !codeVerified && (
                 <button
                   type="button"
                   onClick={verifyPhoneNo}
-                  className="px-4 py-2 rounded-md bg-yellow-500 hover:bg-yellow-600 text-black font-semibold"
+                  className="px-4 py-2 rounded-md bg-yellow-500 hover:bg-yellow-600 text-black font-semibold "
                 >
                   Send OTP
                 </button>
@@ -243,7 +243,7 @@ useEffect(() => {
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
                 placeholder="Enter OTP"
-                className="w-full bg-white/20 text-white border border-white rounded-md px-4 py-2 focus:outline-none"
+                className="w-full bg-white/20 text-white border border-white px-4 py-2 focus:outline-none placeholder-gray-400"
               />
             </div>
           )}

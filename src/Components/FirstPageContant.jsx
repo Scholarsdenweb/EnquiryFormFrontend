@@ -5,7 +5,8 @@ import scholarsDenLogo from "../assets/scholarsDenLogo.png";
 
 import {
   fetchUserDetails,
-  submitFormData,
+  putFormData,
+
   updateUserDetails,
 } from "../../redux/formDataSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -29,7 +30,7 @@ const FirstPageContant = () => {
 
   const phoneRegex = /^\+91[0-9]{10}$/;
   // const [codeVerified, setCodeVerified] = useState(true);
-  const [codeVerified, setCodeVerified] = useState(false);
+
 
   // State hooks
   const [errors, setErrors] = useState({
@@ -51,6 +52,12 @@ const FirstPageContant = () => {
 useEffect(() => {
   console.log("userData from useEffect", userData);
 }, [userData]);
+
+
+
+useEffect(()=>{
+  dispatch(fetchUserDetails())
+},[])
 
   const validateForm = () => {
     const formErrors = {};
@@ -112,7 +119,7 @@ useEffect(() => {
 
       // if (validateForm() && codeChecked === true) {
       if (validateForm() ) {
-        await dispatch(submitFormData(userData));
+        await dispatch(putFormData(userData));
 
         if(document.cookie !== ""){
           navigate("/enquiryform");
@@ -142,7 +149,7 @@ useEffect(() => {
       <form
         autoComplete="off"
         onSubmit={onSubmit}
-        className="flex flex-col gap-y-6 w-full bg-[#c61d23]"
+        className="flex flex-col gap-y-6 bg-[#c61d23] text-white w-5/6 justify-center items-center mx-auto"
       >          {/* Student Name */}
           <div className="w-full">
             <input
@@ -153,7 +160,7 @@ useEffect(() => {
               value={userData?.studentName || ""}
               onChange={handleChange}
               placeholder="*Student Name"
-              className="w-full bg-[#c61d23] border-b-2 border-white placeholder-white focus:outline-none p-2 rounded"
+              className="w-full bg-[#c61d23] border-b-2 border-white placeholder-gray-400 focus:outline-none p-2 "
             />
             {errors.studentName && <p className="text-sm text-yellow-300 mt-1">{errors.studentName}</p>}
           </div>
@@ -168,7 +175,7 @@ useEffect(() => {
               value={userData?.fatherName || ""}
               onChange={handleChange}
               placeholder="*Parents Name"
-              className="w-full bg-[#c61d23] border-b-2 border-white placeholder-white focus:outline-none p-2 rounded"
+              className="w-full bg-[#c61d23] border-b-2 border-white placeholder-gray-400 focus:outline-none p-2 "
             />
             {errors.fatherName && <p className="text-sm text-yellow-300 mt-1">{errors.fatherName}</p>}
           </div>
@@ -183,7 +190,7 @@ useEffect(() => {
               value={userData?.email || ""}
               onChange={handleChange}
               placeholder="Email ID"
-              className="w-full bg-[#c61d23] border-b-2 border-white placeholder-white focus:outline-none p-2 rounded"
+              className="w-full bg-[#c61d23] border-b-2 border-white placeholder-gray-400 focus:outline-none p-2 "
             />
             {errors.email && <p className="text-sm text-yellow-300 mt-1">{errors.email}</p>}
           </div>
