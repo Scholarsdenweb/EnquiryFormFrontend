@@ -12,6 +12,7 @@ import Spinner from "./Components/Spinner";
 import AdminSignup from "./Components/AdminSignup";
 import AdminDashboard from "./Components/AdminDashboard";
 import FirstPage from "./Components/FirstPage";
+import FirstPageContant from "./Components/FirstPageContant";
 // import { useSelector } from "react-redux";
 
 function App() {
@@ -22,13 +23,12 @@ function App() {
         <div className="flex  justify-center items-center ">
           <Routes>
             <Route path="/" element={<Signup />} />
+            <Route path="/firstPage" element={<FirstPageContant/>}/>
             <Route path="/enquiryform" element={<EnquiryForm />} />
             <Route path="/enquiryform/takenBy" element={<TakenBy />} />
             <Route path="/FormSubmitted" element={<FormSubmitted />} />
-            <Route path="/spinner" element={<Spinner />} />
             <Route path ="/adminSignup" element={<AdminSignup />} />
             <Route path ="/adminDashboard" element={<AdminDashboard />} />
-            <Route path="/firstPage" element={<FirstPage/>}/>
 
           </Routes>
         </div>

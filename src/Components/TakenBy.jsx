@@ -340,7 +340,7 @@ const TakenBy = () => {
 
   return (
     <div
-      className="min-h-screen w-full overflow-auto px-4 sm:px-6 py-2 bg-[#c61d23]"
+      className="min-h-screen w-full overflow-auto px-4 md:px-8 py-2 bg-[#c61d23]"
     >
       {loading && <Spinner />}
       <div className="flex flex-col min-h-screen justify-between">

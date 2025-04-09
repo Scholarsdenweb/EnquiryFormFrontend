@@ -17,6 +17,9 @@ const SignupForm = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+
+  const [isSubmittingForm, setIsSubmittingForm] = useState(false);
+
   const [code, setCode] = useState("");
   const [showCodeBox, setShowCodeBox] = useState(false);
   const { userData, dataExist, error } = useSelector(
@@ -132,16 +135,16 @@ useEffect(() => {
       });
       console.log("response from checkVerificationCode", response);
       if (response.status === 200) {
-        setSubmitMessage("fatherContactNumber number verified successfully!");
+        // setSubmitMessage("fatherContactNumber number verified successfully!");
         setCodeVerified(true);
-        setShowCodeBox(false);
+        // setShowCodeBox(false);
         return true;
       }
       // setCodeVerified(true);
       // setShowCodeBox(false);
       // return true;
     } catch (error) {
-      console.log("Error messagefor checkVerificationCode", error);
+      console.log("Error message for checkVerificationCode", error);
       setSubmitMessage("Error verifying fatherContactNumber number");
       return false;
     } finally {
@@ -152,104 +155,74 @@ useEffect(() => {
   const onSubmit = async (e) => {
     e.preventDefault();
     try {
+      setIsSubmittingForm(true); // ⬅️ Only show LoadingPage now
+  
       let codeChecked = await checkVerificationCode();
-
-      console.log("codeChecked", codeChecked);
-
-
-      console.log("loading", loading )
-      // dispatch(setLoading(true));
-      setSubmitMessage("");
-      console.log("Button Clicked");
       if (codeChecked === false) {
-        setShowCodeBox(false);
+        // setShowCodeBox(false);
         setCodeVerified(false);
-        return setSubmitMessage("Please Verify Your Phone Number");
-
+        setSubmitMessage("Please Verify Your Phone Number");
+        setIsSubmittingForm(false); // ⬅️ reset if verification fails
+        return;
       }
-
-      // if (validateForm() && codeChecked === true) {
-      if (validateForm() ) {
+  
+      if (validateForm()) {
         await dispatch(submitFormData(userData));
-
-
-
-        if(document.cookie !== ""){
-          setShowLoadingPage(true);
-
-          
-
+  
+        if (document.cookie !== "") {
+          setShowLoadingPage(true); // Show your full-screen LoadingPage
+  
           setTimeout(() => {
             navigate("/firstPage");
             setShowLoadingPage(false);
-            
-
-          },[3000])
-
-
-
-          
+          }, 3000);
         }
-
+  
         console.log("userData for onSubmit", userData);
-        console.log("dataExist for onSubmit", dataExist);
       }
     } catch (error) {
       console.log("error from onSubmit", error);
-    }
-    
-  
+      setIsSubmittingForm(false); // ⬅️ always reset this
+
+    } 
   };
+  
 
- return (
-    <div className="w-full">
-      {showLoadingPage && (
-        <LoadingPage />
-      ) 
-    }
+  return (
+    <div className=" w-full bg-[#c61d23] flex items-center justify-center px-4 py-8">
+      {isSubmittingForm && showLoadingPage && <LoadingPage />}
+      {!isSubmittingForm && loading && <Spinner />}
 
-    {loading && (
-      <Spinner/>
-
-    )}
+      {!loading && !showLoadingPage && (
         <form
-          className="flex flex-col justify-center px-12 items-center gap-2 py-8 text-white"
           onSubmit={onSubmit}
+          className="bg-white/10 backdrop-blur-md shadow-lg p-6 rounded-xl w-full max-w-lg space-y-6 text-white"
         >
-          {/* <div className="flex flex-col justify-center items-center">
-            <h2 className="text-4xl text-white ">Enquiry Form</h2>
-          </div> */}
+          <h2 className="text-center text-2xl md:text-3xl font-semibold">Phone Number Verification</h2>
 
-          {/* Name Field */}
-          <div className="flex flex-col justify-center items-center w-full gap-4">
-   
-   
-          
-
-          {/* Phone Field */}
-          <div className="flex gap-3 flex-col w-2/3">
-            <div className="flex-1 flex justify-center items-center w-full">
+          {/* Contact Input + Send OTP */}
+          <div className="space-y-2">
+            <label htmlFor="fatherContactNumber" className="block text-sm font-medium">
+              *Contact Number (Parent)
+            </label>
+            <div className="flex flex-col md:flex-row gap-2">
               <input
-                autoComplete="off"
                 type="number"
-                id="phone"
+                id="fatherContactNumber"
                 name="fatherContactNumber"
                 value={userData?.fatherContactNumber || ""}
                 onChange={handleChange}
-                placeholder="*Contact no (Parents)"
-                className="w-full bg-[#c61d23] border-b-2 border-white placeholder-white focus:outline-none p-2"
+                placeholder="Enter contact number"
+                className="flex-1 bg-white/20 text-white border border-white rounded-md px-4 py-2 focus:outline-none"
               />
               {!showCodeBox && !codeVerified && (
-                <div className="flex">
-                  <button
-                    type="button"
-                    onClick={verifyPhoneNo}
-                    className="px-4 py-2 border-2 text-white  hover:bg-[#ffdd00] hover:text-black rounded-full"
-                  
-                  >
-                    Send OTP
-                  </button>
-                </div>
+                <button
+                  type="button"
+                  onClick={verifyPhoneNo}
+                  className="px-4 py-2 rounded-md bg-yellow-500 hover:bg-yellow-600 text-black font-semibold"
+                >
+                  Send OTP
+                </button>
               )}
             </div>
             {errors.fatherContactNumber && (
@@ -257,41 +230,42 @@ useEffect(() => {
             )}
           </div>
 
-          {/* Verification Code */}
+          {/* OTP Input */}
           {showCodeBox && (
-            <div className="flex flex-col">
+            <div className="space-y-2">
+              <label htmlFor="otp" className="block text-sm font-medium">
+                *Verification Code
+              </label>
               <input
                 type="text"
-                name="code"
+                id="otp"
+                name="otp"
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
-                placeholder="*Verification Code"
-                className="w-full bg-[#c61d23] border-b-2 border-white placeholder-white focus:outline-none p-2"
+                placeholder="Enter OTP"
+                className="w-full bg-white/20 text-white border border-white rounded-md px-4 py-2 focus:outline-none"
               />
             </div>
           )}
 
-          {/* Submit Message */}
+          {/* Message */}
           {submitMessage && (
             <p className="text-sm text-center text-yellow-300">{submitMessage}</p>
           )}
-          {error && (
-            <p className="text-sm text-center text-red-300">{error}</p>
-          )}
-        </div>
+          {error && <p className="text-sm text-center text-red-300">{error}</p>}
 
-        {/* Submit Button */}
-        <button
-          type="submit"
-          className="w-2/3 md:w-1/3 bg-yellow-500 hover:bg-yellow-600 text-black py-2 rounded-xl mt-4 transition-all"
-        >
-          Next
-        </button>
-
-       
-      </form>
+          {/* Submit */}
+          <button
+            type="submit"
+            className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 rounded-xl transition-all"
+          >
+            Next
+          </button>
+        </form>
+      )}
     </div>
   );
+  
 };
 
 export default SignupForm;

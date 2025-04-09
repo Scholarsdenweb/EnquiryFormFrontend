@@ -5,17 +5,17 @@ import { Form } from "react-router-dom";
 const FormHeader = () => {
   return (
     <div className="h-full w-full pt-2">
-      <div className=" flex flex-col h-full w-full bg-white rounded-2xl px-4 py-4">
-            <h3 className=" text-xl font-thin text-[#c61d23]">
-              <strong className="font-semibold ">Welcome to</strong>{" "}
+      <div className=" flex flex-col h-full w-full bg-white rounded-2xl px-2 sm:px-5 py-2">
+            <h3 className=" text-xl sm:text-3xl font-thin text-[#c61d23]">
+              <strong className="font-semibold  ">Welcome to</strong>{" "}
               Scholars Den{" "}
             </h3>
             <div className="flex ">
 
             
-        <div className="flex flex-col justify-between w-full text-xs ">
+        <div className="flex flex-col justify-between w-full text-xs sm:text-lg">
           <div className="">
-            <h4 className="text-sm">Please fill your Enquiry Form</h4>
+            <h4 className=" ">Please fill your Enquiry Form</h4>
           </div>
 
           <div className="font-semibold">TRUST . CARE . HONESTY</div>

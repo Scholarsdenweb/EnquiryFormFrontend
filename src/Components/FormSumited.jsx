@@ -79,16 +79,14 @@ const FormSubmitted = () => {
   }, []);
 
   return (
-    <div className="min-h-screen w-full bg-[#c61d23] px-4 py-2 flex flex-col items-center">
+    <div className="min-h-screen w-full bg-[#c61d23] px-4 md:px-8 py-2 flex flex-col items-center">
       <div className="w-full max-w-5xl flex flex-col gap-6">
         <div>
           <FormHeader />
         </div>
 
         <div className="flex flex-col items-center text-white gap-6">
-          <h1 className="text-2xl md:text-3xl font-light text-center">
-            Enquiry Form
-          </h1>
+         
 
           <div className="w-full max-w-xl bg-white bg-opacity-10 backdrop-blur-sm border border-gray-300 py-8 px-6 md:px-10 rounded-2xl flex flex-col items-center justify-center gap-4 text-white text-center">
             <p className="text-xl md:text-2xl font-semibold">

@@ -194,7 +194,7 @@ const EnquiryForm = () => {
   }, [dataExist]);
 
   return (
-    <div className="min-h-screen w-full bg-[#c61d23] px-4 md:px-8 py-2 overflow-auto">
+    <div className="min-h-screen w-full bg-[#c61d23] px-2 md:px-8 py-2 overflow-auto">
     {loading && <Spinner />}
     
     <div className="flex flex-col gap-6 max-w-screen-md mx-auto">
@@ -316,13 +316,13 @@ const EnquiryForm = () => {
           <button
             disabled
             type="button"
-            className="w-full sm:w-1/3 border border-gray-400 rounded-full bg-[#a71a1f] text-gray-400 font-semibold py-2 px-4 cursor-not-allowed"
+            className="w-full sm:w-1/3 border border-gray-400 rounded-xl bg-[#a71a1f] text-gray-400 font-semibold py-2 px-4 cursor-not-allowed"
           >
             Back
           </button>
           <button
             type="submit"
-            className="w-full sm:w-2/3 border rounded-full bg-[#c61d23] hover:bg-[#a71a1f] text-white py-2 transition duration-200"
+            className="w-full sm:w-2/3 border bg-yellow-500 hover:bg-yellow-600 text-black py-2 rounded-xl transition-all"
           >
             Next
           </button>

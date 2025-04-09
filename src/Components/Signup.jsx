@@ -2,14 +2,15 @@ import React from "react";
 import SignupForm from "./SignupForm";
 import SignupDetailsPage from "./SignupDetailsPage";
 import scholarsDenLogo from "../assets/scholarsDenLogo.png";
+import FormHeader from "./FormHeader";
 
 
 const Signup = () => {
   return (
     <div className="w-full min-h-screen flex flex-col bg-[#c61d23]">
     {/* Signup Details Page (Top Section) */}
-    <div className="flex-grow">
-      <SignupDetailsPage />
+    <div className="flex-grow px-4 md:px-8 py-2">
+      <FormHeader />
     </div>
 
     {/* Signup Form (Middle Section) */}
