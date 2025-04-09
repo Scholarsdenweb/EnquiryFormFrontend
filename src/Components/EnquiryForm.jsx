@@ -194,236 +194,157 @@ const EnquiryForm = () => {
   }, [dataExist]);
 
   return (
-    <div
-      className="overflow-auto w-full items-center px-6 "
-      style={{ backgroundColor: "#c61d23", paddingBottom: "3px" }}
-    >
-      {loading && <Spinner />}
-      <div className="grid grid-rows-8 flex-col w-full h-full ">
-        <div className="row-span-2">
-          <FormHeader />
+    <div className="min-h-screen w-full bg-[#c61d23] px-4 md:px-8 py-2 overflow-auto">
+    {loading && <Spinner />}
+    
+    <div className="flex flex-col gap-6 max-w-screen-md mx-auto">
+      <div>
+        <FormHeader />
+      </div>
+  
+      <h1 className="text-3xl md:text-4xl font-semibold text-white text-center">Enquiry Form</h1>
+  
+      <form
+        autoComplete="off"
+        onSubmit={onSubmit}
+        className="flex flex-col gap-y-6 w-full bg-[#c61d23]"
+      >
+        {/* PROGRAM */}
+        <div>
+          <select
+            name="program"
+            value={userData.program || ""}
+            onChange={handleChange}
+            className="w-full border-b-2 border-white text-white bg-[#c61d23] py-3 pr-8 focus:outline-none appearance-none"
+            style={{
+              backgroundImage: `url(${Neeche})`,
+              backgroundRepeat: "no-repeat",
+              backgroundPosition: "right 10px center",
+              backgroundSize: "16px",
+            }}
+          >
+            <option value="" className="bg-white text-black" disabled>*Program</option>
+            {Object.keys(programOptions).map((program) => (
+              <option className="bg-white text-black" key={program} value={program}>{program}</option>
+            ))}
+          </select>
+          {errors.program && <p className="text-white text-sm mt-1">{errors.program}</p>}
         </div>
-
-        <div className=" row-span-5 px-9 flex flex-col justify-center items-center gap-6 overflow-auto ">
-          <div className="w-2/3  ">
-            <div
-              className="flex flex-col gap-2"
-              style={{ backgroundColor: "#c61d23" }}
+  
+        {/* COURSE */}
+        <div>
+          <select
+            name="courseOfIntrested"
+            value={userData.courseOfIntrested || ""}
+            onChange={handleChange}
+            className="w-full border-b-2 border-white text-white bg-[#c61d23] py-3 pr-8 focus:outline-none appearance-none"
+            style={{
+              backgroundImage: `url(${Neeche})`,
+              backgroundRepeat: "no-repeat",
+              backgroundPosition: "right 10px center",
+              backgroundSize: "16px",
+            }}
+          >
+            <option value="" className="bg-white text-black" disabled>*Course interested in</option>
+            {program &&
+              programOptions[program].map((course) => (
+                <option className="bg-white text-black" key={course} value={course}>{course}</option>
+              ))}
+          </select>
+          {errors.courseOfIntrested && <p className="text-white text-sm mt-1">{errors.courseOfIntrested}</p>}
+        </div>
+  
+        {/* TEXT INPUTS */}
+        <div className="grid grid-cols-1 gap-x-4 gap-y-6">
+          {[
+            { label: "School Name", name: "schoolName", type: "text" },
+            { label: "*City/Town/Village", name: "city", type: "text" },
+          ].map(({ label, name, type }) => (
+            <div key={name}>
+              <input
+                type={type}
+                name={name}
+                value={userData[name] || ""}
+                onChange={handleChange}
+                placeholder={label}
+                className="w-full border-b-2 border-white text-white py-3 bg-[#c61d23] focus:outline-none placeholder-white appearance-none"
+              />
+              {errors[name] && <p className="text-white text-sm mt-1">{errors[name]}</p>}
+            </div>
+          ))}
+  
+          {/* STATE */}
+          <div>
+            <select
+              name="state"
+              value={userData.state || ""}
+              onChange={handleChange}
+              className="w-full border-b-2 border-white text-white bg-[#c61d23] py-3 pr-8 focus:outline-none appearance-none"
+              style={{
+                backgroundImage: `url(${Neeche})`,
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "right 10px center",
+                backgroundSize: "16px",
+              }}
             >
-              <h1 className="text-4xl font-normal px-4 pt-5 text-white w-full text-center mb-4">
-                Enquiry Form
-              </h1>
-              <form
-                autoComplete="off"
-                className="flex flex-col gap-4 w-full p-2 "
-                onSubmit={onSubmit}
-              >
-                <div className="flex flex-col   ">
-                  {/* <label
-                    htmlFor="program"
-                    className="text-xl font-semibold mb-1"
-                  >
-                    Program
-                  </label> */}
-                  <select
-                    name="program"
-                    value={userData.program || ""}
-                    onChange={handleChange}
-                    className="border-b-2 border-white text-white py-3 bg-[#c61d23] focus:outline-none appearance-none"
-                    style={{
-                      backgroundImage: `url(${Neeche})`,
-                      backgroundRepeat: "no-repeat",
-                      backgroundPosition: "right 10px center",
-                      backgroundSize: "16px",
-                    }}
-                  >
-                    <option value="" className="bg-white" disabled>
-                      *Program
-                    </option>
-                    {Object.keys(programOptions).map((program) => (
-                      <option
-                        className="bg-white text-black border-2 border-black-2"
-                        key={program}
-                        value={program}
-                      >
-                        {program}
-                      </option>
-                    ))}
-                  </select>
-                  {errors.program && (
-                    <p className="text-black text-xs mt-1 ">{errors.program}</p>
-                  )}
-                </div>
-
-                <div className="flex flex-col    " key="courseOfIntrested">
-                  <select
-                    name="courseOfIntrested"
-                    value={userData.courseOfIntrested || ""}
-                    onChange={handleChange}
-                    className="border-b-2 text-white py-2 bg-[#c61d23] focus:outline-none appearance-none"
-                    style={{
-                      backgroundImage: `url(${Neeche})`,
-
-                      backgroundRepeat: "no-repeat",
-                      backgroundPosition: "right 10px center",
-                      backgroundSize: "16px",
-                    }}
-                  >
-                    <option
-                      key="selectCourse"
-                      className="bg-white text-black"
-                      value=""
-                      disabled
-                    >
-                      *Course interested in
-                    </option>
-                    {program &&
-                      programOptions[program].map((data) => (
-                        <option
-                          className="bg-white text-black border-2 border-black-2"
-                          key={data}
-                          value={data}
-                        >
-                          {data}
-                        </option>
-                      ))}
-                  </select>
-                  {errors.courseOfIntrested && (
-                    <p className="text-black text-xs mt-1 ">
-                      {errors.courseOfIntrested}
-                    </p>
-                  )}
-                </div>
-
-                {[
-                  { label: "School Name", name: "schoolName", type: "text" },
-
-                  // {
-                  //   label: "Parent's Occupations",
-                  //   name: "parentsOccupations",
-                  //   type: "text",
-                  // },
-                  // {
-                  //   label: "Student's Contact no (if any)",
-                  //   name: "studentContactNumber",
-                  //   type: "tel",
-                  // },
-                  { label: "*City/Town/Village", name: "city", type: "text" },
-                  // {
-                  //   label: "State",
-                  //   name: "state",
-                  //   type: "text",
-                  // },
-                ].map(({ label, name, type }) => (
-                  <div className="flex flex-col   " key={label}>
-                    {/* <label
-                      htmlFor={name}
-                      className="text-xl font-semibold mb-1"
-                    >
-                      {label}
-                    </label> */}
-                    <input
-                      autoComplete="off"
-                      type={type}
-                      id={name}
-                      name={name}
-                      value={userData[name] || ""}
-                      onChange={handleChange}
-                      placeholder={`${label}`}
-                      className="border-b-2 border-white text-white py-2 bg-[#c61d23] focus:outline-none placeholder-white  appearance-none"
-                    />
-
-                    {errors[name] && (
-                      <p className="text-white text-xs mt-1  ">
-                        {errors[name]}
-                      </p>
-                    )}
-                  </div>
-                ))}
-
-                <div className="flex flex-col " key="state">
-                  <select
-                    name="state"
-                    value={userData.state || ""}
-                    onChange={handleChange}
-                    className="border-b-2 text-white py-2 bg-[#c61d23] focus:outline-none appearance-none"
-                    style={{
-                      backgroundImage: `url(${Neeche})`,
-
-                      backgroundRepeat: "no-repeat",
-                      backgroundPosition: "right 10px center",
-                      backgroundSize: "16px",
-                    }}
-                  >
-                    <option
-                      key="state"
-                      className="bg-white text-black"
-                      value=""
-                      disabled
-                    >
-                      State
-                    </option>
-                    {indianStates &&
-                      indianStates.map((data) => (
-                        <option
-                          className="bg-white text-black border-2 border-black-2"
-                          key={data}
-                          value={data}
-                        >
-                          {data}
-                        </option>
-                      ))}
-                  </select>
-                  {errors.state && (
-                    <p className="text-black text-xs mt-1 ">
-                      {errors.state}
-                    </p>
-                  )}
-                </div>
-
-                {/* Submit and Navigation Buttons */}
-                <div className="flex justify-between items-center text-sm mt-8 ">
-                  <button
-                    disabled
-                    type="button"
-                    className="border border-gray-400 rounded-full bg-[#a71a1f] text-gray-400 font-semibold py-2 px-8 transition duration-200 cursor-not-allowed "
-                  >
-                    Back
-                  </button>
-                  <button
-                    type="submit"
-                    className="border rounded-full bg-[#c61d23] hover:bg-[#a71a1f] text-white py-2 w-1/2 transition duration-200"
-                  >
-                    Next
-                  </button>
-                </div>
-              </form>
-            </div>
+              <option value="" className="bg-white text-black" disabled>State</option>
+              {indianStates.map((state) => (
+                <option className="bg-white text-black" key={state} value={state}>{state}</option>
+              ))}
+            </select>
+            {errors.state && <p className="text-white text-sm mt-1">{errors.state}</p>}
           </div>
-          {submitMessage && (
-            <div className="w-full text-center">
-              <p
-                className={`text-sm ${
-                  submitMessage === "successfully"
-                    ? "text-green-500"
-                    : "text-red-500"
-                }`}
-              >
-                {submitMessage}
-              </p>
-            </div>
+        </div>
+  
+        {/* STUDENT CONTACT */}
+        <div>
+          <input
+            type="tel"
+            name="studentContactNumber"
+            value={userData.studentContactNumber || ""}
+            onChange={handleChange}
+            placeholder="Student's Contact No. (if any)"
+            className="w-full border-b-2 border-white text-white py-3 bg-[#c61d23] focus:outline-none placeholder-white appearance-none"
+          />
+          {errors.studentContactNumber && (
+            <p className="text-white text-sm mt-1">{errors.studentContactNumber}</p>
           )}
         </div>
-
-        <div className="row-span-1 w-full h-full flex  justify-center items-center ">
-          {/* <div className=""> */}
-          <div className=" w-24 ">
-            <img src={scholarsDenLogo} alt="" />
-          </div>
-          {/* </div>  */}
+  
+        {/* BUTTONS */}
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mt-6">
+          <button
+            disabled
+            type="button"
+            className="w-full sm:w-1/3 border border-gray-400 rounded-full bg-[#a71a1f] text-gray-400 font-semibold py-2 px-4 cursor-not-allowed"
+          >
+            Back
+          </button>
+          <button
+            type="submit"
+            className="w-full sm:w-2/3 border rounded-full bg-[#c61d23] hover:bg-[#a71a1f] text-white py-2 transition duration-200"
+          >
+            Next
+          </button>
         </div>
-      </div>
+      </form>
+  
+      {/* SUBMIT MESSAGE */}
+      {submitMessage && (
+        <div className="w-full text-center">
+          <p className={`text-sm ${submitMessage === "successfully" ? "text-green-400" : "text-red-400"}`}>
+            {submitMessage}
+          </p>
+        </div>
+      )}
+  
+      {/* LOGO */}
+      <div className="flex justify-center items-center py-4">
+      <img className="w-24" src={scholarsDenLogo} alt="Scholars Den Logo" />
     </div>
+    </div>
+  </div>
+  
   );
 };
 

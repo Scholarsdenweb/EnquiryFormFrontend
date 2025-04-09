@@ -339,29 +339,23 @@ const TakenBy = () => {
   }, [userData]);
 
   return (
-    // <div className=" flex flex-col justify-center items-center w-full h-screen bg-white p-5 ">
-
     <div
-      className="overflow-auto w-full items-center px-6 "
-      style={{ backgroundColor: "#c61d23", paddingBottom: "3px" }}
+      className="min-h-screen w-full overflow-auto px-4 sm:px-6 py-2 bg-[#c61d23]"
     >
       {loading && <Spinner />}
-      <div className="grid grid-rows-8  flex-col w-full h-full ">
-        <div className="row-span-2">
+      <div className="flex flex-col min-h-screen justify-between">
+        <div>
           <FormHeader />
-        </div>
-
-        <div className="row-span-5 px-9 flex flex-col justify-center items-center gap-4  overflow-auto">
-          <div className="w-2/3 ">
-            <div className=" " style={{ backgroundColor: "#c61d23" }}>
-              {/* <div className="h-1/3 flex items-center "> */}
-              <h1 className="text-4xl font-normal pt-5 px-4 text-white w-full text-center mb-4">
+  
+          <div className="flex flex-col items-center mt-6">
+            <div className="w-full max-w-2xl">
+              <h1 className="text-3xl sm:text-4xl font-semibold text-white text-center mb-6">
                 Enquiry Form
               </h1>
-              {/* </div> */}
+  
               <form
                 autoComplete="off"
-                className="flex flex-col gap-4 w-full p-2"
+                className="flex flex-col gap-4 w-full"
                 onSubmit={onSubmit}
               >
                 {/* How to Know */}
@@ -373,7 +367,7 @@ const TakenBy = () => {
                   onChange={handleChange}
                   error={errors.howToKnow}
                 />
-
+  
                 {showOtherInput && (
                   <InputField
                     label="Please Specify"
@@ -384,16 +378,7 @@ const TakenBy = () => {
                     error={errors.otherSource}
                   />
                 )}
-
-                {/* <InputField
-                  label="Intime"
-                  name="intime"
-                  value={userData.intime}
-                  onChange={handleChange}
-                  placeholder="In Times"
-                  error={errors.intime}
-                /> */}
-
+  
                 {/* Enquiry Taken By */}
                 <SelectField
                   label="Enquiry Taken By"
@@ -404,16 +389,7 @@ const TakenBy = () => {
                   placeholder="Enquiry Taken By"
                   error={errors.enquiryTakenBy}
                 />
-
-                {/* Brochure Given */}
-                {/* <SelectField
-                  label="Brochure Given"
-                  name="brochureGiven"
-                  value={userData.brochureGiven}
-                  options={["Yes", "No"]}
-                  onChange={handleChange}
-                  error={errors.brochureGiven}
-                /> */}
+  
                 {/* Remarks */}
                 <InputField
                   label="Remarks"
@@ -423,24 +399,24 @@ const TakenBy = () => {
                   placeholder="Remark if any"
                   error={errors.remarks}
                 />
-
-                {/* Submit and Navigation Buttons */}
-                <div className="flex justify-between items-center twxt-sm mt-9">
+  
+                {/* Buttons */}
+                <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mt-8">
                   <button
                     type="button"
                     onClick={() => navigate("/enquiryForm")}
-                    className="border rounded-full bg-[#c61d23] hover:bg-[#a71a1f] text-white font-semibold py-2 px-8 transition duration-200"
+                    className="w-full sm:w-auto border rounded-full bg-[#c61d23] hover:bg-[#a71a1f] text-white font-semibold py-2 px-6 transition duration-200"
                   >
                     Back
                   </button>
                   <button
                     type="submit"
-                    className="border rounded-full bg-[#c61d23] hover:bg-[#a71a1f] text-white font-semibold py-2 w-1/2 transition duration-200"
+                    className="w-full sm:w-1/2 border rounded-full bg-[#c61d23] hover:bg-[#a71a1f] text-white font-semibold py-2 transition duration-200"
                   >
                     Submit
                   </button>
                 </div>
-
+  
                 {submitMessage && (
                   <p
                     className={`mt-4 text-center text-sm ${
@@ -456,19 +432,15 @@ const TakenBy = () => {
             </div>
           </div>
         </div>
-
-        <div className="row-span-1 w-full flex justify-center items-center ">
-          {/* <div className=""> */}
-          <div className=" w-24">
-            <img src={scholarsDenLogo} alt="" />
-          </div>
-          {/* </div>  */}
+  
+        {/* Footer Logo */}
+        <div className="flex justify-center items-center mt-8">
+          <img src={scholarsDenLogo} alt="Scholars Den Logo" className="w-20 sm:w-24" />
         </div>
       </div>
     </div>
-
-    // </div>
   );
+  
 };
 
 export default TakenBy;
