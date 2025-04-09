@@ -7,8 +7,10 @@ import {
   updateUserDetails,
 } from "../../redux/formDataSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { setLoading } from "../../redux/loadingSlice";
+import { loading, setLoading } from "../../redux/loadingSlice";
 import Spinner from "./Spinner";
+import LoadingPage from "./LoadingPage";
+
 // import ScholarsDenLogo from "../assets/scholarsDenLogo.png";
 
 const SignupForm = () => {
@@ -25,15 +27,17 @@ const SignupForm = () => {
 
   const [submitMessage, setSubmitMessage] = useState("");
 
+  const [showLoadingPage, setShowLoadingPage] = useState(false);
+
   const phoneRegex = /^\+91[0-9]{10}$/;
   // const [codeVerified, setCodeVerified] = useState(true);
   const [codeVerified, setCodeVerified] = useState(false);
 
   // State hooks
   const [errors, setErrors] = useState({
-    studentName: "",
+
     fatherContactNumber: "",
-    fatherName: "",
+    
   });
 
   const handleChange = (e) => {
@@ -56,25 +60,24 @@ useEffect(() => {
     let isValid = true;
 
     // Field validation
-    ["studentName", "fatherContactNumber", "fatherName"].forEach((field) => {
-      if (!userData[field]?.trim()) {
-        const formattedField = field
+    [ "fatherContactNumber"].forEach((field) => {
+      const formattedField = field
           .replace(/([A-Z])/g, " $1")
           .replace(/^./, (str) => str.toUpperCase());
+      if (!userData[field]?.trim()) {
+        
         formErrors[field] = `${formattedField} is required`;
         isValid = false;
       }
+      
+    if (!phoneRegex.test(`+91${userData.fatherContactNumber}`)) {
+      formErrors.fatherContactNumber = `${formattedField} must be a valid 10-digit number`;
+      isValid = false;
+    }
     });
 
-    if (userData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(userData.email)) {
-      formErrors.email = "Email must be valid";
-      isValid = false;
-    }
 
-    if (!phoneRegex.test(`+91${userData.fatherContactNumber}`)) {
-      formErrors.fatherContactNumber = "fatherContactNumber must be a valid 10-digit number";
-      isValid = false;
-    }
+
 
     setErrors(formErrors);
     return isValid;
@@ -96,6 +99,11 @@ useEffect(() => {
 
   const verifyPhoneNo = async () => {
     try {
+      if (!validateForm()) {
+        return;
+
+      }
+
       dispatch(setLoading(true));
       // setShowCodeBox(true);
 
@@ -108,7 +116,7 @@ useEffect(() => {
       }
     } catch (error) {
       console.log("Error message", error);
-      setSubmitMessage(`${error.response.data.message}`);
+      setSubmitMessage(`${error.response.data.message.message}`);
     } finally {
       dispatch(setLoading(false));
       // setShowCodeBox(true);
@@ -147,7 +155,10 @@ useEffect(() => {
       let codeChecked = await checkVerificationCode();
 
       console.log("codeChecked", codeChecked);
-      dispatch(setLoading(true));
+
+
+      console.log("loading", loading )
+      // dispatch(setLoading(true));
       setSubmitMessage("");
       console.log("Button Clicked");
       if (codeChecked === false) {
@@ -161,8 +172,23 @@ useEffect(() => {
       if (validateForm() ) {
         await dispatch(submitFormData(userData));
 
+
+
         if(document.cookie !== ""){
-          navigate("/enquiryform");
+          setShowLoadingPage(true);
+
+          
+
+          setTimeout(() => {
+            navigate("/firstPage");
+            setShowLoadingPage(false);
+            
+
+          },[3000])
+
+
+
+          
         }
 
         console.log("userData for onSubmit", userData);
@@ -170,74 +196,43 @@ useEffect(() => {
       }
     } catch (error) {
       console.log("error from onSubmit", error);
-    } finally {
-      await dispatch(setLoading(false));
     }
+    
+  
   };
 
  return (
     <div className="w-full">
-      {loading && <Spinner />}
-      <form
-        onSubmit={onSubmit}
-        className="flex flex-col items-center gap-4 px-4 md:px-12 py-6 text-white"
-      >
-        <h2 className="text-3xl md:text-4xl font-semibold text-white mb-2">
-          Enquiry Form
-        </h2>
+      {showLoadingPage && (
+        <LoadingPage />
+      ) 
+    }
 
-        {/* Input Fields */}
-        <div className="w-full md:w-2/3 flex flex-col gap-4">
-          {/* Student Name */}
-          <div>
-            <input
-              type="text"
-              name="studentName"
-              value={userData?.studentName || ""}
-              onChange={handleChange}
-              placeholder="*Student Name"
-              className="w-full bg-[#c61d23] border-b-2 border-white placeholder-white focus:outline-none p-2"
-            />
-            {errors.studentName && (
-              <p className="text-sm text-yellow-300 mt-1">{errors.studentName}</p>
-            )}
-          </div>
+    {loading && (
+      <Spinner/>
 
-          {/* Parent Name */}
-          <div>
-            <input
-              type="text"
-              name="fatherName"
-              value={userData?.fatherName || ""}
-              onChange={handleChange}
-              placeholder="*Parents Name"
-              className="w-full bg-[#c61d23] border-b-2 border-white placeholder-white focus:outline-none p-2"
-            />
-            {errors.fatherName && (
-              <p className="text-sm text-yellow-300 mt-1">{errors.fatherName}</p>
-            )}
-          </div>
+    )}
+        <form
+          className="flex flex-col justify-center px-12 items-center gap-2 py-8 text-white"
+          onSubmit={onSubmit}
+        >
+          {/* <div className="flex flex-col justify-center items-center">
+            <h2 className="text-4xl text-white ">Enquiry Form</h2>
+          </div> */}
 
-          {/* Email */}
-          <div>
-            <input
-              type="email"
-              name="email"
-              value={userData?.email || ""}
-              onChange={handleChange}
-              placeholder="Email ID"
-              className="w-full bg-[#c61d23] border-b-2 border-white placeholder-white focus:outline-none p-2"
-            />
-            {errors.email && (
-              <p className="text-sm text-yellow-300 mt-1">{errors.email}</p>
-            )}
-          </div>
+          {/* Name Field */}
+          <div className="flex flex-col justify-center items-center w-full gap-4">
+   
+   
+          
 
-          {/* Contact Number & OTP */}
-          <div className="flex flex-col gap-2">
-            <div className="flex flex-row items-center gap-2">
+          {/* Phone Field */}
+          <div className="flex gap-3 flex-col w-2/3">
+            <div className="flex-1 flex justify-center items-center w-full">
               <input
-                type="tel"
+                autoComplete="off"
+                type="number"
+                id="phone"
                 name="fatherContactNumber"
                 value={userData?.fatherContactNumber || ""}
                 onChange={handleChange}
@@ -245,13 +240,16 @@ useEffect(() => {
                 className="w-full bg-[#c61d23] border-b-2 border-white placeholder-white focus:outline-none p-2"
               />
               {!showCodeBox && !codeVerified && (
-                <button
-                  type="button"
-                  onClick={verifyPhoneNo}
-                  className="bg-yellow-500 hover:bg-yellow-600 text-black px-4 py-1 rounded-xl"
-                >
-                  Send OTP
-                </button>
+                <div className="flex">
+                  <button
+                    type="button"
+                    onClick={verifyPhoneNo}
+                    className="px-4 py-2 border-2 text-white  hover:bg-[#ffdd00] hover:text-black rounded-full"
+                  
+                  >
+                    Send OTP
+                  </button>
+                </div>
               )}
             </div>
             {errors.fatherContactNumber && (
