@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "../../api/axios";
 import { useNavigate } from "react-router-dom"; // Assuming you are using react-router
+import Sidebar from "./Sidebar";
 
 const AdminDashboard = () => {
   const [phone, setPhone] = useState("");
@@ -55,14 +56,13 @@ const AdminDashboard = () => {
     }
   }, [phone, page]); // Runs on phone or page change
 
-  useEffect(() => {
-    // Auto redirect every 5 minutes (300000ms)
-    const timeout = setTimeout(() => {
-      handleLogout(); // This will clear the cookie and redirect
-    }, 300000); // 5 minutes in milliseconds
-
-    return () => clearTimeout(timeout); // Clear the timeout when the component unmounts or changes
-  }, []);
+  // useEffect(() => {
+  //   // Auto redirect every 5 minutes (300000ms)
+  //   const timeout = setTimeout(() => {
+  //     handleLogout(); 
+  //   }, 300000);
+  //   return () => clearTimeout(timeout); // Clear the timeout when the component unmounts or changes
+  // }, []);
 
   const handlePrevPage = () => {
     if (page > 1) {
@@ -136,8 +136,16 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-6">
-      <h2 className="text-3xl font-semibold text-center mb-8">
+
+
+    <div className="grid grid-cols-12 w-full max-w-screen-xl ">
+
+      <div className="col-span-2 w-full bg-[#c61d23] ">
+        <Sidebar/>
+      </div>
+    
+    <div className="  col-span-10 max-w-7xl w-full mx-auto pr-4 py-6 bg-[#c61d23] overflow-auto h-screen">
+      <h2 className="text-3xl font-semibold text-center text-white mb-8">
         Admin Dashboard
       </h2>
 
@@ -226,6 +234,10 @@ const AdminDashboard = () => {
           Logout
         </button>
       </div>
+    </div>
+
+
+       
     </div>
   );
 };

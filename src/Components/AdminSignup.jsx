@@ -173,7 +173,7 @@ const AdminSignup = () => {
                         value={phone || ""}
                         onChange={(e) => setPhone(e.target.value)}
                         placeholder="*Contact no (Parents)"
-                        className="border-b-2 border-gray-300 focus:outline-none w-full text-lg rounded-lg p-3"
+                        className="border-b-2 border-gray-300 focus:outline-none text-black w-full text-lg rounded-lg p-3"
                         style={{ backgroundColor: "#f3f3f3" }}
                       />
                       {errors.phone && (
@@ -202,7 +202,7 @@ const AdminSignup = () => {
                       value={code}
                       onChange={(e) => setCode(e.target.value)}
                       placeholder="*Verification Code"
-                      className="w-full bg-white/20 text-white border border-white px-4  focus:outline-none placeholder-gray-400"
+                      className="w-full bg-white/20 text-white border border-white px-4 py-2  focus:outline-none placeholder-gray-400"
                  
                     />
                   </div>

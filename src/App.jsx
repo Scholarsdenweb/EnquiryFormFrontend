@@ -13,6 +13,7 @@ import AdminSignup from "./Components/AdminSignup";
 import AdminDashboard from "./Components/AdminDashboard";
 import FirstPage from "./Components/FirstPage";
 import FirstPageContant from "./Components/FirstPageContant";
+import SdatData from "./Components/SdatData";
 // import { useSelector } from "react-redux";
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
             <Route path="/FormSubmitted" element={<FormSubmitted />} />
             <Route path ="/adminSignup" element={<AdminSignup />} />
             <Route path ="/adminDashboard" element={<AdminDashboard />} />
+            <Route path ="/sdatForm" element={<SdatData />} />
 
           </Routes>
         </div>
