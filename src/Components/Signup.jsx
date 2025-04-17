@@ -7,7 +7,7 @@ import FormHeader from "./FormHeader";
 
 const Signup = () => {
   return (
-    <div className="w-full min-h-screen flex flex-col gap-7 bg-[#c61d23]">
+    <div className="w-full min-h-screen flex flex-col gap-7 bg-[#c61d23] max-w-[768px]">
     {/* Signup Details Page (Top Section) */}
     <div className="flex px-4 md:px-8 py-2">
       <FormHeader />

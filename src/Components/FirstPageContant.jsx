@@ -136,7 +136,7 @@ useEffect(()=>{
   };
 
   return (
-    <div className="min-h-screen w-full bg-[#c61d23] px-2 md:px-8 py-2 overflow-auto">
+    <div className="min-h-screen w-full bg-[#c61d23] px-2 md:px-8 py-2 overflow-auto max-w-[768px]">
     {loading && <Spinner />}
     
     <div className="flex flex-col gap-6 max-w-screen-md mx-auto">
@@ -147,71 +147,85 @@ useEffect(()=>{
       <h1 className="text-3xl md:text-4xl font-semibold text-white text-center">Enquiry Form</h1>
   
       <form
-        autoComplete="off"
-        onSubmit={onSubmit}
-        className="flex flex-col gap-y-6 bg-[#c61d23] text-white w-5/6 justify-center items-center mx-auto"
-      >          {/* Student Name */}
-          <div className="w-full">
-            <input
-              autoComplete="off"
-              type="text"
-              id="studentName"
-              name="studentName"
-              value={userData?.studentName || ""}
-              onChange={handleChange}
-              placeholder="*Student Name"
-              className="w-full bg-[#c61d23] border-b-2 border-white placeholder-gray-400 focus:outline-none p-2 "
-            />
-            {errors.studentName && <p className="text-sm text-yellow-300 mt-1">{errors.studentName}</p>}
-          </div>
+  autoComplete="off"
+  onSubmit={onSubmit}
+  className="flex flex-col gap-y-6 bg-[#c61d23] text-white w-5/6 justify-center items-center mx-auto"
+>
+  {/* Student Name */}
+  <div className="w-full">
+    <label htmlFor="studentName" className="block text-sm font-medium mb-1">
+      Student Name<span className="text-yellow-300">*</span>
+    </label>
+    <input
+      autoComplete="off"
+      type="text"
+      id="studentName"
+      name="studentName"
+      value={userData?.studentName || ""}
+      onChange={handleChange}
+      placeholder="*Student Name"
+      className="w-full bg-[#c61d23] border-b-2 border-white placeholder-gray-400 focus:outline-none p-2"
+    />
+    {errors.studentName && (
+      <p className="text-sm text-yellow-300 mt-1">{errors.studentName}</p>
+    )}
+  </div>
 
-          {/* Parent Name */}
-          <div className="w-full">
-            <input
-              autoComplete="off"
-              type="text"
-              id="fatherName"
-              name="fatherName"
-              value={userData?.fatherName || ""}
-              onChange={handleChange}
-              placeholder="*Parents Name"
-              className="w-full bg-[#c61d23] border-b-2 border-white placeholder-gray-400 focus:outline-none p-2 "
-            />
-            {errors.fatherName && <p className="text-sm text-yellow-300 mt-1">{errors.fatherName}</p>}
-          </div>
+  {/* Parent Name */}
+  <div className="w-full">
+    <label htmlFor="fatherName" className="block text-sm font-medium mb-1">
+      Parents Name<span className="text-yellow-300">*</span>
+    </label>
+    <input
+      autoComplete="off"
+      type="text"
+      id="fatherName"
+      name="fatherName"
+      value={userData?.fatherName || ""}
+      onChange={handleChange}
+      placeholder="*Parents Name"
+      className="w-full bg-[#c61d23] border-b-2 border-white placeholder-gray-400 focus:outline-none p-2"
+    />
+    {errors.fatherName && (
+      <p className="text-sm text-yellow-300 mt-1">{errors.fatherName}</p>
+    )}
+  </div>
 
-          {/* Email */}
-          <div className="w-full">
-            <input
-              autoComplete="off"
-              type="email"
-              id="email"
-              name="email"
-              value={userData?.email || ""}
-              onChange={handleChange}
-              placeholder="Email ID"
-              className="w-full bg-[#c61d23] border-b-2 border-white placeholder-gray-400 focus:outline-none p-2 "
-            />
-            {errors.email && <p className="text-sm text-yellow-300 mt-1">{errors.email}</p>}
-          </div>
+  {/* Email */}
+  <div className="w-full">
+    <label htmlFor="email" className="block text-sm font-medium mb-1">
+      Email ID
+    </label>
+    <input
+      autoComplete="off"
+      type="email"
+      id="email"
+      name="email"
+      value={userData?.email || ""}
+      onChange={handleChange}
+      placeholder="Email ID"
+      className="w-full bg-[#c61d23] border-b-2 border-white placeholder-gray-400 focus:outline-none p-2"
+    />
+    {errors.email && (
+      <p className="text-sm text-yellow-300 mt-1">{errors.email}</p>
+    )}
+  </div>
 
-        {submitMessage && <p className="text-sm text-yellow-300 text-center">{submitMessage}</p>}
-        {error && <p className="text-sm text-red-400 text-center">{error}</p>}
+  {submitMessage && (
+    <p className="text-sm text-yellow-300 text-center">{submitMessage}</p>
+  )}
+  {error && <p className="text-sm text-red-400 text-center">{error}</p>}
 
-        <div className="w-full flex justify-end items-end">
+  <div className="w-full flex justify-end items-end">
+    <button
+      type="submit"
+      className="w-full md:w-1/3 py-2 border-2 bg-yellow-500 hover:bg-yellow-600 text-black rounded-xl transition-all"
+    >
+      Next
+    </button>
+  </div>
+</form>
 
-
-        <button
-          type="submit"
-          className="w-full md:w-1/3 py-2 border-2 bg-yellow-500 hover:bg-yellow-600 text-black rounded-xl transition-all"
-        >
-          Next
-        </button>
-        </div>
-
-
-        
-      </form>
 
  {/* SUBMIT MESSAGE */}
       {submitMessage && (

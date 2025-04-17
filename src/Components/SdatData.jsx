@@ -16,7 +16,9 @@ const SdatData = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.post("http://localhost:5001/api/adminData/getData", {
+
+
+      const response = await axios.post("https://api.registration.scholarsden.in/api/adminData/getData", {
         phone,
         page,
       });

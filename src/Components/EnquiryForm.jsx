@@ -81,13 +81,13 @@ const EnquiryForm = () => {
   });
 
   const programOptions = {
-    Foundation: ["6th", "7th", "8th", "9th", "10th"],
+    Foundation: ["VI", "VII", "VIII", "IX", "X"],
     "JEE(Main & Adv.)": [
-      "11th Engineering",
-      "12th Engineering",
-      "12th Pass Engineering",
+      "XI Engineering",
+      "XII Engineering",
+      "XII Pass Engineering",
     ],
-    "NEET(UG)": ["11th Medical", "12th Medical", "12th Pass Medical"],
+    "NEET(UG)": ["XI Medical", "XII Medical", "XII Pass Medical"],
   };
 
   const handleChange = (e) => {
@@ -216,7 +216,7 @@ const EnquiryForm = () => {
   }, [dataExist]);
 
   return (
-    <div className="min-h-screen w-full bg-[#c61d23] px-2 md:px-8 py-2 overflow-auto">
+    <div className="min-h-screen w-full bg-[#c61d23] px-2 md:px-8 py-2 overflow-auto max-w-[768px]">
       {loading && <Spinner />}
 
       <div className="flex flex-col gap-6 max-w-screen-md mx-auto">

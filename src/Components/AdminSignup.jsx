@@ -139,7 +139,7 @@ const AdminSignup = () => {
 
   return (
     <div
-      className="overflow-auto w-full items-center px-6"
+      className="overflow-auto w-full items-center px-2 sm:px-6"
       style={{ backgroundColor: "#c61d23" }}
     >
       {loading && <Spinner />}
@@ -148,8 +148,8 @@ const AdminSignup = () => {
           <FormHeader />
         </div>
 
-        <div className="row-span-4 px-9 flex flex-col justify-center items-center gap-6 overflow-auto">
-          <div className="w-2/3">
+        <div className="row-span-4 px-3 sm:px-9 flex flex-col justify-center items-center gap-6 overflow-auto">
+          <div className=" w-full sm:w-2/3">
             <div
               className="flex flex-col gap-4"
               style={{ backgroundColor: "#c61d23" }}
@@ -163,7 +163,7 @@ const AdminSignup = () => {
                 onSubmit={onSubmit}
               >
                 <div className="w-full flex flex-col gap-3">
-                  <div className="flex gap-3">
+                  <div className="flex flex-col sm:flex-row gap-3">
                     <div className="flex flex-col justify-center w-full">
                       <input
                         autoComplete="off"
@@ -184,7 +184,7 @@ const AdminSignup = () => {
                       <button
                         type="button"
                         onClick={verifyPhoneNo}
-                        className="px-4  rounded-md bg-yellow-500 hover:bg-yellow-600 text-black font-semibold"
+                        className="px-4 py-2 sm:py-0 rounded-md bg-yellow-500 hover:bg-yellow-600 text-black font-semibold"
                       >
                         Send OTP
                       </button>

@@ -105,18 +105,23 @@ const FormSubmitted = () => {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#c61d23]">
+    <div className="min-h-screen flex flex-col bg-[#c61d23] max-w-[768px]">
       <div className="w-full bg-[#c61d23] px-4 md:px-8 pt-2 flex flex-col items-center flex-grow">
         <div className="w-full max-w-5xl flex flex-col gap-6">
           {/* <div>
             <FormHeader heading={""} subHeading={""} />
           </div> */}
-          <div className="flex mt-2z">
+          <div className="flex justify-between mt-2">
             <img
               src={scholarsDenLogo}
               alt="Scholars Den"
               className="w-10 md:w-14"
             />
+            <div>
+
+            <button className="p-2 rounded-xl hover:bg-[#ffdd00]  bg-white text-lg" onClick={clickHandler}>Home</button>
+            </div>
+            
           </div>
 
           <div className="flex flex-col items-center text-white gap-6">

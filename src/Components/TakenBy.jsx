@@ -350,7 +350,7 @@ const TakenBy = () => {
   }, [userData]);
 
   return (
-    <div className="min-h-screen w-full overflow-auto px-4 md:px-8 py-2 bg-[#c61d23]">
+    <div className="min-h-screen w-full overflow-auto px-4 md:px-8 py-2 bg-[#c61d23] max-w-[768px]">
       {loading && <Spinner />}
       <div className="flex flex-col gap-16 justify-between">
         <div>
