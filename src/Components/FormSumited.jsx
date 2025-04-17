@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import scholarsden from "../assets/scholarsden.png";
 import { useDispatch, useSelector } from "react-redux";
-import { updateUserDetails } from "../../redux/formDataSlice";
+import { fetchUserDetails, updateUserDetails } from "../../redux/formDataSlice";
 import FormHeader from "./FormHeader";
 import scholarsDenLogo from "../assets/scholarsDenLogo.png";
 import axios from "../../api/axios";
@@ -100,6 +100,7 @@ const FormSubmitted = () => {
     console.log("userData from tokenNo", userData);
 
     tokenNo();
+    dispatch(fetchUserDetails());
 
     console.log("userData from tokenNo", userData);
   }, []);
@@ -142,10 +143,10 @@ const FormSubmitted = () => {
           </div>
           <div className="flex flex-col items-center w-full border rounded p-3 "> 
             <div className="flex flex-col items-center text-white ">
-              {` Selected Program : ${userData.program}`}
+              {` Selected Program :  ${userData?.program}`}
             </div>
             <div className="flex  items-center text-white ">
-              Class :  <span className="text-xl px-2 text-gray-300" >{`${userData.courseOfIntrested}`}</span>
+              Class :  <span className="text-xl px-2 text-gray-300" >{`${userData?.courseOfIntrested}`}</span>
             </div>
           </div>
 

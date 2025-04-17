@@ -121,6 +121,11 @@ const TakenBy = () => {
     console.log("userData from useEffect", userData);
   }, [dispatch]);
 
+  useEffect(() => {
+    dispatch(fetchUserDetails());
+    console.log("userData from useEffect", userData);
+  }, []);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     dispatch(updateUserDetails({ [name]: value }));
@@ -339,7 +344,7 @@ const TakenBy = () => {
 
       await putDataOnExtraEdge();
 
-      document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
+      // document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
       navigate("/FormSubmitted");
     }
     dispatch(setLoading(false));
