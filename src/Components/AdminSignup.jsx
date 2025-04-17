@@ -139,7 +139,7 @@ const AdminSignup = () => {
 
   return (
     <div
-      className="overflow-auto w-full items-center px-2 sm:px-6"
+      className="overflow-auto items-center px-2 sm:px-6 max-w-{768px]"
       style={{ backgroundColor: "#c61d23" }}
     >
       {loading && <Spinner />}
