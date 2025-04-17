@@ -440,7 +440,7 @@ const TakenBy = () => {
                 )}
 
                 {/* Enquiry Taken By */}
-                {/* <SelectField
+                <SelectField
                   label="Enquiry Taken By"
                   name="enquiryTakenBy"
                   value={userData.enquiryTakenBy}
@@ -448,7 +448,7 @@ const TakenBy = () => {
                   onChange={handleChange}
                   placeholder="Enquiry Taken By"
                   error={errors.enquiryTakenBy}
-                /> */}
+                />
 
                 {/* Remarks */}
                 <InputField
