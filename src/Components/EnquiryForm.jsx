@@ -75,7 +75,7 @@ const EnquiryForm = () => {
     schoolName: "",
     fatherName: "",
     fatherOccupations: "",
-    studentContactNumber: "",
+    // studentContactNumber: "",
     city: "",
     state: "",
   });
@@ -153,21 +153,15 @@ const EnquiryForm = () => {
       }
     });
 
-    // console.log(
-    //   "userData.studentContactNumber",
-    //   userData[studentContactNumber]
-    // );
 
-    console.log("studentContactNumber", userData.studentContactNumber);
-
-    if (
-      userData.studentContactNumber !== "" &&
-      !/^\d{10}$/.test(userData.studentContactNumber)
-    ) {
-      formErrors.studentContactNumber =
-        "Student's Contact Number must be a valid 10-digit number";
-      isValid = false;
-    }
+    // if (
+    //   userData.studentContactNumber !== "" &&
+    //   !/^\d{10}$/.test(userData.studentContactNumber)
+    // ) {
+    //   formErrors.studentContactNumber =
+    //     "Student's Contact Number must be a valid 10-digit number";
+    //   isValid = false;
+    // }
 
     setErrors(formErrors);
     return isValid;
@@ -404,7 +398,7 @@ const EnquiryForm = () => {
           </div>
 
           {/* STUDENT CONTACT */}
-          <div>
+          {/* <div>
             <input
               type="tel"
               name="studentContactNumber"
@@ -418,7 +412,7 @@ const EnquiryForm = () => {
                 {errors.studentContactNumber}
               </p>
             )}
-          </div>
+          </div> */}
 
           {/* BUTTONS */}
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mt-6">
