@@ -1,5 +1,5 @@
 import React from "react";
-import ScholarsDenLogo from "../assets/ScholarsDenLogo.png";
+import ScholarsDenLogo from "../assets/scholarsDenLogo.png";
 import DashboardDarkMode from "../assets/DashboardDarkMode.png";
 import DashboardLightMode from "../assets/DashboardLightMode.png";
 import PaymentDarkMode from "../assets/PaymentDarkMode.png";
