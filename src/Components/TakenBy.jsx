@@ -142,7 +142,7 @@ const TakenBy = () => {
       // "howToKnow",
       // "remarks",
       // "intime",
-      // "enquiryTakenBy",
+      "enquiryTakenBy",
       // "brochureGiven",
     ].forEach((field) => {
       if (!userData[field]?.trim()) {
@@ -248,85 +248,85 @@ const TakenBy = () => {
   //     });
   // };
 
-  // const putDataOnExtraEdge = async () => {
-  //   console.log("userData from putDataOnExtraEdge", userData);
+  const putDataOnExtraEdge = async () => {
+    console.log("userData from putDataOnExtraEdge", userData);
 
-  //   const url = "https://thirdpartyapi.extraaedge.com/api/SaveRequest";
+    const url = "https://thirdpartyapi.extraaedge.com/api/SaveRequest";
 
-  //   const headers = {
-  //     "Content-Type": "application/json",
-  //   };
+    const headers = {
+      "Content-Type": "application/json",
+    };
 
-  //   // const apiData = { Source: "scholarsden", AuthToken: "SCHOLARSDEN-30-03-2024", FirstName : userData.studente };
+    // const apiData = { Source: "scholarsden", AuthToken: "SCHOLARSDEN-30-03-2024", FirstName : userData.studente };
 
-  //   const apiData = {
-  //     Source: "scholarsden",
-  //     AuthToken: "SCHOLARSDEN-30-03-2024",
-  //     FirstName: userData.studentName || "",
-  //     Email: userData.email || "",
-  //     Center: userData.courseOfIntrested || "",
-  //     Course: userData.program || "", // Assuming 'program' corresponds to 'Center'
-  //     State: userData.state || "", // No mapping in provided data, you may need to add this
-  //     City: userData.city || "",
-  //     Remarks: userData.remarks || "",
-  //     leadCampaign: "Walk-in",
-  //     LeadSource: "140",
+    const apiData = {
+      Source: "scholarsden",
+      AuthToken: "SCHOLARSDEN-30-03-2024",
+      FirstName: userData.studentName || "",
+      Email: userData.email || "",
+      Center: userData.courseOfIntrested || "",
+      Course: userData.program || "", // Assuming 'program' corresponds to 'Center'
+      State: userData.state || "", // No mapping in provided data, you may need to add this
+      City: userData.city || "",
+      Remarks: userData.remarks || "",
+      leadCampaign: "Walk-in",
+      LeadSource: "140",
 
-  //     Field4: userData.brochureGiven,
-  //     Field5: userData.howToKnow,
-  //     ReferredToEmail: userData.enquiryTakenBy,
-  //     Textb1: userData.intime,
+      Field4: userData.brochureGiven,
+      Field5: userData.howToKnow,
+      ReferredToEmail: userData.enquiryTakenBy,
+      Textb1: userData.intime,
 
-  //     Textb3: userData.schoolName,
-  //     Textb2: userData.fatherOccupations,
-  //     FathersName: userData.fatherName || "",
+      Textb3: userData.schoolName,
+      Textb2: userData.fatherOccupations,
+      FathersName: userData.fatherName || "",
 
-  //     // imporovement Available
-  //     // MobileNumber: userData.studentContactNumber || "",
-  //     // FathersPhoneNumber: userData.fatherContactNumber || "",
+      // imporovement Available
+      // MobileNumber: userData.studentContactNumber || "",
+      // FathersPhoneNumber: userData.fatherContactNumber || "",
 
-  //     MobileNumber: userData.fatherContactNumber || "",
-  //     FathersPhoneNumber: userData.studentContactNumber || "",
+      MobileNumber: userData.fatherContactNumber || "",
+      FathersPhoneNumber: userData.studentContactNumber || "",
 
-  //     // Not added yet
+      // Not added yet
 
-  //     // SchoolName: userData.schoolName || "",
-  //     // // EnquiryTakenBy: userData.enquiryTakenBy || "",
-  //     // // BrochureGiven: userData.brochureGiven || "",
-  //     // enquiryTakenBy: data?.enquiryTakenBy || "",
-  //     // fatherOccupations: userData.fatherOccupations || "",
-  //   };
+      // SchoolName: userData.schoolName || "",
+      // // EnquiryTakenBy: userData.enquiryTakenBy || "",
+      // // BrochureGiven: userData.brochureGiven || "",
+      // enquiryTakenBy: data?.enquiryTakenBy || "",
+      // fatherOccupations: userData.fatherOccupations || "",
+    };
 
-  //   console.log("apiData", apiData);
+    console.log("apiData", apiData);
 
-  //   console.log("apiData from putDataOnExtraEdge", apiData);
+    console.log("apiData from putDataOnExtraEdge", apiData);
 
-  //   try {
-  //     const response = await fetch(url, {
-  //       method: "POST",
-  //       headers: headers,
-  //       body: JSON.stringify(apiData),
-  //     });
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(apiData),
+      });
 
-  //     console.log("Raw response:", response);
+      console.log("Raw response:", response);
 
-  //     const contentType = response.headers.get("content-type");
+      const contentType = response.headers.get("content-type");
 
-  //     if (!response.ok) {
-  //       throw new Error(`Request failed with status: ${response.status}`);
-  //     }
+      if (!response.ok) {
+        throw new Error(`Request failed with status: ${response.status}`);
+      }
 
-  //     if (contentType && contentType.includes("application/json")) {
-  //       const responseData = await response.json();
-  //       console.log("Response Data:", responseData);
-  //     } else {
-  //       const textResponse = await response.text();
-  //       console.log("Non-JSON Response:", textResponse);
-  //     }
-  //   } catch (error) {
-  //     console.log("Error:", error);
-  //   }
-  // };
+      if (contentType && contentType.includes("application/json")) {
+        const responseData = await response.json();
+        console.log("Response Data:", responseData);
+      } else {
+        const textResponse = await response.text();
+        console.log("Non-JSON Response:", textResponse);
+      }
+    } catch (error) {
+      console.log("Error:", error);
+    }
+  };
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -337,7 +337,7 @@ const TakenBy = () => {
     if (validateForm()) {
       await dispatch(putFormData(userData));
 
-      // await putDataOnExtraEdge();
+      await putDataOnExtraEdge();
 
       document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
       navigate("/FormSubmitted");
