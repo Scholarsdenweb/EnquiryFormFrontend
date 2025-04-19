@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import axios from "../../api/axios";
 import { useNavigate } from "react-router-dom"; // Assuming you are using react-router
 import Sidebar from "./Sidebar";
@@ -11,6 +11,9 @@ const AdminDashboard = () => {
   const [isModalOpen, setIsModalOpen] = useState(false); // Modal visibility state
   const [noMoreData, setNoMoreData] = useState(false); // Track if there's no more data
   const history = useNavigate(); // Hook for redirection
+  const [inputValue, setInputValue] = useState("");
+
+  const [showFilteredData, setShowFilteredData] = useState([]);
 
   const numberTOemail = (number) => {
     const numberEmail = {
@@ -20,6 +23,40 @@ const AdminDashboard = () => {
     console.log("numberTOemail function called", number);
     return numberEmail[number] || null;
   };
+
+  const filterStudents = async () => {
+    try {
+      console.log("inputValue data", inputValue);
+      const allfilterStudent = await axios.post("/user/filter/Student", {
+        data: inputValue,
+      });
+
+      console.log("Show student data", allfilterStudent);
+      setShowFilteredData(allfilterStudent.data);
+    } catch (error) {
+      console.error("Error filtering students:", error);
+    }
+  };
+
+  const handleChange = (e) => {
+    const value = e.target.value;
+    setInputValue(value);
+    debouncedFilter(value);
+  };
+
+  function debounce(func, delay) {
+    let timeoutId;
+    return function (...args) {
+      const context = this;
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => func.apply(context, args), delay);
+    };
+  }
+
+  const debouncedFilter = useMemo(
+    () => debounce(filterStudents, 500),
+    [inputValue]
+  );
 
   const fetchData = async () => {
     const email = await numberTOemail(phone);
@@ -107,11 +144,13 @@ const AdminDashboard = () => {
     return formattedDate;
   };
 
-  const createdAt = "2025-04-08T13:01:54.227Z";
-  const updatedAt = "2025-04-08T13:01:54.227Z";
+  const classFilterOptions = ["VI", "VII", "VIII", "IX", "X", "XI", "XII"];
 
-  console.log("Formatted createdAt:", convertToDate(createdAt));
-  console.log("Formatted updatedAt:", convertToDate(updatedAt));
+  // const createdAt = "2025-04-08T13:01:54.227Z";
+  // const updatedAt = "2025-04-08T13:01:54.227Z";
+
+  // console.log("Formatted createdAt:", convertToDate(createdAt));
+  // console.log("Formatted updatedAt:", convertToDate(updatedAt));
 
   function maskPhoneNumber(phone) {
     const visible = phone.slice(0, 4);
@@ -138,38 +177,92 @@ const AdminDashboard = () => {
       const url = "https://obd-api.myoperator.co/obd-api-v1";
 
       const headers = {
-        "x-api-key": `${xApiKey}`,
+        "x-api-key": xApiKey,
         "Content-Type": "application/json",
       };
 
       const payload = {
-        company_id: `${company_id}`,
-        secret_token: `${secretToken}`,
+        company_id: company_id,
+        secret_token: secretToken,
         type: "1",
-        user_id: `${userID}`,
-        number: `${customerNumber}`,
-        public_ivr_id: `${publicIvRId}`,
-        reference_id: `${referenceId}`,
+        user_id: userID,
+        number: customerNumber,
+        public_ivr_id: publicIvRId,
+        reference_id: referenceId,
         region: "<region of a call>",
         caller_id: "<caller id number of a call>",
         group: "<group of a dedicated number>",
       };
 
       try {
-        const response = await axios.post(url, payload, { headers });
-        console.log("Response:", response.data);
+        const response = await fetch(url, {
+          method: "POST",
+          headers: headers,
+          body: JSON.stringify(payload),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(
+            `API error: ${response.status} - ${JSON.stringify(errorData)}`
+          );
+        }
+
+        const data = await response.json();
+        console.log("Response:", data);
       } catch (error) {
-        console.log("error ", error);
-        console.error(
-          "Error occurred:",
-          error.response ? error.response.data : error.message
-        );
+        console.log("error", error);
+        console.error("Error occurred:", error.message);
       }
     }
 
     // Call the function
     triggerOBDCall();
   };
+
+  async function triggerOBDCall(customerNumber) {
+    const url = "https://obd-api.myoperator.co/obd-api-v1";
+    const apiKey = "{{oomfKA3I2K6TCJYistHyb7sDf0l0F6c8AZro5DJh}}"; // Replace with actual key
+
+    const payload = {
+      company_id: "5df87cba87461833",
+      secret_token:
+        "0ee2949396336195eeb7d93ae59c6c91f55336242df878f02464af03f0df6eb0",
+      type: "1",
+      user_id: "67a1cf3bba37c164",
+      number: `+91${customerNumber}`,
+      public_ivr_id: "667fc996500ea596",
+      reference_id: "abd9238dh21ss",
+      region: "<region of a call>",
+      caller_id: "<caller id number of a call>",
+      group: "<group of a dedicated number>",
+    };
+
+    try {
+      // const response = await fetch(url, {
+      //   method: "POST",
+      //   headers: {
+      //     "x-api-key": apiKey,
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify(payload),
+      // });
+
+      const response = await axios.post("/admin/trigger-obd", {
+        phone: selectedStudent.fatherContactNumber,
+      });
+
+      if (!response.ok) {
+        console.log("response errror ", response);
+      }
+
+      // const data = await response.json();
+      // alert("Response: " + JSON.stringify(data));
+    } catch (error) {
+      console.log("Erorr for callfunction", error);
+      console.error("Error:", error.message);
+    }
+  }
 
   // Handle logout
   const handleLogout = () => {
@@ -190,6 +283,82 @@ const AdminDashboard = () => {
         <h2 className="text-3xl font-semibold text-center text-white mb-8">
           Admin Dashboard
         </h2>
+        <div className="flex gap-3 m-6">
+          <select className=" w-40 p-2 rounded-xl ">
+            <label>Select Class</label>
+
+            <option>Select Class</option>
+
+            {classFilterOptions.map((item, index) => {
+              return (
+                <option className="" key={index} value={item}>
+                  {item}
+                </option>
+              );
+            })}
+          </select>
+
+          <input
+            className="p-2 rounded-xl"
+            placeholder="Find By Student Name"
+            type="text"
+            value={inputValue}
+            onChange={handleChange}
+          />
+        </div>
+
+        {inputValue != "" && (
+          <div className="w-full p-4 bg-gray-100 rounded-xl mb-8">
+            <div className="overflow-x-auto">
+              <div className="max-h-60 overflow-y-auto border border-gray-200 rounded-md shadow-md">
+                <table className="min-w-full bg-white">
+                  <thead className="bg-[#c61d23] text-white sticky top-0 z-10">
+                    <tr>
+                      <th className="py-3 px-4 text-left border-b">Index</th>
+                      <th className="py-3 px-4 text-left border-b">Name</th>
+                      <th className="py-3 px-4 text-left border-b">
+                        Father Name
+                      </th>
+                      <th className="py-3 px-4 text-left border-b">Program</th>
+                      <th className="py-3 px-4 text-left border-b">Class</th>
+                    </tr>
+                  </thead>
+
+                  {
+                    <tbody className="w-full">
+                      {showFilteredData.map((student, index) => (
+                        <tr
+                          key={index}
+                          className="hover:bg-green-50 transition duration-150 ease-in-out"
+                        >
+                          <td className="py-2 px-4 border-b">{index + 1}</td>
+                          <td className="py-2 px-4 border-b">
+                            {student.studentName}
+                          </td>
+                          <td className="py-2 px-4 border-b">
+                            {student.fatherName}
+                          </td>
+                          <td className="py-2 px-4 border-b">
+                            {student.program}
+                          </td>
+                          <td className="py-2 px-4 border-b">
+                            {student.courseOfIntrested}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  }
+                </table>
+
+                {showFilteredData.length === 0 && (
+                  <div className="w-full text-center justify-center items-center p-6">
+                    Data Not Found
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className="grid grid-cols-1 gap-6">
           {data?.map((item, index) => (
@@ -199,6 +368,11 @@ const AdminDashboard = () => {
               onClick={() => handleCardClick(item)}
             >
               <div className="space-y-3">
+                {item.enquiryNumber && (
+                  <h4 className="text-xl font-semibold text-gray-800">
+                    Enquiry Name : {item.enquiryNumber}
+                  </h4>
+                )}
                 {item.studentName && (
                   <h4 className="text-xl font-semibold text-gray-800">
                     Student Name : {item.studentName}
@@ -271,7 +445,7 @@ const AdminDashboard = () => {
                     <button
                       className="py-2 px-2 bg-[#ffdd00] border-2 rounded-xl "
                       onClick={() => {
-                        maskedCall(selectedStudent.fatherContactNumber);
+                        triggerOBDCall(selectedStudent.fatherContactNumber);
                       }}
                     >
                       {" "}

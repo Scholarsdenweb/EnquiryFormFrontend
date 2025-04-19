@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "./Sidebar";
@@ -11,17 +11,20 @@ const SdatData = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [noMoreData, setNoMoreData] = useState(false);
   const [showImage, setShowImage] = useState(false);
+  const [inputValue, setInputValue] = useState("");
+  const [showFilteredData, setShowFilteredData] = useState([]);
 
   const history = useNavigate();
 
   const fetchData = async () => {
     try {
-
-
-      const response = await axios.post("https://api.registration.scholarsden.in/api/adminData/getData", {
-        phone,
-        page,
-      });
+      const response = await axios.post(
+        "https://api.registration.scholarsden.in/api/adminData/getData",
+        {
+          phone,
+          page,
+        }
+      );
 
       console.log("response ", response);
       setData(response.data.data);
@@ -30,6 +33,40 @@ const SdatData = () => {
       console.error("Error in fetchData:", e);
     }
   };
+
+  const filterStudents = async () => {
+    try {
+      console.log("inputValue data", inputValue);
+      const allfilterStudent = await axios.post("http://localhost:5001/api/students/filter/Student", {
+        data: inputValue,
+      });
+
+      console.log("Show student data", allfilterStudent);
+      setShowFilteredData(allfilterStudent.data);
+    } catch (error) {
+      console.error("Error filtering students:", error);
+    }
+  };
+
+  const handleChange = (e) => {
+    const value = e.target.value;
+    setInputValue(value);
+    debouncedFilter(value);
+  };
+
+  function debounce(func, delay) {
+    let timeoutId;
+    return function (...args) {
+      const context = this;
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => func.apply(context, args), delay);
+    };
+  }
+
+  const debouncedFilter = useMemo(
+    () => debounce(filterStudents, 500),
+    [inputValue]
+  );
 
   useEffect(() => {
     const phoneFromCookie = document.cookie
@@ -60,6 +97,12 @@ const SdatData = () => {
   const handleNextPage = () => {
     setPage((prevPage) => prevPage + 1);
   };
+
+  const classFilterOptions = ["VI", "VII", "VIII", "IX", "X", "XI", "XII"];
+
+  const handleChangeClassFilter = () =>{
+    console.log("Testfilter")
+  }
 
   const handleCardClick = (student, basic, batch, family) => {
     setSelectedStudent({
@@ -120,6 +163,83 @@ const SdatData = () => {
         <h2 className="text-3xl font-semibold text-center text-white mb-8">
           Admin Dashboard
         </h2>
+
+        <div className="flex gap-3 m-6">
+          <select className=" w-40 p-2 rounded-xl " onChange={handleChangeClassFilter} >
+            <label>Select Class</label>
+
+            <option>Select Class</option>
+
+            {classFilterOptions.map((item, index) => {
+              return (
+                <option className="" key={index} value={item}>
+                  {item}
+                </option>
+              );
+            })}
+          </select>
+
+          <input
+            className="p-2 rounded-xl"
+            placeholder="Find By Student Name"
+            type="text"
+            value={inputValue}
+            onChange={handleChange}
+          />
+        </div>
+
+        {inputValue != "" && (
+          <div className="w-full p-4 bg-gray-100 rounded-xl mb-8">
+            <div className="overflow-x-auto">
+              <div className="max-h-60 overflow-y-auto border border-gray-200 rounded-md shadow-md">
+                <table className="min-w-full bg-white">
+                  <thead className="bg-[#c61d23] text-white sticky top-0 z-10">
+                    <tr>
+                      <th className="py-3 px-4 text-left border-b">StudentID</th>
+                      <th className="py-3 px-4 text-left border-b">Name</th>
+                      {/* <th className="py-3 px-4 text-left border-b">
+                        Father Name
+                      </th>
+                      <th className="py-3 px-4 text-left border-b">Program</th>
+                      <th className="py-3 px-4 text-left border-b">Class</th> */}
+                    </tr>
+                  </thead>
+
+                  {
+                    <tbody className="w-full">
+                      {showFilteredData.map((student, index) => (
+                        <tr
+                          key={index}
+                          className="hover:bg-green-50 transition duration-150 ease-in-out"
+                        >
+                          <td className="py-2 px-4 border-b">{student.StudentsId}</td>
+                          <td className="py-2 px-4 border-b">
+                            {student.name}
+                          </td>
+                          {/* <td className="py-2 px-4 border-b">
+                            {student.fatherName}
+                          </td>
+                          <td className="py-2 px-4 border-b">
+                            {student.program}
+                          </td>
+                          <td className="py-2 px-4 border-b">
+                            {student.courseOfIntrested}
+                          </td> */}
+                        </tr>
+                      ))}
+                    </tbody>
+                  }
+                </table>
+
+                {showFilteredData.length === 0 && (
+                  <div className="w-full text-center justify-center items-center p-6">
+                    Data Not Found
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className="grid grid-cols-1 gap-6">
           {data?.map((studentItem, index) => {
