@@ -12,6 +12,8 @@ const SdatData = () => {
   const [noMoreData, setNoMoreData] = useState(false);
   const [showImage, setShowImage] = useState(false);
   const [inputValue, setInputValue] = useState("");
+  const [classValue, setClassValue] = useState("");
+  const [filterValue, setFilterValue] = useState("");
   const [showFilteredData, setShowFilteredData] = useState([]);
 
   const history = useNavigate();
@@ -19,14 +21,15 @@ const SdatData = () => {
   const fetchData = async () => {
     try {
       const response = await axios.post(
-        "https://api.registration.scholarsden.in/api/adminData/getData",
+        "http://localhost:5000/api/adminData/getData",
         {
           phone,
           page,
         }
       );
 
-      console.log("response ", response);
+      console.log("fetchData", response);
+
       setData(response.data.data);
       setNoMoreData(response.data.isLastPage);
     } catch (e) {
@@ -36,12 +39,15 @@ const SdatData = () => {
 
   const filterStudents = async () => {
     try {
-      console.log("inputValue data", inputValue);
-      const allfilterStudent = await axios.post("http://localhost:5001/api/students/filter/Student", {
-        data: inputValue,
-      });
+      const allfilterStudent = await axios.post(
+        "http://localhost:5000/api/students/filter/Student",
+        {
+          data: inputValue,
+        }
+      );
 
-      console.log("Show student data", allfilterStudent);
+      console.log("allfilterStudent", allfilterStudent);
+
       setShowFilteredData(allfilterStudent.data);
     } catch (error) {
       console.error("Error filtering students:", error);
@@ -51,6 +57,7 @@ const SdatData = () => {
   const handleChange = (e) => {
     const value = e.target.value;
     setInputValue(value);
+    setFilterValue(value);
     debouncedFilter(value);
   };
 
@@ -100,9 +107,25 @@ const SdatData = () => {
 
   const classFilterOptions = ["VI", "VII", "VIII", "IX", "X", "XI", "XII"];
 
-  const handleChangeClassFilter = () =>{
-    console.log("Testfilter")
-  }
+  const handleChangeClassFilter = async (e) => {
+    try {
+      const filterByClass = await axios.post(
+        "http://localhost:5000/api/students/filterByClass",
+        {
+          filterByClassName: e.target.value,
+        }
+      );
+
+      console.log("filterByClass", filterByClass);
+      // setInputValue(filterByClass.data);
+      setClassValue(filterByClass.data);
+      setFilterValue(filterByClass.data);
+
+      setShowFilteredData(filterByClass.data.data);
+    } catch (error) {
+      console.log("Error", error);
+    }
+  };
 
   const handleCardClick = (student, basic, batch, family) => {
     setSelectedStudent({
@@ -165,7 +188,10 @@ const SdatData = () => {
         </h2>
 
         <div className="flex gap-3 m-6">
-          <select className=" w-40 p-2 rounded-xl " onChange={handleChangeClassFilter} >
+          <select
+            className=" w-40 p-2 rounded-xl "
+            onChange={handleChangeClassFilter}
+          >
             <label>Select Class</label>
 
             <option>Select Class</option>
@@ -188,15 +214,18 @@ const SdatData = () => {
           />
         </div>
 
-        {inputValue != "" && (
+        {filterValue != "" && (
           <div className="w-full p-4 bg-gray-100 rounded-xl mb-8">
             <div className="overflow-x-auto">
               <div className="max-h-60 overflow-y-auto border border-gray-200 rounded-md shadow-md">
                 <table className="min-w-full bg-white">
                   <thead className="bg-[#c61d23] text-white sticky top-0 z-10">
                     <tr>
-                      <th className="py-3 px-4 text-left border-b">StudentID</th>
+                      <th className="py-3 px-4 text-left border-b">
+                        StudentID
+                      </th>
                       <th className="py-3 px-4 text-left border-b">Name</th>
+                      <th className="py-3 px-4 text-left border-b">Class</th>
                       {/* <th className="py-3 px-4 text-left border-b">
                         Father Name
                       </th>
@@ -212,9 +241,12 @@ const SdatData = () => {
                           key={index}
                           className="hover:bg-green-50 transition duration-150 ease-in-out"
                         >
-                          <td className="py-2 px-4 border-b">{student.StudentsId}</td>
                           <td className="py-2 px-4 border-b">
-                            {student.name}
+                            {student.StudentsId}
+                          </td>
+                          <td className="py-2 px-4 border-b">{student.name}</td>
+                          <td className="py-2 px-4 border-b">
+                            {student?.batchDetail?.classForAdmission}
                           </td>
                           {/* <td className="py-2 px-4 border-b">
                             {student.fatherName}

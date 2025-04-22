@@ -157,14 +157,14 @@ useEffect(() => {
     try {
       setIsSubmittingForm(true); // ⬅️ Only show LoadingPage now
   
-      let codeChecked = await checkVerificationCode();
-      if (codeChecked === false) {
-        // setShowCodeBox(false);
-        setCodeVerified(false);
-        setSubmitMessage("Please Verify Your Phone Number");
-        setIsSubmittingForm(false); // ⬅️ reset if verification fails
-        return;
-      }
+      // let codeChecked = await checkVerificationCode();
+      // if (codeChecked === false) {
+      //   // setShowCodeBox(false);
+      //   setCodeVerified(false);
+      //   setSubmitMessage("Please Verify Your Phone Number");
+      //   setIsSubmittingForm(false); // ⬅️ reset if verification fails
+      //   return;
+      // }
   
       if (validateForm()) {
         await dispatch(submitFormData(userData));

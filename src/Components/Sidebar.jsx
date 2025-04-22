@@ -73,7 +73,7 @@ const Sidebar = () => {
           <h4>S.DAT Form Data</h4>
           {/* </div> */}
         </Link>
-        <Link
+        {/* <Link
           to={"/registration/basicDetailsForm"}
           className={`flex gap-3 w-5/6 items-end rounded-l-full p-3 ${
             location.pathname.includes("/registration")
@@ -90,18 +90,18 @@ const Sidebar = () => {
             alt=""
           />
           <h4>Admission Form Data</h4>
-        </Link>
+        </Link> */}
       
 
         </div>
       </div>
 
-      <div className={`flex gap-3 justify-center mb-9 text-white cursor-pointer `}
+      {/* <div className={`flex gap-3 justify-center mb-9 text-white cursor-pointer `}
       onClick={handleLogout}
       >
         <img src={LogoutLightMode} alt="" />
         <h4>Logout</h4>
-      </div>
+      </div> */}
     </div>
   );
 };
