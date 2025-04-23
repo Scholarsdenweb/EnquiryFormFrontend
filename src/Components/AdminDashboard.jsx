@@ -11,7 +11,10 @@ const AdminDashboard = () => {
   const [isModalOpen, setIsModalOpen] = useState(false); // Modal visibility state
   const [noMoreData, setNoMoreData] = useState(false); // Track if there's no more data
   const history = useNavigate(); // Hook for redirection
+    const [classValue, setClassValue] = useState("");
+  
   const [inputValue, setInputValue] = useState("");
+  const [filterValue, setFilterValue] = useState("");
 
   const [showFilteredData, setShowFilteredData] = useState([]);
 
@@ -41,7 +44,25 @@ const AdminDashboard = () => {
   const handleChange = (e) => {
     const value = e.target.value;
     setInputValue(value);
+    setFilterValue(value);
     debouncedFilter(value);
+  };
+
+  const handleChangeClassFilter = async (e) => {
+    try {
+      const filterByClass = await axios.post("/students/filterByClass", {
+        filterByClassName: e.target.value,
+      });
+
+      console.log("filterByClass", filterByClass);
+      // setInputValue(filterByClass.data);
+      setClassValue(filterByClass.data);
+      setFilterValue(filterByClass.data);
+
+      setShowFilteredData(filterByClass.data.data);
+    } catch (error) {
+      console.log("Error", error);
+    }
   };
 
   function debounce(func, delay) {
@@ -307,7 +328,7 @@ const AdminDashboard = () => {
           />
         </div>
 
-        {inputValue != "" && (
+        {filterValue != "" && (
           <div className="w-full p-4 bg-gray-100 rounded-xl mb-8">
             <div className="overflow-x-auto">
               <div className="max-h-60 overflow-y-auto border border-gray-200 rounded-md shadow-md">

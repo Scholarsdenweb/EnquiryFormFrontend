@@ -134,7 +134,7 @@ const SdatData = () => {
   const handleChangeClassFilter = async (e) => {
 
 
-    const filterValue = e.target.value;
+
     try {
       const filterByClass = await axios.post("/students/filterByClass", {
         filterByClassName: e.target.value,
