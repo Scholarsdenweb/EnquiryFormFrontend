@@ -80,15 +80,27 @@ const EnquiryForm = () => {
     state: "",
   });
 
+  // const programOptions = {
+  //   Foundation: ["VI", "VII", "VIII", "IX", "X"],
+  //   "JEE(Main & Adv.)": [
+  //     "XI Engineering",
+  //     "XII Engineering",
+  //     "XII Pass Engineering",
+  //   ],
+  //   "NEET(UG)": ["XI Medical", "XII Medical", "XII Pass Medical"],
+  // };
+
   const programOptions = {
-    Foundation: ["VI", "VII", "VIII", "IX", "X"],
-    "JEE(Main & Adv.)": [
-      "XI Engineering",
-      "XII Engineering",
-      "XII Pass Engineering",
+    "Foundation (VI - X)": ["VI", "VII", "VIII", "IX", "X"],
+    "Engineering (XI - XII)": [
+      "XI",
+      "XII",
+      "XII Passed",
     ],
-    "NEET(UG)": ["XI Medical", "XII Medical", "XII Pass Medical"],
+    "Medical (XI -XII)": ["XI", "XII", "XII Passed"],
   };
+
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;

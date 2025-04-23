@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
-import axios from "axios";
+import axios from "../../api/axios";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "./Sidebar";
 
@@ -21,7 +21,7 @@ const SdatData = () => {
   const fetchData = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/adminData/getData",
+        "/adminData/getData",
         {
           phone,
           page,
@@ -39,12 +39,9 @@ const SdatData = () => {
 
   const filterStudents = async () => {
     try {
-      const allfilterStudent = await axios.post(
-        "http://localhost:5000/api/students/filter/Student",
-        {
-          data: inputValue,
-        }
-      );
+      const allfilterStudent = await axios.post("/students/filter/Student", {
+        data: inputValue,
+      });
 
       console.log("allfilterStudent", allfilterStudent);
 
@@ -61,17 +58,44 @@ const SdatData = () => {
     debouncedFilter(value);
   };
 
+  // function debounce(func, delay) {
+  //   let timeoutId;
+  //   return function (...args) {
+  //     const context = this;
+  //     clearTimeout(timeoutId);
+  //     timeoutId = setTimeout(() => func.apply(context, args), delay);
+  //   };
+  // }
+
+
   function debounce(func, delay) {
     let timeoutId;
+    let abortController;
+  
     return function (...args) {
-      const context = this;
+      // Cancel any previous timer
       clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => func.apply(context, args), delay);
+  
+      // Abort any ongoing request
+      if (abortController) {
+        abortController.abort();
+      }
+  
+      // Set up for a new request
+      abortController = new AbortController();
+      const signal = abortController.signal;
+  
+      // Debounce logic
+      timeoutId = setTimeout(() => {
+        func.apply(this, [...args, signal]);
+      }, delay);
     };
   }
+  
+  
 
   const debouncedFilter = useMemo(
-    () => debounce(filterStudents, 500),
+    () => debounce(filterStudents, 1000),
     [inputValue]
   );
 
@@ -105,16 +129,16 @@ const SdatData = () => {
     setPage((prevPage) => prevPage + 1);
   };
 
-  const classFilterOptions = ["VI", "VII", "VIII", "IX", "X", "XI", "XII"];
+  const classFilterOptions = ["VI", "VII", "VIII", "IX", "X", "XI Engineering", "XII Engineering", "XII Passed Engineering", "XI Medical", "XII Medical", "XII Passed Medical"];
 
   const handleChangeClassFilter = async (e) => {
+
+
+    const filterValue = e.target.value;
     try {
-      const filterByClass = await axios.post(
-        "http://localhost:5000/api/students/filterByClass",
-        {
-          filterByClassName: e.target.value,
-        }
-      );
+      const filterByClass = await axios.post("/students/filterByClass", {
+        filterByClassName: e.target.value,
+      });
 
       console.log("filterByClass", filterByClass);
       // setInputValue(filterByClass.data);
@@ -166,8 +190,10 @@ const SdatData = () => {
 
   function maskEmail(email) {
     if (!email) return email;
+
+    console.log("email form markEmail", email);
     const [user, domain] = email.split("@");
-    const maskedUser = user[0] + "*".repeat(user.length - 3) + user.slice(-1);
+    const maskedUser = user[0] + "*".repeat(user.length - 1);
     return maskedUser + "@" + domain;
   }
 
@@ -244,7 +270,7 @@ const SdatData = () => {
                           <td className="py-2 px-4 border-b">
                             {student.StudentsId}
                           </td>
-                          <td className="py-2 px-4 border-b">{student.name}</td>
+                          <td className="py-2 px-4 border-b">{student.studentName}</td>
                           <td className="py-2 px-4 border-b">
                             {student?.batchDetail?.classForAdmission}
                           </td>
@@ -287,9 +313,9 @@ const SdatData = () => {
                 onClick={() => handleCardClick(student, basic, batch, family)}
               >
                 <div className="space-y-3">
-                  {student.name && (
+                  {student.studentName && (
                     <h4 className="text-xl font-semibold text-gray-800">
-                      Student Name: {student.name}
+                      Student Name: {student.studentName}
                     </h4>
                   )}
                   {family.FatherName && (
@@ -348,7 +374,7 @@ const SdatData = () => {
               <h3 className="text-2xl font-semibold mb-4">Student Details</h3>
               <div className="space-y-3">
                 <p>
-                  <strong>Name:</strong> {selectedStudent.name}
+                  <strong>Name:</strong> {selectedStudent.studentName}
                 </p>
                 <p>
                   <strong>Email:</strong> {maskEmail(selectedStudent.email)}
