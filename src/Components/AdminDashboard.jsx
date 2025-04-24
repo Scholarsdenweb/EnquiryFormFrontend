@@ -2,6 +2,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import axios from "../../api/axios";
 import { useNavigate } from "react-router-dom"; // Assuming you are using react-router
 import Sidebar from "./Sidebar";
+import PaginatedList from "./Pagination";
 
 const AdminDashboard = () => {
   const [phone, setPhone] = useState("");
@@ -11,8 +12,8 @@ const AdminDashboard = () => {
   const [isModalOpen, setIsModalOpen] = useState(false); // Modal visibility state
   const [noMoreData, setNoMoreData] = useState(false); // Track if there's no more data
   const history = useNavigate(); // Hook for redirection
-    const [classValue, setClassValue] = useState("");
-  
+  const [classValue, setClassValue] = useState("");
+
   const [inputValue, setInputValue] = useState("");
   const [filterValue, setFilterValue] = useState("");
 
@@ -26,6 +27,8 @@ const AdminDashboard = () => {
     console.log("numberTOemail function called", number);
     return numberEmail[number] || null;
   };
+
+  const email = numberTOemail(phone);
 
   const filterStudents = async () => {
     try {
@@ -50,16 +53,16 @@ const AdminDashboard = () => {
 
   const handleChangeClassFilter = async (e) => {
     try {
-      const filterByClass = await axios.post("/students/filterByClass", {
+      const filterByClass = await axios.post("/user/filter/filterByClass", {
         filterByClassName: e.target.value,
       });
 
       console.log("filterByClass", filterByClass);
       // setInputValue(filterByClass.data);
       setClassValue(filterByClass.data);
-      setFilterValue(filterByClass.data);
+      setFilterValue(e.target.value);
 
-      setShowFilteredData(filterByClass.data.data);
+      setShowFilteredData(filterByClass.data);
     } catch (error) {
       console.log("Error", error);
     }
@@ -75,26 +78,9 @@ const AdminDashboard = () => {
   }
 
   const debouncedFilter = useMemo(
-    () => debounce(filterStudents, 500),
+    () => debounce(filterStudents, 1000),
     [inputValue]
   );
-
-  const fetchData = async () => {
-    const email = await numberTOemail(phone);
-    console.log("email from numberTOemail", email);
-    console.log("page from fetchData", phone);
-    try {
-      const response = await axios.post("/admin/getEnquiryData", {
-        email,
-        page,
-      });
-      setData(response.data.data);
-      setNoMoreData(response.data.isLastPage); // Set noMoreData based on the response
-      console.log("response from fetchData", response);
-    } catch (e) {
-      console.log("error in fetchData", e);
-    }
-  };
 
   useEffect(() => {
     const phoneFromCookie = document.cookie
@@ -108,12 +94,6 @@ const AdminDashboard = () => {
     }
   }, []);
 
-  useEffect(() => {
-    if (phone) {
-      fetchData(); // Only call when phone is available
-    }
-  }, [phone, page]); // Runs on phone or page change
-
   // useEffect(() => {
   //   // Auto redirect every 5 minutes (300000ms)
   //   const timeout = setTimeout(() => {
@@ -122,21 +102,9 @@ const AdminDashboard = () => {
   //   return () => clearTimeout(timeout); // Clear the timeout when the component unmounts or changes
   // }, []);
 
-  const handlePrevPage = () => {
-    if (page > 1) {
-      setPage((prevPage) => prevPage - 1);
-    }
-    if (noMoreData) {
-      setNoMoreData(false);
-    }
-  };
-
-  const handleNextPage = () => {
-    setPage((prevPage) => prevPage + 1);
-  };
-
   // Handle card click to open modal
   const handleCardClick = (student) => {
+    console.log("HandleCardClcik", student);
     setSelectedStudent(student);
     setIsModalOpen(true);
   };
@@ -165,7 +133,19 @@ const AdminDashboard = () => {
     return formattedDate;
   };
 
-  const classFilterOptions = ["VI", "VII", "VIII", "IX", "X", "XI", "XII"];
+  const classFilterOptions = [
+    "VI",
+    "VII",
+    "VIII",
+    "IX",
+    "X",
+    "XI Engineering",
+    "XII Engineering",
+    "XII Passed Engineering",
+    "XI Medical",
+    "XII Medical",
+    "XII Passed Medical",
+  ];
 
   // const createdAt = "2025-04-08T13:01:54.227Z";
   // const updatedAt = "2025-04-08T13:01:54.227Z";
@@ -294,6 +274,23 @@ const AdminDashboard = () => {
     history("/adminsignup");
   };
 
+  const renderStudentCard = (student, index, onClick) => {
+    return (
+      <div
+        key={index}
+        className="bg-white p-4 rounded shadow"
+        onClick={onClick}
+      >
+        <h4 className="text-lg font-bold">Name: {student.studentName}</h4>
+        {<p>Father Name:{student.fatherName}</p>}
+        {<p>Program: {student.program}</p>}
+        {<p>Class: {student.courseOfIntrested}</p>}
+        {/* { <p>Exam: {basic.examName}</p>}
+        {<p>Exam Date: {basic.examDate}</p>} */}
+      </div>
+    );
+  };
+
   return (
     <div className="grid grid-cols-12 w-full max-w-screen-xl ">
       <div className="col-span-2 w-full bg-[#c61d23] ">
@@ -305,7 +302,10 @@ const AdminDashboard = () => {
           Admin Dashboard
         </h2>
         <div className="flex gap-3 m-6">
-          <select className=" w-40 p-2 rounded-xl ">
+          <select
+            className=" w-40 p-2 rounded-xl "
+            onChange={handleChangeClassFilter}
+          >
             <label>Select Class</label>
 
             <option>Select Class</option>
@@ -328,6 +328,8 @@ const AdminDashboard = () => {
           />
         </div>
 
+        {console.log("filterValue fro console", filterValue)}
+
         {filterValue != "" && (
           <div className="w-full p-4 bg-gray-100 rounded-xl mb-8">
             <div className="overflow-x-auto">
@@ -347,7 +349,7 @@ const AdminDashboard = () => {
 
                   {
                     <tbody className="w-full">
-                      {showFilteredData.map((student, index) => (
+                      {showFilteredData?.map((student, index) => (
                         <tr
                           key={index}
                           className="hover:bg-green-50 transition duration-150 ease-in-out"
@@ -371,7 +373,7 @@ const AdminDashboard = () => {
                   }
                 </table>
 
-                {showFilteredData.length === 0 && (
+                {showFilteredData?.length === 0 && (
                   <div className="w-full text-center justify-center items-center p-6">
                     Data Not Found
                   </div>
@@ -430,7 +432,7 @@ const AdminDashboard = () => {
         </div>
 
         {/* Pagination Buttons */}
-        <div className="flex gap-4 justify-center items-center mt-8">
+        {/* <div className="flex gap-4 justify-center items-center mt-8">
           <button
             onClick={handlePrevPage}
             disabled={page <= 1}
@@ -445,7 +447,20 @@ const AdminDashboard = () => {
           >
             Next
           </button>
-        </div>
+        </div> */}
+
+        {phone && email && (
+          <PaginatedList
+            apiEndpoint="/admin/getEnquiryData"
+            queryParams={{ phone }}
+            renderItem={renderStudentCard}
+            itemsPerPage={1}
+            email={email}
+            handleCardClick={(student) => {
+              handleCardClick(student);
+            }}
+          />
+        )}
 
         {/* Modal for displaying detailed information */}
         {isModalOpen && (

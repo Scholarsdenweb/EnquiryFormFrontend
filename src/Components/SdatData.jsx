@@ -2,6 +2,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import axios from "../../api/axios";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "./Sidebar";
+import PaginatedList from "./Pagination";
 
 const SdatData = () => {
   const [phone, setPhone] = useState("");
@@ -20,13 +21,10 @@ const SdatData = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.post(
-        "/adminData/getData",
-        {
-          phone,
-          page,
-        }
-      );
+      const response = await axios.post("/adminData/getData", {
+        phone,
+        page,
+      });
 
       console.log("fetchData", response);
 
@@ -67,32 +65,29 @@ const SdatData = () => {
   //   };
   // }
 
-
   function debounce(func, delay) {
     let timeoutId;
     let abortController;
-  
+
     return function (...args) {
       // Cancel any previous timer
       clearTimeout(timeoutId);
-  
+
       // Abort any ongoing request
       if (abortController) {
         abortController.abort();
       }
-  
+
       // Set up for a new request
       abortController = new AbortController();
       const signal = abortController.signal;
-  
+
       // Debounce logic
       timeoutId = setTimeout(() => {
         func.apply(this, [...args, signal]);
       }, delay);
     };
   }
-  
-  
 
   const debouncedFilter = useMemo(
     () => debounce(filterStudents, 1000),
@@ -129,12 +124,21 @@ const SdatData = () => {
     setPage((prevPage) => prevPage + 1);
   };
 
-  const classFilterOptions = ["VI", "VII", "VIII", "IX", "X", "XI Engineering", "XII Engineering", "XII Passed Engineering", "XI Medical", "XII Medical", "XII Passed Medical"];
+  const classFilterOptions = [
+    "VI",
+    "VII",
+    "VIII",
+    "IX",
+    "X",
+    "XI Engineering",
+    "XII Engineering",
+    "XII Passed Engineering",
+    "XI Medical",
+    "XII Medical",
+    "XII Passed Medical",
+  ];
 
   const handleChangeClassFilter = async (e) => {
-
-
-
     try {
       const filterByClass = await axios.post("/students/filterByClass", {
         filterByClassName: e.target.value,
@@ -201,7 +205,34 @@ const SdatData = () => {
     document.cookie = "phone=; max-age=0; path=/";
     history("/adminsignup");
   };
+  const renderStudentCard = (student, index, onClick) => {
 
+  
+    const {
+      studentName,
+      basicDetails: basic = {},
+      batchDetails: batch = {},
+      familyDetails: family = {},
+    } = student;
+  
+    return (
+      <div
+        key={index}
+        className="bg-white h-48 p-4 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 cursor-pointer"
+        onClick={onClick}
+      >
+        <div className="space-y-1">
+          {<h4 className="font-semibold">Student Name: {studentName}</h4>}
+          { <h4>Father Name: {family.FatherName}</h4>}
+          { <h4>Class: {batch.classForAdmission}</h4>}
+          {<h4>Subject: {batch.subjectCombination}</h4>}
+          { <h4>Exam: {basic.examName}</h4>}
+          { <h4>Exam Date: {basic.examDate}</h4>}
+        </div>
+      </div>
+    );
+  };
+  
   return (
     <div className="grid grid-cols-12 w-full max-w-screen-xl">
       <div className="col-span-2 w-full bg-[#c61d23]">
@@ -270,9 +301,11 @@ const SdatData = () => {
                           <td className="py-2 px-4 border-b">
                             {student.StudentsId}
                           </td>
-                          <td className="py-2 px-4 border-b">{student.studentName}</td>
                           <td className="py-2 px-4 border-b">
-                            {student?.batchDetail?.classForAdmission}
+                            {student.studentName}
+                          </td>
+                          <td className="py-2 px-4 border-b">
+                            {student?.batchDetails?.classForAdmission}
                           </td>
                           {/* <td className="py-2 px-4 border-b">
                             {student.fatherName}
@@ -299,7 +332,7 @@ const SdatData = () => {
           </div>
         )}
 
-        <div className="grid grid-cols-1 gap-6">
+        {/* <div className="grid grid-cols-1 gap-6">
           {data?.map((studentItem, index) => {
             const student = studentItem;
             const basic = student.basicDetails || {};
@@ -347,10 +380,10 @@ const SdatData = () => {
               </div>
             );
           })}
-        </div>
+        </div> */}
 
         {/* Pagination */}
-        <div className="flex gap-4 justify-center items-center mt-8">
+        {/* <div className="flex gap-4 justify-center items-center mt-8">
           <button
             onClick={handlePrevPage}
             disabled={page <= 1}
@@ -365,7 +398,21 @@ const SdatData = () => {
           >
             Next
           </button>
-        </div>
+        </div> */}
+
+        <PaginatedList
+          apiEndpoint="/adminData/getData"
+          queryParams={{ phone }}
+          renderItem={renderStudentCard}
+          itemsPerPage={1}
+          handleCardClick={(student) => {
+            const basic = student.basicDetails || {};
+            const batch = student.batchDetails || {};
+            const family = student.familyDetails || {};
+
+            handleCardClick(student, basic, batch, family);
+          }}
+        />
 
         {/* Modal */}
         {isModalOpen && selectedStudent && (

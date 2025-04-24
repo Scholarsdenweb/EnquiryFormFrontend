@@ -14,6 +14,7 @@ import AdminDashboard from "./Components/AdminDashboard";
 import FirstPage from "./Components/FirstPage";
 import FirstPageContant from "./Components/FirstPageContant";
 import SdatData from "./Components/SdatData";
+import Pagination from "./Components/Pagination";
 // import { useSelector } from "react-redux";
 
 function App() {
@@ -31,6 +32,7 @@ function App() {
             <Route path ="/adminSignup" element={<AdminSignup />} />
             <Route path ="/adminDashboard" element={<AdminDashboard />} />
             <Route path ="/sdatForm" element={<SdatData />} />
+            <Route path ="/pagination" element={<Pagination />} />
 
           </Routes>
         </div>
