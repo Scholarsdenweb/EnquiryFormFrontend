@@ -5,7 +5,7 @@ import Sidebar from "./Sidebar";
 import PaginatedList from "./Pagination";
 
 const SdatData = () => {
-  const [phone, setPhone] = useState("");
+  const [contactNumber, setContactNumber] = useState("");
   const [page, setPage] = useState(1);
   const [data, setData] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState(null);
@@ -22,16 +22,32 @@ const SdatData = () => {
   const fetchData = async () => {
     try {
       const response = await axios.post("/adminData/getData", {
-        phone,
+        contactNumber,
         page,
       });
 
-      console.log("fetchData", response);
+      console.log("fetchData from phonew", response);
 
       setData(response.data.data);
       setNoMoreData(response.data.isLastPage);
     } catch (e) {
       console.error("Error in fetchData:", e);
+    }
+  };
+
+  const fetchStudentById = async (studentId) => {
+    try {
+
+      console.log("studentId", studentId)
+      const response = await axios.post("/students/filter/filterById", {
+        studentId: studentId,
+      });
+
+      console.log("Student fetched by ID:", response.data);
+      setShowFilteredData(response.data);
+      setFilterValue(studentId);
+    } catch (error) {
+      console.error("Error fetching student by ID:", error);
     }
   };
 
@@ -65,33 +81,66 @@ const SdatData = () => {
   //   };
   // }
 
+  // function debounce(func, delay) {
+  //   let timeoutId;
+  //   let abortController;
+
+  //   return function (...args) {
+  //     // Cancel any previous timer
+  //     clearTimeout(timeoutId);
+
+  //     // Abort any ongoing request
+  //     if (abortController) {
+  //       abortController.abort();
+  //     }
+
+  //     // Set up for a new request
+  //     abortController = new AbortController();
+  //     const signal = abortController.signal;
+
+  //     // Debounce logic
+  //     timeoutId = setTimeout(() => {
+  //       func.apply(this, [...args, signal]);
+  //     }, delay);
+  //   };
+  // }
+
+
+
+
   function debounce(func, delay) {
     let timeoutId;
     let abortController;
-
+  
     return function (...args) {
-      // Cancel any previous timer
       clearTimeout(timeoutId);
-
-      // Abort any ongoing request
       if (abortController) {
         abortController.abort();
       }
-
-      // Set up for a new request
+  
       abortController = new AbortController();
       const signal = abortController.signal;
-
-      // Debounce logic
+  
       timeoutId = setTimeout(() => {
         func.apply(this, [...args, signal]);
       }, delay);
     };
   }
+  
+
+
+
+
+
 
   const debouncedFilter = useMemo(
     () => debounce(filterStudents, 1000),
     [inputValue]
+  );
+
+  const debouncedFetchById = useMemo(
+    () => debounce(fetchStudentById, 1000),
+    []
   );
 
   useEffect(() => {
@@ -100,16 +149,18 @@ const SdatData = () => {
       .find((row) => row.startsWith("phone="))
       ?.split("=")[1];
 
+    console.log("contactNumber", phoneFromCookie);
+
     if (phoneFromCookie) {
-      setPhone(phoneFromCookie);
+      setContactNumber(phoneFromCookie);
     }
   }, []);
 
   useEffect(() => {
-    if (phone) {
+    if (contactNumber) {
       fetchData();
     }
-  }, [phone, page]);
+  }, [contactNumber, page]);
 
   const handlePrevPage = () => {
     if (page > 1) {
@@ -147,6 +198,8 @@ const SdatData = () => {
       console.log("filterByClass", filterByClass);
       // setInputValue(filterByClass.data);
       setClassValue(filterByClass.data);
+
+
       setFilterValue(filterByClass.data);
 
       setShowFilteredData(filterByClass.data.data);
@@ -185,10 +238,10 @@ const SdatData = () => {
     });
   };
 
-  function maskPhoneNumber(phone) {
-    if (!phone) return "";
-    const visible = phone.slice(0, 4);
-    const masked = "*".repeat(phone.length - 4);
+  function maskPhoneNumber(contactNumber) {
+    if (!contactNumber) return "";
+    const visible = contactNumber.slice(0, 4);
+    const masked = "*".repeat(contactNumber.length - 4);
     return visible + masked;
   }
 
@@ -206,15 +259,13 @@ const SdatData = () => {
     history("/adminsignup");
   };
   const renderStudentCard = (student, index, onClick) => {
-
-  
     const {
       studentName,
       basicDetails: basic = {},
       batchDetails: batch = {},
       familyDetails: family = {},
     } = student;
-  
+
     return (
       <div
         key={index}
@@ -223,16 +274,16 @@ const SdatData = () => {
       >
         <div className="space-y-1">
           {<h4 className="font-semibold">Student Name: {studentName}</h4>}
-          { <h4>Father Name: {family.FatherName}</h4>}
-          { <h4>Class: {batch.classForAdmission}</h4>}
-          {<h4>Subject: {batch.subjectCombination}</h4>}
-          { <h4>Exam: {basic.examName}</h4>}
-          { <h4>Exam Date: {basic.examDate}</h4>}
+          {<h4>Father Name: {family?.FatherName}</h4>}
+          {<h4>Class: {batch?.classForAdmission}</h4>}
+          {<h4>Subject: {batch?.subjectCombination}</h4>}
+          {<h4>Exam: {basic?.examName}</h4>}
+          {<h4>Exam Date: {basic?.examDate}</h4>}
         </div>
       </div>
     );
   };
-  
+
   return (
     <div className="grid grid-cols-12 w-full max-w-screen-xl">
       <div className="col-span-2 w-full bg-[#c61d23]">
@@ -269,6 +320,12 @@ const SdatData = () => {
             value={inputValue}
             onChange={handleChange}
           />
+          <input
+            className="p-2 rounded-xl"
+            placeholder="Find By Student ID"
+            type="text"
+            onChange={(e) => debouncedFetchById(e.target.value)}
+          />
         </div>
 
         {filterValue != "" && (
@@ -299,13 +356,13 @@ const SdatData = () => {
                           className="hover:bg-green-50 transition duration-150 ease-in-out"
                         >
                           <td className="py-2 px-4 border-b">
-                            {student.StudentsId}
+                            {student?.StudentsId}
                           </td>
                           <td className="py-2 px-4 border-b">
-                            {student.studentName}
+                            {student?.studentName}
                           </td>
                           <td className="py-2 px-4 border-b">
-                            {student?.batchDetails?.classForAdmission}
+                            {student?.batchDetail?.classForAdmission}
                           </td>
                           {/* <td className="py-2 px-4 border-b">
                             {student.fatherName}
@@ -402,7 +459,7 @@ const SdatData = () => {
 
         <PaginatedList
           apiEndpoint="/adminData/getData"
-          queryParams={{ phone }}
+          queryParams={{ contactNumber }}
           renderItem={renderStudentCard}
           itemsPerPage={1}
           handleCardClick={(student) => {
@@ -427,8 +484,8 @@ const SdatData = () => {
                   <strong>Email:</strong> {maskEmail(selectedStudent.email)}
                 </p>
                 <p>
-                  <strong>Phone:</strong>{" "}
-                  {maskPhoneNumber(selectedStudent.phone)}
+                  <strong>Contact Number:</strong>{" "}
+                  {maskPhoneNumber(selectedStudent.contactNumber)}
                 </p>
                 {selectedStudent.profilePicture && (
                   <div className="my-4 flex gap-4 items-center">
