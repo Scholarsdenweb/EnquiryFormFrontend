@@ -295,7 +295,7 @@ const SdatData = () => {
           Admin Dashboard
         </h2>
 
-        <div className="flex gap-3 m-6">
+        <div className="flex flex-wrap gap-3 m-6">
           <select
             className=" w-40 p-2 rounded-xl "
             onChange={handleChangeClassFilter}
