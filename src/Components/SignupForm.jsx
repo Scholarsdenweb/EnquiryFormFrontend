@@ -17,7 +17,6 @@ const SignupForm = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-
   const [isSubmittingForm, setIsSubmittingForm] = useState(false);
 
   const [code, setCode] = useState("");
@@ -29,6 +28,7 @@ const SignupForm = () => {
   const { loading } = useSelector((state) => state.loadingDetails);
 
   const [submitMessage, setSubmitMessage] = useState("");
+  const [codeEntered, setCodeEntered] = useState(false);
 
   const [showLoadingPage, setShowLoadingPage] = useState(false);
 
@@ -38,9 +38,7 @@ const SignupForm = () => {
 
   // State hooks
   const [errors, setErrors] = useState({
-
     fatherContactNumber: "",
-    
   });
 
   const handleChange = (e) => {
@@ -53,34 +51,29 @@ const SignupForm = () => {
     }
   };
 
-
-useEffect(() => {
-  console.log("userData from useEffect", userData);
-}, [userData]);
+  useEffect(() => {
+    console.log("userData from useEffect", userData);
+  }, [userData]);
 
   const validateForm = () => {
     const formErrors = {};
     let isValid = true;
 
     // Field validation
-    [ "fatherContactNumber"].forEach((field) => {
+    ["fatherContactNumber"].forEach((field) => {
       const formattedField = field
-          .replace(/([A-Z])/g, " $1")
-          .replace(/^./, (str) => str.toUpperCase());
+        .replace(/([A-Z])/g, " $1")
+        .replace(/^./, (str) => str.toUpperCase());
       if (!userData[field]?.trim()) {
-        
         formErrors[field] = `${formattedField} is required`;
         isValid = false;
       }
-      
-    if (!phoneRegex.test(`+91${userData.fatherContactNumber}`)) {
-      formErrors.fatherContactNumber = `${formattedField} must be a valid 10-digit number`;
-      isValid = false;
-    }
+
+      if (!phoneRegex.test(`+91${userData.fatherContactNumber}`)) {
+        formErrors.fatherContactNumber = `${formattedField} must be a valid 10-digit number`;
+        isValid = false;
+      }
     });
-
-
-
 
     setErrors(formErrors);
     return isValid;
@@ -104,7 +97,6 @@ useEffect(() => {
     try {
       if (!validateForm()) {
         return;
-
       }
 
       dispatch(setLoading(true));
@@ -145,7 +137,7 @@ useEffect(() => {
       // return true;
     } catch (error) {
       console.log("Error message for checkVerificationCode", error);
-      setSubmitMessage("Error verifying fatherContactNumber number");
+      setSubmitMessage("Invalid OTP. Please try again.");
       return false;
     } finally {
       dispatch(setLoading(false));
@@ -156,53 +148,69 @@ useEffect(() => {
     e.preventDefault();
     try {
       setIsSubmittingForm(true); // ⬅️ Only show LoadingPage now
-  
+
       let codeChecked = await checkVerificationCode();
       if (codeChecked === false) {
         // setShowCodeBox(false);
         setCodeVerified(false);
-        setSubmitMessage("Please Verify Your Phone Number");
+        // setSubmitMessage("Please Verify Your Phone Number");
         setIsSubmittingForm(false); // ⬅️ reset if verification fails
         return;
       }
-  
+
       if (validateForm()) {
         await dispatch(submitFormData(userData));
-  
+
         if (document.cookie !== "") {
           setShowLoadingPage(true); // Show your full-screen LoadingPage
-  
+
           setTimeout(() => {
             navigate("/firstPage");
             setShowLoadingPage(false);
           }, 3000);
         }
-  
+
         console.log("userData for onSubmit", userData);
       }
     } catch (error) {
       console.log("error from onSubmit", error);
       setIsSubmittingForm(false); // ⬅️ always reset this
-
-    } 
+    }
   };
-  
+
+  const handleOTPChange = async (e) => {
+    if (e.target.value.length <= 4) {
+      setCode(e.target.value);
+    }
+
+    if (e.target.value.length >= 4) {
+      setCodeEntered(true);
+      return;
+    } else {
+      setCodeEntered(false);
+    }
+
+    console.log("e.target.value", e.target.value.length);
+  };
 
   return (
     <div className=" w-full bg-[#c61d23] flex items-center justify-center px-4 py-1">
       {isSubmittingForm && showLoadingPage && <LoadingPage />}
-      {!isSubmittingForm && loading && <Spinner />}
 
-      {!loading && !showLoadingPage && (
+    
         <form
           onSubmit={onSubmit}
           className="bg-white/10 backdrop-blur-md shadow-lg p-6 rounded-xl w-full max-w-lg space-y-6 text-white"
         >
-          <h2 className="text-center text-2xl md:text-3xl font-semibold">Phone Number Verification</h2>
-
+          <h2 className="text-center text-2xl md:text-3xl font-semibold">
+            Phone Number Verification
+          </h2>
 
           <div className="space-y-4">
-            <label htmlFor="fatherContactNumber" className="block text-sm font-medium">
+            <label
+              htmlFor="fatherContactNumber"
+              className="block text-sm font-medium"
+            >
               *Contact Number (Parent)
             </label>
             <div className="flex flex-col md:flex-row gap-2">
@@ -226,7 +234,9 @@ useEffect(() => {
               )}
             </div>
             {errors.fatherContactNumber && (
-              <p className="text-sm text-yellow-300">{errors.fatherContactNumber}</p>
+              <p className="text-sm text-yellow-300">
+                {errors.fatherContactNumber}
+              </p>
             )}
           </div>
 
@@ -241,7 +251,7 @@ useEffect(() => {
                 id="otp"
                 name="otp"
                 value={code}
-                onChange={(e) => setCode(e.target.value)}
+                onChange={handleOTPChange}
                 placeholder="Enter OTP"
                 className="w-full bg-white/20 text-white border border-white px-4 py-2 focus:outline-none placeholder-gray-400"
               />
@@ -250,27 +260,35 @@ useEffect(() => {
 
           {/* Message */}
           {submitMessage && (
-            <p className="text-sm text-center text-yellow-300">{submitMessage}</p>
+            <p className="text-sm text-center text-yellow-300">
+              {submitMessage}
+            </p>
           )}
           {error && <p className="text-sm text-center text-red-300">{error}</p>}
 
+          {!isSubmittingForm && loading && (
+            <div className="flex justify-center items-center">
+              <div className="animate-spin  rounded-full h-5 w-5 border-b-2 border-white"></div>
+            </div>
+          )}
+
           {/* Submit */}
 
+          {}
 
-          {
-            
-          }
-          <button
-            type="submit"
-            className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 rounded-xl transition-all"
-          >
-            Next
-          </button>
+          {showCodeBox && (
+            <button
+              type="submit"
+              className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 rounded-xl transition-all disabled:bg-yellow-800"
+              disabled={!codeEntered}
+            >
+              Next
+            </button>
+          )}
         </form>
-      )}
+      
     </div>
   );
-  
 };
 
 export default SignupForm;
