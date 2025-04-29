@@ -157,14 +157,14 @@ useEffect(() => {
     try {
       setIsSubmittingForm(true); // ⬅️ Only show LoadingPage now
   
-      // let codeChecked = await checkVerificationCode();
-      // if (codeChecked === false) {
-      //   // setShowCodeBox(false);
-      //   setCodeVerified(false);
-      //   setSubmitMessage("Please Verify Your Phone Number");
-      //   setIsSubmittingForm(false); // ⬅️ reset if verification fails
-      //   return;
-      // }
+      let codeChecked = await checkVerificationCode();
+      if (codeChecked === false) {
+        // setShowCodeBox(false);
+        setCodeVerified(false);
+        setSubmitMessage("Please Verify Your Phone Number");
+        setIsSubmittingForm(false); // ⬅️ reset if verification fails
+        return;
+      }
   
       if (validateForm()) {
         await dispatch(submitFormData(userData));
@@ -255,6 +255,11 @@ useEffect(() => {
           {error && <p className="text-sm text-center text-red-300">{error}</p>}
 
           {/* Submit */}
+
+
+          {
+            
+          }
           <button
             type="submit"
             className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 rounded-xl transition-all"
