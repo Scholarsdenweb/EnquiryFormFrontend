@@ -174,7 +174,7 @@ useEffect(()=>{
   {/* Parent Name */}
   <div className="w-full">
     <label htmlFor="fatherName" className="block text-sm font-medium mb-1">
-      Parents Name<span className="text-yellow-300">*</span>
+      Fathers Name<span className="text-yellow-300">*</span>
     </label>
     <input
       autoComplete="off"

@@ -33,8 +33,8 @@ const SignupForm = () => {
   const [showLoadingPage, setShowLoadingPage] = useState(false);
 
   const phoneRegex = /^\+91[0-9]{10}$/;
-  const [codeVerified, setCodeVerified] = useState(true);
-  // const [codeVerified, setCodeVerified] = useState(false);
+  // const [codeVerified, setCodeVerified] = useState(true);
+  const [codeVerified, setCodeVerified] = useState(false);
 
   // State hooks
   const [errors, setErrors] = useState({
@@ -149,14 +149,14 @@ const SignupForm = () => {
     try {
       setIsSubmittingForm(true); // ⬅️ Only show LoadingPage now
 
-      // let codeChecked = await checkVerificationCode();
-      // if (codeChecked === false) {
-      //   // setShowCodeBox(false);
-      //   setCodeVerified(false);
-      //   // setSubmitMessage("Please Verify Your Phone Number");
-      //   setIsSubmittingForm(false); // ⬅️ reset if verification fails
-      //   return;
-      // }
+      let codeChecked = await checkVerificationCode();
+      if (codeChecked === false) {
+        // setShowCodeBox(false);
+        setCodeVerified(false);
+        // setSubmitMessage("Please Verify Your Phone Number");
+        setIsSubmittingForm(false); // ⬅️ reset if verification fails
+        return;
+      }
 
       if (validateForm()) {
         await dispatch(submitFormData(userData));
@@ -277,15 +277,15 @@ const SignupForm = () => {
 
           {}
 
-          {/* {showCodeBox && ( */}
+          {showCodeBox && (
             <button
               type="submit"
               className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 rounded-xl transition-all disabled:bg-yellow-800"
-              // disabled={!codeEntered}
+              disabled={!codeEntered}
             >
               Next
             </button>
-          {/* )} */}
+          )}
         </form>
       
     </div>

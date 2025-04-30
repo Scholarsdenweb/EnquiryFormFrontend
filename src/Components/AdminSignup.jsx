@@ -12,6 +12,8 @@ const AdminSignup = () => {
 
   const navigate = useNavigate();
   const userData = useSelector((state) => state.userData);
+  const [codeEntered, setCodeEntered] = useState(false);
+
   const [submitMessage, setSubmitMessage] = useState("");
 
   const [showCodeBox, setShowCodeBox] = useState(false);
@@ -19,36 +21,45 @@ const AdminSignup = () => {
   const [code, setCode] = useState("");
 
   const [phone, setPhone] = useState("");
-  // const [codeVerified, setCodeVerified] = useState(false);
-  const [codeVerified, setCodeVerified] = useState(true);
+  const [codeVerified, setCodeVerified] = useState(false);
+  // const [codeVerified, setCodeVerified] = useState(true);
   const [errors, setErrors] = useState({
     phone: "",
   });
+
+  const handleOTPChange = async (e) => {
+    if (e.target.value.length <= 4) {
+      setCode(e.target.value);
+    }
+
+    if (e.target.value.length >= 4) {
+      setCodeEntered(true);
+      return;
+    } else {
+      setCodeEntered(false);
+    }
+
+    console.log("e.target.value", e.target.value.length);
+  };
 
   const [loading, setLoading] = useState(false);
 
   const onSubmit = async (e) => {
     e.preventDefault();
     try {
-      // let codeChecked = await checkVerificationCode();
+      let codeChecked = await checkVerificationCode();
 
-      // console.log("codeChecked", codeChecked);
+      console.log("codeChecked", codeChecked);
 
-      // console.log("Button Clicked");
-      // if (codeChecked === false) {
-      //   return true;
-      // }else{
-      //   document.cookie = `phone=${phone}; path=/`;
-      //   navigate("/adminDashboard");
-      // }
+      console.log("Button Clicked");
+      if (codeChecked === false) {
+        return true;
+      } else {
+        document.cookie = `phone=${phone}; path=/`;
+        navigate("/adminDashboard");
+      }
       document.cookie = `phone=${phone}; path=/`;
       navigate("/adminDashboard");
-
-
-
-
-
-
     } catch (error) {
       console.log("error from onSubmit", error);
     } finally {
@@ -181,12 +192,14 @@ const AdminSignup = () => {
                         name="phone"
                         value={phone || ""}
                         onChange={(e) => setPhone(e.target.value)}
-                        placeholder="*Contact no (Parents)"
+                        placeholder="*Contact Number"
                         className="border-b-2 border-gray-300 focus:outline-none text-black w-full text-lg rounded-lg p-3"
                         style={{ backgroundColor: "#f3f3f3" }}
                       />
                       {errors.phone && (
-                        <p className="text-red-600 text-sm mt-1">{errors.phone}</p>
+                        <p className="text-red-600 text-sm mt-1">
+                          {errors.phone}
+                        </p>
                       )}
                     </div>
                     {!showCodeBox && !codeVerified && (
@@ -199,30 +212,38 @@ const AdminSignup = () => {
                       </button>
                     )}
                   </div>
-                
+
+                  {showCodeBox && (
+                    <div className="flex flex-col w-full max-w-sm gap-3">
+                      <input
+                        autoComplete="off"
+                        type="text"
+                        id="code"
+                        name="code"
+                        value={code}
+                        onChange={handleOTPChange}
+                        placeholder="*Verification Code"
+                        className="w-full bg-white/20 text-white border border-white px-4 py-2  focus:outline-none placeholder-gray-400"
+                      />
+                    </div>
+                  )}
+                </div>
 
                 {showCodeBox && (
-                  <div className="flex flex-col w-full max-w-sm gap-3">
-                    <input
-                      autoComplete="off"
-                      type="text"
-                      id="code"
-                      name="code"
-                      value={code}
-                      onChange={(e) => setCode(e.target.value)}
-                      placeholder="*Verification Code"
-                      className="w-full bg-white/20 text-white border border-white px-4 py-2  focus:outline-none placeholder-gray-400"
-                 
-                    />
-                  </div>
+                  <button
+                    type="submit"
+                    className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 rounded-xl transition-all disabled:bg-yellow-800"
+                    disabled={!codeEntered}
+                  >
+                    Next
+                  </button>
                 )}
-</div>
-                <button
+                {/* <button
                   className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 rounded-xl transition-all"
                   type="submit"
                 >
                   Login
-                </button>
+                </button> */}
               </form>
             </div>
           </div>
@@ -236,7 +257,6 @@ const AdminSignup = () => {
       </div>
     </div>
   );
-
 };
 
 export default AdminSignup;
