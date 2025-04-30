@@ -470,7 +470,7 @@ const TakenBy = () => {
                   <button
                     type="button"
                     onClick={() => navigate("/enquiryForm")}
-                    className="w-full sm:w-1/3 border border-gray-400 rounded-xl bg-yellow-500 hover:bg-yellow-600 py-2 px-4 cursor-not-allowed"
+                    className="w-full sm:w-1/3 border border-gray-400 rounded-xl bg-yellow-500 hover:bg-yellow-600 py-2 px-4 "
                   >
                     Back
                   </button>

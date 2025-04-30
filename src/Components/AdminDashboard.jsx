@@ -15,6 +15,7 @@ const AdminDashboard = () => {
   const [classValue, setClassValue] = useState("");
 
   const [inputValue, setInputValue] = useState("");
+  const [filterByEnquiry, setFilterByEnquiry] = useState("");
   const [filterValue, setFilterValue] = useState("");
 
   const [showFilteredData, setShowFilteredData] = useState([]);
@@ -22,6 +23,7 @@ const AdminDashboard = () => {
   const numberTOemail = (number) => {
     const numberEmail = {
       9719706242: "urooj@scholarsden.in",
+      7037550621: "jatin@scholarsden.in",
     };
 
     console.log("numberTOemail function called", number);
@@ -35,6 +37,21 @@ const AdminDashboard = () => {
       console.log("inputValue data", inputValue);
       const allfilterStudent = await axios.post("/user/filter/Student", {
         data: inputValue,
+        email,
+      });
+
+      console.log("Show student data", allfilterStudent);
+      setShowFilteredData(allfilterStudent.data);
+    } catch (error) {
+      console.error("Error filtering students:", error);
+    }
+  };
+  const filterStudentByEnquiryNumber = async () => {
+    try {
+      console.log("inputValue filterByEnquiry data", filterByEnquiry);
+      const allfilterStudent = await axios.post("/user/filter/enquiryNumber", {
+        data: filterByEnquiry,
+        email,
       });
 
       console.log("Show student data", allfilterStudent);
@@ -50,11 +67,18 @@ const AdminDashboard = () => {
     setFilterValue(value);
     debouncedFilter(value);
   };
+  const handleChangeEnquiryIDFilter = (e) => {
+    const value = e.target.value;
+    setFilterByEnquiry(value);
+    setFilterValue(value);
+    debouncedFilterForEnquiryNumber(value);
+  };
 
   const handleChangeClassFilter = async (e) => {
     try {
       const filterByClass = await axios.post("/user/filter/filterByClass", {
         filterByClassName: e.target.value,
+        email,
       });
 
       console.log("filterByClass", filterByClass);
@@ -80,6 +104,10 @@ const AdminDashboard = () => {
   const debouncedFilter = useMemo(
     () => debounce(filterStudents, 1000),
     [inputValue]
+  );
+  const debouncedFilterForEnquiryNumber = useMemo(
+    () => debounce(filterStudentByEnquiryNumber, 1000),
+    [filterByEnquiry]
   );
 
   useEffect(() => {
@@ -265,6 +293,18 @@ const AdminDashboard = () => {
     }
   }
 
+  const dateFormatting = (isoDate) => {
+    const date = new Date(isoDate);
+
+    // Get components and format as two digits
+    const year = String(date.getFullYear()).slice(2); // "25"
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // "04"
+    const day = String(date.getDate()).padStart(2, "0"); // "22"
+
+    const formattedDate = `${day}-${month}-${year}`;
+    return formattedDate;
+  };
+
   // Handle logout
   const handleLogout = () => {
     // Remove phone cookie
@@ -281,6 +321,9 @@ const AdminDashboard = () => {
         className="bg-white p-4 rounded shadow"
         onClick={onClick}
       >
+        <h4 className="text-lg font-bold">
+          Enquiry Number: {student.enquiryNumber}
+        </h4>
         <h4 className="text-lg font-bold">Name: {student.studentName}</h4>
         {<p>Father Name:{student.fatherName}</p>}
         {<p>Program: {student.program}</p>}
@@ -326,6 +369,13 @@ const AdminDashboard = () => {
             value={inputValue}
             onChange={handleChange}
           />
+          <input
+            className="p-2 rounded-xl"
+            placeholder="Find By Enquiry Number"
+            type="text"
+            value={filterByEnquiry}
+            onChange={handleChangeEnquiryIDFilter}
+          />
         </div>
 
         {console.log("filterValue fro console", filterValue)}
@@ -338,12 +388,15 @@ const AdminDashboard = () => {
                   <thead className="bg-[#c61d23] text-white sticky top-0 z-10">
                     <tr>
                       <th className="py-3 px-4 text-left border-b">Index</th>
+                      <th className="py-3 px-4 text-left border-b">Date</th>
+                      <th className="py-3 px-4 text-left border-b">Enquiry Number</th>
                       <th className="py-3 px-4 text-left border-b">Name</th>
                       <th className="py-3 px-4 text-left border-b">
                         Father Name
                       </th>
                       <th className="py-3 px-4 text-left border-b">Program</th>
                       <th className="py-3 px-4 text-left border-b">Class</th>
+                      <th className="py-3 px-4 text-left border-b">Contact Number</th>
                     </tr>
                   </thead>
 
@@ -356,6 +409,12 @@ const AdminDashboard = () => {
                         >
                           <td className="py-2 px-4 border-b">{index + 1}</td>
                           <td className="py-2 px-4 border-b">
+                            {dateFormatting(student.createdAt.split("T")[0])}
+                          </td>
+                          <td className="py-2 px-4 border-b">
+                            {student.enquiryNumber}
+                          </td>
+                          <td className="py-2 px-4 border-b">
                             {student.studentName}
                           </td>
                           <td className="py-2 px-4 border-b">
@@ -367,6 +426,25 @@ const AdminDashboard = () => {
                           <td className="py-2 px-4 border-b">
                             {student.courseOfIntrested}
                           </td>
+                          <td className="py-2 px-4 border-b">
+                            {maskPhoneNumber(student.fatherContactNumber)}
+                          </td>
+                          {/* <div className="flex justify-between w-full items-center">
+                            <p>
+                      <strong>Father's Contact:</strong>{" "}
+                      {maskPhoneNumber(student.fatherContactNumber)}
+                    </p>
+
+                            <button
+                              className="py-2 px-2 bg-[#ffdd00] border-2 rounded-xl "
+                              onClick={() => {
+                                triggerOBDCall(student.fatherContactNumber);
+                              }}
+                            >
+                              {" "}
+                              Call Now{" "}
+                            </button>
+                          </div> */}
                         </tr>
                       ))}
                     </tbody>
@@ -470,12 +548,17 @@ const AdminDashboard = () => {
               {selectedStudent && (
                 <div className="space-y-3">
                   <p>
+                    <strong>Enquiry Number:</strong>{" "}
+                    {selectedStudent.enquiryNumber}
+                  </p>
+                  <p>
                     <strong>Name:</strong> {selectedStudent.studentName}
                   </p>
                   <div className="flex justify-between w-full items-center">
                     <p>
                       <strong>Father's Contact:</strong>{" "}
-                      {maskPhoneNumber(selectedStudent.fatherContactNumber)}
+                      {selectedStudent.fatherContactNumber}
+                      {/* {maskPhoneNumber(selectedStudent.fatherContactNumber)} */}
                     </p>
 
                     <button
@@ -488,6 +571,7 @@ const AdminDashboard = () => {
                       Call Now{" "}
                     </button>
                   </div>
+
                   <p>
                     <strong>Email:</strong> {maskEmail(selectedStudent.email)}
                   </p>
@@ -520,6 +604,7 @@ const AdminDashboard = () => {
                   <p>
                     <strong>Remarks:</strong> {selectedStudent.remarks}
                   </p>
+
                   <p>
                     <strong>Intime:</strong> {selectedStudent.intime}
                   </p>

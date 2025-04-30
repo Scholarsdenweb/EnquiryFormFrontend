@@ -18,12 +18,19 @@ const PaginatedList = ({
   const fetchData = async (page) => {
     try {
       setLoading(true);
+
+
+      console.log("FetchData is is calling ");
       const response = await axios.post(apiEndpoint, {
         ...queryParams,
         email,
         page: page + 1,
         limit: itemsPerPage,
       });
+
+
+
+      console.log("response form pagination", response);
 
       setItems(response.data.data || []);
       setTotalPages(response.data.totalPages || 0);
@@ -39,6 +46,7 @@ const PaginatedList = ({
   }, [currentPage, queryParams]);
 
   const handlePageClick = ({ selected }) => {
+    console.log("handlePage click ");
     setCurrentPage(selected);
   };
 

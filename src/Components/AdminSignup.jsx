@@ -19,7 +19,8 @@ const AdminSignup = () => {
   const [code, setCode] = useState("");
 
   const [phone, setPhone] = useState("");
-  const [codeVerified, setCodeVerified] = useState(false);
+  // const [codeVerified, setCodeVerified] = useState(false);
+  const [codeVerified, setCodeVerified] = useState(true);
   const [errors, setErrors] = useState({
     phone: "",
   });
@@ -29,17 +30,25 @@ const AdminSignup = () => {
   const onSubmit = async (e) => {
     e.preventDefault();
     try {
-      let codeChecked = await checkVerificationCode();
+      // let codeChecked = await checkVerificationCode();
 
-      console.log("codeChecked", codeChecked);
+      // console.log("codeChecked", codeChecked);
 
-      console.log("Button Clicked");
-      if (codeChecked === false) {
-        return true;
-      }else{
-        document.cookie = `phone=${phone}; path=/`;
-        navigate("/adminDashboard");
-      }
+      // console.log("Button Clicked");
+      // if (codeChecked === false) {
+      //   return true;
+      // }else{
+      //   document.cookie = `phone=${phone}; path=/`;
+      //   navigate("/adminDashboard");
+      // }
+      document.cookie = `phone=${phone}; path=/`;
+      navigate("/adminDashboard");
+
+
+
+
+
+
     } catch (error) {
       console.log("error from onSubmit", error);
     } finally {
