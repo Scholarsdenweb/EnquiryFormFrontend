@@ -21,8 +21,8 @@ const AdminSignup = () => {
   const [code, setCode] = useState("");
 
   const [phone, setPhone] = useState("");
-  const [codeVerified, setCodeVerified] = useState(false);
-  // const [codeVerified, setCodeVerified] = useState(true);
+  // const [codeVerified, setCodeVerified] = useState(false);
+  const [codeVerified, setCodeVerified] = useState(true);
   const [errors, setErrors] = useState({
     phone: "",
   });
@@ -47,7 +47,8 @@ const AdminSignup = () => {
   const onSubmit = async (e) => {
     e.preventDefault();
     try {
-      let codeChecked = await checkVerificationCode();
+      // let codeChecked = await checkVerificationCode();
+      let codeChecked =true;
 
       console.log("codeChecked", codeChecked);
 
@@ -229,15 +230,15 @@ const AdminSignup = () => {
                   )}
                 </div>
 
-                {showCodeBox && (
+                {/* {showCodeBox && ( */}
                   <button
                     type="submit"
                     className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 rounded-xl transition-all disabled:bg-yellow-800"
-                    disabled={!codeEntered}
+                    // disabled={!codeEntered}
                   >
                     Next
                   </button>
-                )}
+                {/* )} */}
                 {/* <button
                   className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 rounded-xl transition-all"
                   type="submit"

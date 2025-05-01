@@ -403,7 +403,7 @@ const TakenBy = () => {
                         type="radio"
                         name="howToKnow"
                         value="Hoarding/Banner"
-                        checked={userData.howToKnow === "Hoading/Banner"}
+                        checked={userData.howToKnow === "Hoarding/Banner"}
                         onChange={handleChange}
                       />
                       <label className="text-white text-lg ">

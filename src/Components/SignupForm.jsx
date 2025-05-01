@@ -33,8 +33,8 @@ const SignupForm = () => {
   const [showLoadingPage, setShowLoadingPage] = useState(false);
 
   const phoneRegex = /^\+91[0-9]{10}$/;
-  // const [codeVerified, setCodeVerified] = useState(true);
-  const [codeVerified, setCodeVerified] = useState(false);
+  const [codeVerified, setCodeVerified] = useState(true);
+  // const [codeVerified, setCodeVerified] = useState(false);
 
   // State hooks
   const [errors, setErrors] = useState({
@@ -149,14 +149,14 @@ const SignupForm = () => {
     try {
       setIsSubmittingForm(true); // ⬅️ Only show LoadingPage now
 
-      let codeChecked = await checkVerificationCode();
-      if (codeChecked === false) {
-        // setShowCodeBox(false);
-        setCodeVerified(false);
-        // setSubmitMessage("Please Verify Your Phone Number");
-        setIsSubmittingForm(false); // ⬅️ reset if verification fails
-        return;
-      }
+      // let codeChecked = await checkVerificationCode();
+      // if (codeChecked === false) {
+      //   // setShowCodeBox(false);
+      //   setCodeVerified(false);
+      //   // setSubmitMessage("Please Verify Your Phone Number");
+      //   setIsSubmittingForm(false); // ⬅️ reset if verification fails
+      //   return;
+      // }
 
       if (validateForm()) {
         await dispatch(submitFormData(userData));
@@ -166,7 +166,7 @@ const SignupForm = () => {
         //   setShowLoadingPage(true); // Show your full-screen LoadingPage
 
         //   setTimeout(() => {
-           
+
         //     setShowLoadingPage(false);
         //   }, 3000);
         // }
@@ -198,96 +198,92 @@ const SignupForm = () => {
     <div className=" w-full bg-[#c61d23] flex items-center justify-center px-4 py-1">
       {isSubmittingForm && showLoadingPage && <LoadingPage />}
 
-    
-        <form
-          onSubmit={onSubmit}
-          className="bg-white/10 backdrop-blur-md shadow-lg p-6 rounded-xl w-full max-w-lg space-y-6 text-white"
-        >
-          <h2 className="text-center text-2xl md:text-3xl font-semibold">
-            Phone Number Verification
-          </h2>
+      <form
+        onSubmit={onSubmit}
+        className="bg-white/10 backdrop-blur-md shadow-lg p-6 rounded-xl w-full max-w-lg space-y-6 text-white"
+      >
+        <h2 className="text-center text-2xl md:text-3xl font-semibold">
+          Phone Number Verification
+        </h2>
 
-          <div className="space-y-4">
-            <label
-              htmlFor="fatherContactNumber"
-              className="block text-sm font-medium"
-            >
-              *Contact Number (Parent)
-            </label>
-            <div className="flex flex-col md:flex-row gap-2">
-              <input
-                type="number"
-                id="fatherContactNumber"
-                name="fatherContactNumber"
-                value={userData?.fatherContactNumber || ""}
-                onChange={handleChange}
-                placeholder="Enter Contact Number"
-                className="flex-1 bg-white/10 text-white border border-white px-4 py-2 focus:outline-none placeholder-gray-400"
-              />
-              {!showCodeBox && !codeVerified && (
-                <button
-                  type="button"
-                  onClick={verifyPhoneNo}
-                  className="px-4 py-2 rounded-md bg-yellow-500 hover:bg-yellow-600 text-black font-semibold "
-                >
-                  Send OTP
-                </button>
-              )}
-            </div>
-            {errors.fatherContactNumber && (
-              <p className="text-sm text-yellow-300">
-                {errors.fatherContactNumber}
-              </p>
+        <div className="space-y-4">
+          <label
+            htmlFor="fatherContactNumber"
+            className="block text-sm font-medium"
+          >
+            *Contact Number (Parent)
+          </label>
+          <div className="flex flex-col md:flex-row gap-2">
+            <input
+              type="number"
+              id="fatherContactNumber"
+              name="fatherContactNumber"
+              value={userData?.fatherContactNumber || ""}
+              onChange={handleChange}
+              placeholder="Enter Contact Number"
+              className="flex-1 bg-white/10 text-white border border-white px-4 py-2 focus:outline-none placeholder-gray-400"
+            />
+            {!showCodeBox && !codeVerified && (
+              <button
+                type="button"
+                onClick={verifyPhoneNo}
+                className="px-4 py-2 rounded-md bg-yellow-500 hover:bg-yellow-600 text-black font-semibold "
+              >
+                Send OTP
+              </button>
             )}
           </div>
-
-          {/* OTP Input */}
-          {showCodeBox && (
-            <div className="space-y-2">
-              <label htmlFor="otp" className="block text-sm font-medium">
-                *Verification Code
-              </label>
-              <input
-                type="text"
-                id="otp"
-                name="otp"
-                value={code}
-                onChange={handleOTPChange}
-                placeholder="Enter OTP"
-                className="w-full bg-white/20 text-white border border-white px-4 py-2 focus:outline-none placeholder-gray-400"
-              />
-            </div>
-          )}
-
-          {/* Message */}
-          {submitMessage && (
-            <p className="text-sm text-center text-yellow-300">
-              {submitMessage}
+          {errors.fatherContactNumber && (
+            <p className="text-sm text-yellow-300">
+              {errors.fatherContactNumber}
             </p>
           )}
-          {error && <p className="text-sm text-center text-red-300">{error}</p>}
+        </div>
 
-          {!isSubmittingForm && loading && (
-            <div className="flex justify-center items-center">
-              <div className="animate-spin  rounded-full h-5 w-5 border-b-2 border-white"></div>
-            </div>
-          )}
+        {/* OTP Input */}
+        {showCodeBox && (
+          <div className="space-y-2">
+            <label htmlFor="otp" className="block text-sm font-medium">
+              *Verification Code
+            </label>
+            <input
+              type="text"
+              id="otp"
+              name="otp"
+              value={code}
+              onChange={handleOTPChange}
+              placeholder="Enter OTP"
+              className="w-full bg-white/20 text-white border border-white px-4 py-2 focus:outline-none placeholder-gray-400"
+            />
+          </div>
+        )}
 
-          {/* Submit */}
+        {/* Message */}
+        {submitMessage && (
+          <p className="text-sm text-center text-yellow-300">{submitMessage}</p>
+        )}
+        {error && <p className="text-sm text-center text-red-300">{error}</p>}
 
-          {}
+        {!isSubmittingForm && loading && (
+          <div className="flex justify-center items-center">
+            <div className="animate-spin  rounded-full h-5 w-5 border-b-2 border-white"></div>
+          </div>
+        )}
 
-          {showCodeBox && (
-            <button
-              type="submit"
-              className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 rounded-xl transition-all disabled:bg-yellow-800"
-              disabled={!codeEntered}
-            >
-              Next
-            </button>
-          )}
-        </form>
-      
+        {/* Submit */}
+
+
+
+        {/* {showCodeBox && ( */}
+          <button
+            type="submit"
+            className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 rounded-xl transition-all disabled:bg-yellow-800"
+            // disabled={!codeEntered}
+          >
+            Next
+          </button>
+        {/* )} */}
+      </form>
     </div>
   );
 };
