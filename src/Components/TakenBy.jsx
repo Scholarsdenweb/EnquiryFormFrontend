@@ -407,7 +407,7 @@ const TakenBy = () => {
                         onChange={handleChange}
                       />
                       <label className="text-white text-lg ">
-                        Hoading/Banner
+                        Hoarding/Banner
                       </label>
                     </div>
                     <div className="flex items-center gap-1">
