@@ -91,13 +91,13 @@ const EnquiryForm = () => {
   // };
 
   const programOptions = {
-    "Foundation (VI - X)": ["VI", "VII", "VIII", "IX", "X"],
-    "Engineering (XI - XII)": [
-      "XI",
-      "XII",
-      "XII Passed",
+    "Foundationg": ["VI", "VII", "VIII", "IX", "X"],
+    "JEE(Main & Adv)": [
+      "XI Engineering",
+      "XII Engineering",
+      "XII Passed Engineering",
     ],
-    "Medical (XI -XII)": ["XI", "XII", "XII Passed"],
+    "NEET(UG)": ["XI Medical", "XII Medical", "XII Passed Medical"],
   };
 
 
@@ -262,7 +262,9 @@ const EnquiryForm = () => {
                   key={program}
                   value={program}
                 >
-                  {program}
+                  {program === "Foundation"
+                    ? `${program} (VI - X)`
+                    : `${program} (XI - XII Passed)`}
                 </option>
               ))}
             </select>
