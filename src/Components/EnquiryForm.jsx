@@ -107,6 +107,8 @@ const EnquiryForm = () => {
     console.log("named", [name], name);
     console.log("named", value);
 
+
+    
     if (name === "city") {
       console.log("userData[name]", value);
       if (value === "Other") {

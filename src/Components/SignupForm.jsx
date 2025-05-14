@@ -44,6 +44,14 @@ const SignupForm = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     console.log("name", name, "value", value);
+
+     if (name === "fatherContactNumber") {
+      if (value.length > 10) {
+        return;
+      }
+    }
+
+
     dispatch(updateUserDetails({ [name]: value }));
 
     if (value.trim()) {
