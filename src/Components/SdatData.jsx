@@ -17,23 +17,27 @@ const SdatData = () => {
   const [filterValue, setFilterValue] = useState("");
   const [showFilteredData, setShowFilteredData] = useState([]);
 
+  const [showImageUrl , setShowImageUrl] = useState("");
+
+  const [filter, setFilter] = useState("/adminData/getData");
+
   const history = useNavigate();
 
-  const fetchData = async () => {
-    try {
-      const response = await axios.post("/adminData/getData", {
-        contactNumber,
-        page,
-      });
+  // const fetchData = async () => {
+  //   try {
+  //     const response = await axios.post("/adminData/getData", {
+  //       contactNumber,
+  //       page,
+  //     });
 
-      console.log("fetchData from phonew", response);
+  //     console.log("fetchData from phonew", response);
 
-      setData(response.data.data);
-      setNoMoreData(response.data.isLastPage);
-    } catch (e) {
-      console.error("Error in fetchData:", e);
-    }
-  };
+  //     setData(response.data.data);
+  //     setNoMoreData(response.data.isLastPage);
+  //   } catch (e) {
+  //     console.error("Error in fetchData:", e);
+  //   }
+  // };
 
   const fetchStudentById = async (studentId) => {
     try {
@@ -156,11 +160,11 @@ const SdatData = () => {
     }
   }, []);
 
-  useEffect(() => {
-    if (contactNumber) {
-      fetchData();
-    }
-  }, [contactNumber, page]);
+  // useEffect(() => {
+  //   if (contactNumber) {
+  //     fetchData();
+  //   }
+  // }, [contactNumber, page]);
 
   const handlePrevPage = () => {
     if (page > 1) {
@@ -209,6 +213,7 @@ const SdatData = () => {
   };
 
   const handleCardClick = (student, basic, batch, family) => {
+    console.log("student basic batch family", student, basic, batch, family);
     setSelectedStudent({
       ...student,
       ...basic,
@@ -223,6 +228,10 @@ const SdatData = () => {
     setSelectedStudent(null);
   };
 
+  useEffect(()=>{
+    handleChangeClassFilter();
+  },[]);
+
   const convertToDate = (isoString) => {
     if (!isoString) return "";
     const date = new Date(isoString);
@@ -231,10 +240,10 @@ const SdatData = () => {
       year: "numeric",
       month: "numeric",
       day: "numeric",
-      hour: "numeric",
-      minute: "numeric",
-      second: "numeric",
-      hour12: false,
+      // hour: "numeric",
+      // minute: "numeric",
+      // second: "numeric",
+      // hour12: false,
     });
   };
 
@@ -258,6 +267,13 @@ const SdatData = () => {
     document.cookie = "phone=; max-age=0; path=/";
     history("/adminsignup");
   };
+  const onClickShowImage = (imageUrl)=>{
+
+    console.log("imageUrl", imageUrl);
+  setShowImage(true)
+  setShowImageUrl(imageUrl)
+
+}
   const renderStudentCard = (student, index, onClick) => {
     const {
       studentName,
@@ -265,6 +281,21 @@ const SdatData = () => {
       batchDetails: batch = {},
       familyDetails: family = {},
     } = student;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     return (
       <div
@@ -481,20 +512,31 @@ const SdatData = () => {
                   <strong>Name:</strong> {selectedStudent.studentName}
                 </p>
                 <p>
-                  <strong>Email:</strong> {maskEmail(selectedStudent.email)}
+                  <strong>Email:</strong> {selectedStudent.email}
                 </p>
                 <p>
                   <strong>Contact Number:</strong>{" "}
-                  {maskPhoneNumber(selectedStudent.contactNumber)}
+                  {selectedStudent.contactNumber}
                 </p>
                 {selectedStudent.profilePicture && (
                   <div className="my-4 flex gap-4 items-center">
                     <p>Profile Picture</p>
                     <button
-                      onClick={() => setShowImage(true)}
+                      onClick={() =>onClickShowImage(selectedStudent.profilePicture)}
                       className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
                     >
                       View Image
+                    </button>
+                  </div>
+                )}
+                {selectedStudent.admitCard && (
+                  <div className="my-4 flex gap-4 items-center">
+                    <p>Admit Card</p>
+                    <button
+                     target="_blank"
+                      className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+                    >
+                      View Admit Card
                     </button>
                   </div>
                 )}
@@ -503,7 +545,7 @@ const SdatData = () => {
                   <div className="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center z-50">
                     <div className="relative">
                       <img
-                        src={selectedStudent.profilePicture}
+                        src={showImageUrl}
                         alt="Profile"
                         className="max-w-full max-h-screen rounded"
                       />
@@ -522,7 +564,7 @@ const SdatData = () => {
                 </p>
                 <p>
                   <strong>Father Contact:</strong>{" "}
-                  {maskPhoneNumber(selectedStudent.FatherContactNumber)}
+                  {selectedStudent.FatherContactNumber}
                 </p>
                 <p>
                   <strong>Father Occupation:</strong>{" "}
@@ -533,7 +575,7 @@ const SdatData = () => {
                 </p>
                 <p>
                   <strong>Mother Contact:</strong>{" "}
-                  {maskPhoneNumber(selectedStudent.MotherContactNumber)}
+                  {selectedStudent.MotherContactNumber}
                 </p>
                 <p>
                   <strong>Mother Occupation:</strong>{" "}
@@ -545,7 +587,7 @@ const SdatData = () => {
                 </p>
                 <p>
                   <strong>Subject Combination:</strong>{" "}
-                  {selectedStudent.subjectCombination}
+                  {selectedStudent.program}
                 </p>
                 <p>
                   <strong>Exam Name:</strong> {selectedStudent.examName}
