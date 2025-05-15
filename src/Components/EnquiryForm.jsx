@@ -91,7 +91,7 @@ const EnquiryForm = () => {
   // };
 
   const programOptions = {
-    "Foundationg": ["VI", "VII", "VIII", "IX", "X"],
+    "Foundation": ["VI", "VII", "VIII", "IX", "X"],
     "JEE(Main & Adv)": [
       "XI Engineering",
       "XII Engineering",
