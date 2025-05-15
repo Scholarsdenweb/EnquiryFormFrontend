@@ -371,6 +371,7 @@ const SdatData = () => {
                       </th>
                       <th className="py-3 px-4 text-left border-b">Name</th>
                       <th className="py-3 px-4 text-left border-b">Class</th>
+                      <th className="py-3 px-4 text-left border-b">Date</th>
                       {/* <th className="py-3 px-4 text-left border-b">
                         Father Name
                       </th>
@@ -394,6 +395,9 @@ const SdatData = () => {
                           </td>
                           <td className="py-2 px-4 border-b">
                             {student?.batchDetail?.classForAdmission}
+                          </td>
+                          <td className="py-2 px-4 border-b">
+                            {student?.createdAt.split("T")[0]}
                           </td>
                           {/* <td className="py-2 px-4 border-b">
                             {student.fatherName}
