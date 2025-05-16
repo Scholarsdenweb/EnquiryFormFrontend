@@ -35,16 +35,29 @@ const SdatData = () => {
 
   // Handle sort order change
   const handleSortChange = (order) => {
+    console.log("handleSortChange", order);
     setSortOrder(order);
     // Re-fetch data with new sort order
     if (filterValue === "class") {
-      fetchFilteredData({ filterBy: "class", class: classValue });
+      fetchFilteredData({
+        filterBy: "class",
+        class: classValue,
+        sortOrder: order,
+      });
     } else if (filterValue === "id") {
-      fetchFilteredData({ filterBy: "id", studentId: inputValue });
+      fetchFilteredData({
+        filterBy: "id",
+        studentId: inputValue,
+        sortOrder: order,
+      });
     } else if (filterValue === "name") {
-      fetchFilteredData({ filterBy: "name", name: inputValue });
+      fetchFilteredData({
+        filterBy: "name",
+        name: inputValue,
+        sortOrder: order,
+      });
     } else {
-      fetchAllStudents();
+      fetchAllStudents(order);
     }
   };
 
@@ -89,32 +102,35 @@ const SdatData = () => {
       return;
     }
     setClassValue(selectedClass);
-    fetchFilteredData({ filterBy: "class", class: selectedClass });
+    fetchFilteredData({ filterBy: "class", class: selectedClass, sortOrder });
   };
 
   // Handle name/ID search
   const handleSearchChange = (e) => {
     const value = e.target.value;
-    setInputValue(value);
-
-    if (value.trim() === "") {
-      fetchAllStudents();
+    console.log("value.length,,,,,,,,,,,,,,,,,,,,,,", value.length);
+    if (value.length < 1) {
+      console.log("value.length.................", value.length);
+      fetchAllStudents({ order: sortOrder });
       return;
-    }
-
-    // Determine if input is likely an ID (numeric)
-    const isIdSearch = /^\d+$/.test(value);
-
-    if (isIdSearch) {
-      debouncedFilter({ filterBy: "id", studentId: value });
     } else {
-      debouncedFilter({ filterBy: "name", name: value });
+      setInputValue(value);
+      console.log("VAle from handleSearchChange", value);
+
+      // Determine if input is likely an ID (numeric)
+      const isIdSearch = /^\d+$/.test(value);
+
+      if (isIdSearch) {
+        debouncedFilter({ filterBy: "id", studentId: value, sortOrder });
+      } else {
+        debouncedFilter({ filterBy: "name", name: value, sortOrder });
+      }
     }
   };
 
   // Fetch all students when no filter is applied
-  const fetchAllStudents = () => {
-    fetchFilteredData({ filterBy: "all" });
+  const fetchAllStudents = (order) => {
+    fetchFilteredData({ filterBy: "all", sortOrder: order });
     setFilterValue("");
     setInputValue("");
     setClassValue("");
@@ -131,7 +147,7 @@ const SdatData = () => {
       setContactNumber(phoneFromCookie);
     }
 
-    fetchAllStudents();
+    fetchAllStudents({ order: sortOrder });
   }, []);
 
   const handleCardClick = (student, basic, batch, family) => {
@@ -222,7 +238,7 @@ const SdatData = () => {
   return (
     <div className="grid grid-cols-12 w-full max-w-screen-xl">
       {isLoading && (
-        <div className="fixed inset-0 z-50 backdrop-blur-xs bg-black bg-opacity-10 flex items-center justify-center">
+        <div className="fixed inset-0 z-50 backdrop-blur-sm bg-black bg-opacity-10 flex items-center justify-center">
           <div className="w-12 h-12 border-4 border-blue-500 border-dashed rounded-full animate-spin"></div>
         </div>
       )}
@@ -262,17 +278,17 @@ const SdatData = () => {
           <div className="flex items-center ml-auto bg-white p-2 rounded-xl">
             <span className="mr-2 text-gray-700">Sort by Date:</span>
             <button
-              onClick={() => handleSortChange("asc")}
+              onClick={() => handleSortChange("desc")}
               className={`px-3 py-1 rounded-l-md ${
-                sortOrder === "asc" ? "bg-blue-500 text-white" : "bg-gray-200"
+                sortOrder === "desc" ? "bg-blue-500 text-white" : "bg-gray-200"
               }`}
             >
               Oldest First
             </button>
             <button
-              onClick={() => handleSortChange("desc")}
+              onClick={() => handleSortChange("asc")}
               className={`px-3 py-1 rounded-r-md ${
-                sortOrder === "desc" ? "bg-blue-500 text-white" : "bg-gray-200"
+                sortOrder === "asc" ? "bg-blue-500 text-white" : "bg-gray-200"
               }`}
             >
               Newest First

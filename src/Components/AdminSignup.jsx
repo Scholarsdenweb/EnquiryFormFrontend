@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import scholarsDenLogo from "../assets/scholarsDenLogo.png";
 import FormHeader from "./FormHeader";
 
+import Spinner from "../../api/Spinner"
+
 import { useDispatch, useSelector } from "react-redux";
 import axios from "../../api/axios";
 import { useNavigate } from "react-router-dom";
@@ -21,8 +23,8 @@ const AdminSignup = () => {
   const [code, setCode] = useState("");
 
   const [phone, setPhone] = useState("");
-  // const [codeVerified, setCodeVerified] = useState(false);
-  const [codeVerified, setCodeVerified] = useState(true);
+  const [codeVerified, setCodeVerified] = useState(false);
+  // const [codeVerified, setCodeVerified] = useState(true);
   const [errors, setErrors] = useState({
     phone: "",
   });
@@ -47,8 +49,8 @@ const AdminSignup = () => {
   const onSubmit = async (e) => {
     e.preventDefault();
     try {
-      // let codeChecked = await checkVerificationCode();
-      let codeChecked =true;
+      let codeChecked = await checkVerificationCode();
+      // let codeChecked =true;
 
       console.log("codeChecked", codeChecked);
 
@@ -69,6 +71,7 @@ const AdminSignup = () => {
   };
 
   const verifyPhoneNo = async () => {
+    setLoading(true);
     try {
       if (!validateForm()) {
         return;
@@ -83,6 +86,7 @@ const AdminSignup = () => {
       if (response.status === 200) {
         setShowCodeBox(true);
         setSubmitMessage("OTP sent successfully");
+
       }
     } catch (error) {
       console.log("Error message", error);
@@ -90,6 +94,7 @@ const AdminSignup = () => {
     } finally {
       //   dispatch(setLoading(false));
       // setShowCodeBox(true);
+      setLoading(false);
     }
   };
 
@@ -163,7 +168,7 @@ const AdminSignup = () => {
       className="overflow-auto items-center px-2 sm:px-6 max-w-{768px] h-screen"
       style={{ backgroundColor: "#c61d23" }}
     >
-      {loading && <Spinner />}
+      {/* {loading && <Spinner />} */}
       <div className="grid grid-rows-8 flex-col w-full h-full">
         <div className="row-span-2">
           <FormHeader />
@@ -230,15 +235,27 @@ const AdminSignup = () => {
                   )}
                 </div>
 
-                {/* {showCodeBox && ( */}
+                {submitMessage && (
+                  <p className="text-sm text-center text-yellow-300">
+                    {submitMessage}
+                  </p>
+                )}
+
+                {loading && (
+                  <div className="flex justify-center items-center">
+                    <div className="animate-spin  rounded-full h-5 w-5 border-b-2 border-white"></div>
+                  </div>
+                )}
+
+                {showCodeBox && (
                   <button
                     type="submit"
                     className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 rounded-xl transition-all disabled:bg-yellow-800"
-                    // disabled={!codeEntered}
+                    disabled={!codeEntered}
                   >
-                    Next
+                    Login
                   </button>
-                {/* )} */}
+                )}
                 {/* <button
                   className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 rounded-xl transition-all"
                   type="submit"

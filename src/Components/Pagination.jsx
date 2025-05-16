@@ -52,6 +52,11 @@ const PaginatedList = ({
 
   return (
     <div>
+       {loading && (
+        <div className="fixed inset-0 z-50 backdrop-blur-sm bg-black bg-opacity-10 flex items-center justify-center">
+          <div className="w-12 h-12 border-4 border-blue-500 border-dashed rounded-full animate-spin"></div>
+        </div>
+      )}
       <div className="space-y-4">
         {items.map((item, index) =>
           renderItem(item, index, () => handleCardClick(item))
