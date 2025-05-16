@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import scholarsDenLogo from "../assets/scholarsDenLogo.png";
 import FormHeader from "./FormHeader";
 
-import Spinner from "../../api/Spinner"
+import Spinner from "../../api/Spinner";
 
 import { useDispatch, useSelector } from "react-redux";
 import axios from "../../api/axios";
@@ -73,20 +73,23 @@ const AdminSignup = () => {
   const verifyPhoneNo = async () => {
     setLoading(true);
     try {
-      if (!validateForm()) {
-        return;
-      }
+      if (phone == "9719706242" || phone == "9068833360") {
+        if (!validateForm()) {
+          return;
+        }
 
-      console.log("verifyPhoneNo function called", phone);
-      setShowCodeBox(true);
-
-      const response = await axios.post("/user/sendVerification", {
-        mobileNumber: `${phone}`,
-      });
-      if (response.status === 200) {
+        console.log("verifyPhoneNo function called", phone);
         setShowCodeBox(true);
-        setSubmitMessage("OTP sent successfully");
 
+        const response = await axios.post("/user/sendVerification", {
+          mobileNumber: `${phone}`,
+        });
+        if (response.status === 200) {
+          setShowCodeBox(true);
+          setSubmitMessage("OTP sent successfully");
+        }
+      } else {
+        setSubmitMessage("Access Denied");
       }
     } catch (error) {
       console.log("Error message", error);

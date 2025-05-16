@@ -3,6 +3,7 @@ import axios from "../../api/axios";
 import { useNavigate } from "react-router-dom"; // Assuming you are using react-router
 import Sidebar from "./Sidebar";
 import PaginatedList from "./Pagination";
+import { downloadExcel } from "./ExcelFileDownload";
 
 const AdminDashboard = () => {
   const [phone, setPhone] = useState("");
@@ -18,45 +19,50 @@ const AdminDashboard = () => {
   const [filterByEnquiry, setFilterByEnquiry] = useState("");
   const [filterValue, setFilterValue] = useState("");
 
+  const [startingDate, setStartingDate] = useState("");
+  const [lastDate, setLastDate] = useState("");
+
   const [showFilteredData, setShowFilteredData] = useState([]);
 
   const numberTOemail = (number) => {
     const numberEmail = {
-      9719706242: "urooj@scholarsden.in",
+      // 9719706242: "urooj@scholarsden.in",
       7037550621: "jatin@scholarsden.in",
-      9068833360: "jatin@scholarsden.in"
+      9068833360: "jatin@scholarsden.in",
     };
 
-    console.log("numberTOemail function called", number);
     return numberEmail[number] || null;
   };
 
   const email = numberTOemail(phone);
 
-  const filterStudents = async () => {
+  const filterStudents = async (value) => {
     try {
-      console.log("inputValue data", inputValue);
       const allfilterStudent = await axios.post("/user/filter/Student", {
-        data: inputValue,
+        data: value,
         email,
       });
 
-      console.log("Show student data", allfilterStudent);
       setShowFilteredData(allfilterStudent.data);
     } catch (error) {
       console.error("Error filtering students:", error);
     }
   };
-  const filterStudentByEnquiryNumber = async () => {
+  const filterStudentByEnquiryNumber = async (value) => {
+    console.log("value from setFilterByEnquiry", value);
     try {
-      console.log("inputValue filterByEnquiry data", filterByEnquiry);
-      const allfilterStudent = await axios.post("/user/filter/enquiryNumber", {
-        data: filterByEnquiry,
-        email,
-      });
+      if (/^\d+$/.test(value)) {
+        console.log("inputValue filterByEnquiry data", value);
+        const allfilterStudent = await axios.post(
+          "/user/filter/enquiryNumber",
+          {
+            data: value,
+            email,
+          }
+        );
 
-      console.log("Show student data", allfilterStudent);
-      setShowFilteredData(allfilterStudent.data);
+        setShowFilteredData(allfilterStudent.data);
+      }
     } catch (error) {
       console.error("Error filtering students:", error);
     }
@@ -82,7 +88,6 @@ const AdminDashboard = () => {
         email,
       });
 
-      console.log("filterByClass", filterByClass);
       // setInputValue(filterByClass.data);
       setClassValue(filterByClass.data);
       setFilterValue(e.target.value);
@@ -119,7 +124,6 @@ const AdminDashboard = () => {
 
     if (phoneFromCookie) {
       setPhone(phoneFromCookie);
-      console.log("phone set from cookie:", phoneFromCookie);
     }
   }, []);
 
@@ -133,7 +137,6 @@ const AdminDashboard = () => {
 
   // Handle card click to open modal
   const handleCardClick = (student) => {
-    console.log("HandleCardClcik", student);
     setSelectedStudent(student);
     setIsModalOpen(true);
   };
@@ -153,10 +156,10 @@ const AdminDashboard = () => {
       year: "numeric",
       month: "numeric",
       day: "numeric",
-      hour: "numeric",
-      minute: "numeric",
-      second: "numeric",
-      hour12: false, // 24-hour format
+      // hour: "numeric",
+      // minute: "numeric",
+      // second: "numeric",
+      // hour12: false, // 24-hour format
     });
 
     return formattedDate;
@@ -183,9 +186,11 @@ const AdminDashboard = () => {
   // console.log("Formatted updatedAt:", convertToDate(updatedAt));
 
   function maskPhoneNumber(phone) {
-    const visible = phone.slice(0, 4);
-    const masked = "*".repeat(phone.length - 4);
-    return visible + masked;
+    if (phone.length > 4) {
+      const visible = phone.slice(0, 4);
+      const masked = "*".repeat(phone.length - 4);
+      return visible + masked;
+    }
   }
 
   function maskEmail(email) {
@@ -239,7 +244,6 @@ const AdminDashboard = () => {
         }
 
         const data = await response.json();
-        console.log("Response:", data);
       } catch (error) {
         console.log("error", error);
         console.error("Error occurred:", error.message);
@@ -294,6 +298,16 @@ const AdminDashboard = () => {
     }
   }
 
+  const filerByDate = async () => {
+    const response = await axios.post("user/fetchDataByDateRange", {
+      startingDate,
+      lastDate,
+    });
+
+    setShowFilteredData(response.data.data);
+    setFilterValue("daterangeData");
+  };
+
   const dateFormatting = (isoDate) => {
     const date = new Date(isoDate);
 
@@ -345,7 +359,7 @@ const AdminDashboard = () => {
         <h2 className="text-3xl font-semibold text-center text-white mb-8">
           Admin Dashboard
         </h2>
-        <div className="flex gap-3 m-6">
+        <div className="flex gap-3 m-3">
           <select
             className=" w-40 p-2 rounded-xl "
             onChange={handleChangeClassFilter}
@@ -377,60 +391,85 @@ const AdminDashboard = () => {
             value={filterByEnquiry}
             onChange={handleChangeEnquiryIDFilter}
           />
+          <div className="flex gap-4 bg-[#ffdd00] px-3 rounded-xl py-2">
+            <input
+              className="p-2 rounded-xl"
+              placeholder="Find By Enquiry Number"
+              type="date"
+              value={startingDate}
+              onChange={(e) => setStartingDate(e.target.value)}
+            />
+            <input
+              className="p-2 rounded-xl"
+              placeholder="Find By Enquiry Number"
+              type="date"
+              value={lastDate}
+              onChange={(e) => setLastDate(e.target.value)}
+            />
+            <button className="bg-white rounded-xl px-3" onClick={filerByDate}>
+              Apply
+            </button>
+          </div>
         </div>
 
-        {console.log("filterValue fro console", filterValue)}
-
         {filterValue != "" && (
-          <div className="w-full p-4 bg-gray-100 rounded-xl mb-8">
-            <div className="overflow-x-auto">
-              <div className="max-h-60 overflow-y-auto border border-gray-200 rounded-md shadow-md">
-                <table className="min-w-full bg-white">
-                  <thead className="bg-[#c61d23] text-white sticky top-0 z-10">
-                    <tr>
-                      <th className="py-3 px-4 text-left border-b">Index</th>
-                      <th className="py-3 px-4 text-left border-b">Date</th>
-                      <th className="py-3 px-4 text-left border-b">Enquiry Number</th>
-                      <th className="py-3 px-4 text-left border-b">Name</th>
-                      <th className="py-3 px-4 text-left border-b">
-                        Father Name
-                      </th>
-                      <th className="py-3 px-4 text-left border-b">Program</th>
-                      <th className="py-3 px-4 text-left border-b">Class</th>
-                      <th className="py-3 px-4 text-left border-b">Contact Number</th>
-                    </tr>
-                  </thead>
+          <div className="mb-8">
+            <div className="w-full p-4 bg-gray-100 rounded-xl ">
+              <div className="overflow-x-auto">
+                <div className="max-h-60 overflow-y-auto border border-gray-200 rounded-md shadow-md">
+                  <table className="min-w-full bg-white">
+                    <thead className="bg-[#c61d23] text-white sticky top-0 z-10">
+                      <tr>
+                        <th className="py-3 px-4 text-left border-b">Index</th>
+                        <th className="py-3 px-4 text-left border-b">Date</th>
+                        <th className="py-3 px-4 text-left border-b">
+                          Enquiry Number
+                        </th>
+                        <th className="py-3 px-4 text-left border-b">Name</th>
+                        <th className="py-3 px-4 text-left border-b">
+                          Father Name
+                        </th>
+                        <th className="py-3 px-4 text-left border-b">
+                          Program
+                        </th>
+                        <th className="py-3 px-4 text-left border-b">Class</th>
+                        <th className="py-3 px-4 text-left border-b">
+                          Contact Number
+                        </th>
+                      </tr>
+                    </thead>
 
-                  {
-                    <tbody className="w-full">
-                      {showFilteredData?.map((student, index) => (
-                        <tr
-                          key={index}
-                          className="hover:bg-green-50 transition duration-150 ease-in-out"
-                        >
-                          <td className="py-2 px-4 border-b">{index + 1}</td>
-                          <td className="py-2 px-4 border-b">
-                            {dateFormatting(student.createdAt.split("T")[0])}
-                          </td>
-                          <td className="py-2 px-4 border-b">
-                            {student.enquiryNumber}
-                          </td>
-                          <td className="py-2 px-4 border-b">
-                            {student.studentName}
-                          </td>
-                          <td className="py-2 px-4 border-b">
-                            {student.fatherName}
-                          </td>
-                          <td className="py-2 px-4 border-b">
-                            {student.program}
-                          </td>
-                          <td className="py-2 px-4 border-b">
-                            {student.courseOfIntrested}
-                          </td>
-                          <td className="py-2 px-4 border-b">
-                            {maskPhoneNumber(student.fatherContactNumber)}
-                          </td>
-                          {/* <div className="flex justify-between w-full items-center">
+                    {
+                      <tbody className="w-full">
+                        {showFilteredData?.map((student, index) => (
+                          <tr
+                            key={index}
+                            className="hover:bg-green-50 transition duration-150 ease-in-out"
+                            onClick={() => handleCardClick(student)}
+                          >
+                            <td className="py-2 px-4 border-b">{index + 1}</td>
+                            <td className="py-2 px-4 border-b">
+                              {dateFormatting(student.createdAt.split("T")[0])}
+                            </td>
+                            <td className="py-2 px-4 border-b">
+                              {student.enquiryNumber}
+                            </td>
+                            <td className="py-2 px-4 border-b">
+                              {student.studentName}
+                            </td>
+                            <td className="py-2 px-4 border-b">
+                              {student.fatherName}
+                            </td>
+                            <td className="py-2 px-4 border-b">
+                              {student.program}
+                            </td>
+                            <td className="py-2 px-4 border-b">
+                              {student.courseOfIntrested}
+                            </td>
+                            <td className="py-2 px-4 border-b">
+                              {maskPhoneNumber(student.fatherContactNumber)}
+                            </td>
+                            {/* <div className="flex justify-between w-full items-center">
                             <p>
                       <strong>Father's Contact:</strong>{" "}
                       {maskPhoneNumber(student.fatherContactNumber)}
@@ -446,18 +485,31 @@ const AdminDashboard = () => {
                               Call Now{" "}
                             </button>
                           </div> */}
-                        </tr>
-                      ))}
-                    </tbody>
-                  }
-                </table>
+                          </tr>
+                        ))}
+                      </tbody>
+                    }
+                  </table>
 
-                {showFilteredData?.length === 0 && (
-                  <div className="w-full text-center justify-center items-center p-6">
-                    Data Not Found
-                  </div>
-                )}
+                  {showFilteredData?.length === 0 && (
+                    <div className="w-full text-center justify-center items-center p-6">
+                      Data Not Found
+                    </div>
+                  )}
+                </div>
               </div>
+
+              <button
+                className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition"
+                onClick={() => downloadExcel(showFilteredData)}
+              >
+                Download as Excel
+              </button>
+            </div>
+
+            <div className="flex justify-end text-white mt-2 mr-3">
+              <h2 className="mr-2">Total Length : </h2>
+              <span>{showFilteredData.length}</span>
             </div>
           </div>
         )}
@@ -562,7 +614,7 @@ const AdminDashboard = () => {
                       {/* {maskPhoneNumber(selectedStudent.fatherContactNumber)} */}
                     </p>
 
-                    <button
+                    {/* <button
                       className="py-2 px-2 bg-[#ffdd00] border-2 rounded-xl "
                       onClick={() => {
                         triggerOBDCall(selectedStudent.fatherContactNumber);
@@ -570,7 +622,7 @@ const AdminDashboard = () => {
                     >
                       {" "}
                       Call Now{" "}
-                    </button>
+                    </button> */}
                   </div>
 
                   <p>

@@ -74,12 +74,23 @@ const SdatData = () => {
 
     fetchAllStudents();
   }, []);
+  const getCookieValue = (name) => {
+  return document.cookie
+    .split("; ")
+    .find((row) => row.startsWith(name + "="))
+    ?.split("=")[1];
+};
 
   // Unified filter function
   const fetchFilteredData = async (filterParams = {}) => {
     setIsLoading(true);
+    console.log("filterParams from fetchFilteredData", filterParams);
+
+
+
+const phone = getCookieValue("phone");
     try {
-      const response = await axios.post("/adminData/filter", filterParams);
+      const response = await axios.post("/students/filter", filterParams);
 
       console.log("Filter for all response", response);
       setShowFilteredData(response.data);
@@ -306,6 +317,7 @@ const SdatData = () => {
                     <th className="py-3 px-4 text-left border-b">Name</th>
                     <th className="py-3 px-4 text-left border-b">Class</th>
                     <th className="py-3 px-4 text-left border-b">Date</th>
+                    <th className="py-3 px-4 text-left border-b">Payment Id</th>
                   </tr>
                 </thead>
                 <tbody className="w-full">
@@ -337,6 +349,9 @@ const SdatData = () => {
                           </td>
                           <td className="py-2 px-4 border-b">
                             {student?.createdAt?.split("T")[0]}
+                          </td>
+                          <td className="py-2 px-4 border-b">
+                            {student?.paymentId}
                           </td>
                         </tr>
                       ))
