@@ -73,26 +73,43 @@ const AdminDashboard = () => {
     setInputValue(value);
     setFilterValue(value);
     debouncedFilter(value);
+
+    setClassValue("");
+
+    setFilterByEnquiry("");
+
+    setStartingDate("");
+    setLastDate("");
   };
   const handleChangeEnquiryIDFilter = (e) => {
     const value = e.target.value;
     setFilterByEnquiry(value);
     setFilterValue(value);
     debouncedFilterForEnquiryNumber(value);
+    setClassValue("");
+    setInputValue("");
+
+    setStartingDate("");
+    setLastDate("");
   };
 
   const handleChangeClassFilter = async (e) => {
     try {
+            setClassValue(e.target.value);
       const filterByClass = await axios.post("/user/filter/filterByClass", {
         filterByClassName: e.target.value,
         email,
       });
 
       // setInputValue(filterByClass.data);
-      setClassValue(filterByClass.data);
+
       setFilterValue(e.target.value);
 
       setShowFilteredData(filterByClass.data);
+      setInputValue("");
+      setFilterByEnquiry("");
+      setStartingDate("");
+      setLastDate("");
     } catch (error) {
       console.log("Error", error);
     }
@@ -363,6 +380,7 @@ const AdminDashboard = () => {
           <select
             className=" w-40 p-2 rounded-xl "
             onChange={handleChangeClassFilter}
+            value={classValue}
           >
             <label>Select Class</label>
 
@@ -397,14 +415,24 @@ const AdminDashboard = () => {
               placeholder="Find By Enquiry Number"
               type="date"
               value={startingDate}
-              onChange={(e) => setStartingDate(e.target.value)}
+              onChange={(e) => {
+                setStartingDate(e.target.value);
+                setClassValue("");
+                setInputValue("");
+                setFilterByEnquiry("");
+              }}
             />
             <input
               className="p-2 rounded-xl"
               placeholder="Find By Enquiry Number"
               type="date"
               value={lastDate}
-              onChange={(e) => setLastDate(e.target.value)}
+              onChange={(e) => {
+                setLastDate(e.target.value);
+                setClassValue("");
+                setInputValue("");
+                setFilterByEnquiry("");
+              }}
             />
             <button className="bg-white rounded-xl px-3" onClick={filerByDate}>
               Apply
@@ -508,7 +536,7 @@ const AdminDashboard = () => {
             </div>
 
             <div className="flex justify-end text-white mt-2 mr-3">
-              <h2 className="mr-2">Total Length : </h2>
+              <h2 className="mr-2">Total Count : </h2>
               <span>{showFilteredData.length}</span>
             </div>
           </div>

@@ -16,7 +16,8 @@ const SdatData = () => {
   const [showImageUrl, setShowImageUrl] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [sortOrder, setSortOrder] = useState("desc"); // 'asc' or 'desc'
-
+  const [startingDate, setStartingDate] = useState("");
+  const [lastDate, setLastDate] = useState("");
   const history = useNavigate();
 
   const classFilterOptions = [
@@ -44,6 +45,9 @@ const SdatData = () => {
         class: classValue,
         sortOrder: order,
       });
+      setInputValue("");
+      setStartingDate("");
+      setLastDate("");
     } else if (filterValue === "id") {
       fetchFilteredData({
         filterBy: "id",
@@ -75,20 +79,18 @@ const SdatData = () => {
     fetchAllStudents();
   }, []);
   const getCookieValue = (name) => {
-  return document.cookie
-    .split("; ")
-    .find((row) => row.startsWith(name + "="))
-    ?.split("=")[1];
-};
+    return document.cookie
+      .split("; ")
+      .find((row) => row.startsWith(name + "="))
+      ?.split("=")[1];
+  };
 
   // Unified filter function
   const fetchFilteredData = async (filterParams = {}) => {
     setIsLoading(true);
     console.log("filterParams from fetchFilteredData", filterParams);
 
-
-
-const phone = getCookieValue("phone");
+    const phone = getCookieValue("phone");
     try {
       const response = await axios.post("/students/filter", filterParams);
 
@@ -114,6 +116,9 @@ const phone = getCookieValue("phone");
     }
     setClassValue(selectedClass);
     fetchFilteredData({ filterBy: "class", class: selectedClass, sortOrder });
+    setInputValue("");
+    setStartingDate("");
+    setLastDate("");
   };
 
   // Handle name/ID search
@@ -137,6 +142,9 @@ const phone = getCookieValue("phone");
         debouncedFilter({ filterBy: "name", name: value, sortOrder });
       }
     }
+    setClassValue("");
+    setStartingDate("");
+    setLastDate("");
   };
 
   // Fetch all students when no filter is applied
@@ -210,6 +218,20 @@ const phone = getCookieValue("phone");
     });
   };
 
+  const filerByDate = async () => {
+    const response = await axios.post("students/fetchDataByDateRange", {
+      startingDate,
+      lastDate,
+    });
+
+    console.log("filterByDate response", response);
+
+    setShowFilteredData(response.data.data);
+
+    // setShowFilteredData(response.data.data);
+    // setFilterValue("daterangeData");
+  };
+
   const onClickShowImage = (imageUrl) => {
     setShowImage(true);
     setShowImageUrl(imageUrl);
@@ -263,9 +285,9 @@ const phone = getCookieValue("phone");
           Admin Dashboard
         </h2>
 
-        <div className="flex flex-wrap gap-3 m-6">
+        <div className="flex flex-wrap gap-3 m-6 items-center justify-between">
           <select
-            className="w-40 p-2 rounded-xl"
+            className="w-40 p-4 rounded-xl "
             onChange={handleChangeClassFilter}
             value={classValue}
           >
@@ -278,7 +300,7 @@ const phone = getCookieValue("phone");
           </select>
 
           <input
-            className="p-2 rounded-xl"
+            className="p-4 rounded-xl"
             placeholder="Search by Name or ID"
             type="text"
             value={inputValue}
@@ -286,86 +308,135 @@ const phone = getCookieValue("phone");
           />
 
           {/* Sort controls */}
-          <div className="flex items-center ml-auto bg-white p-2 rounded-xl">
-            <span className="mr-2 text-gray-700">Sort by Date:</span>
-            <button
-              onClick={() => handleSortChange("desc")}
-              className={`px-3 py-1 rounded-l-md ${
-                sortOrder === "desc" ? "bg-blue-500 text-white" : "bg-gray-200"
-              }`}
-            >
-              Oldest First
-            </button>
-            <button
-              onClick={() => handleSortChange("asc")}
-              className={`px-3 py-1 rounded-r-md ${
-                sortOrder === "asc" ? "bg-blue-500 text-white" : "bg-gray-200"
-              }`}
-            >
-              Newest First
-            </button>
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center ml-auto bg-white py-1 pl-3 rounded-xl justify-around ">
+              <span className="mr-2 text-gray-700">Sort by Date:</span>
+
+              <div>
+                <button
+                  onClick={() => handleSortChange("desc")}
+                  className={`px-3 py-1 rounded-l-md ${
+                    sortOrder === "desc"
+                      ? "bg-blue-500 text-white"
+                      : "bg-gray-200"
+                  }`}
+                >
+                  Oldest First
+                </button>
+                <button
+                  onClick={() => handleSortChange("asc")}
+                  className={`px-3 py-1 rounded-r-md ${
+                    sortOrder === "asc"
+                      ? "bg-blue-500 text-white"
+                      : "bg-gray-200"
+                  }`}
+                >
+                  Newest First
+                </button>
+              </div>
+            </div>
+
+            <div className="flex gap-4 bg-[#ffdd00] px-3 rounded-xl py-2">
+              <input
+                className="p-2 rounded-xl"
+                placeholder="Find By Enquiry Number"
+                type="date"
+                value={startingDate}
+                onChange={(e) => {
+                  setStartingDate(e.target.value);
+                  setInputValue("");
+                  setClassValue("");
+                }}
+              />
+              <input
+                className="p-2 rounded-xl"
+                placeholder="Find By Enquiry Number"
+                type="date"
+                value={lastDate}
+                onChange={(e) => {
+                  setLastDate(e.target.value);
+                  setInputValue("");
+                  setClassValue("");
+                }}
+              />
+              <button
+                className="bg-white rounded-xl px-3"
+                onClick={filerByDate}
+              >
+                Apply
+              </button>
+            </div>
           </div>
         </div>
-
-        <div className="w-full p-4 bg-gray-100 rounded-xl mb-8">
-          <div className="overflow-x-auto">
-            <div className="max-h-60 overflow-y-auto border border-gray-200 rounded-md shadow-md">
-              <table className="min-w-full bg-white">
-                <thead className="bg-[#c61d23] text-white sticky top-0 z-10">
-                  <tr>
-                    <th className="py-3 px-4 text-left border-b">StudentID</th>
-                    <th className="py-3 px-4 text-left border-b">Name</th>
-                    <th className="py-3 px-4 text-left border-b">Class</th>
-                    <th className="py-3 px-4 text-left border-b">Date</th>
-                    <th className="py-3 px-4 text-left border-b">Payment Id</th>
-                  </tr>
-                </thead>
-                <tbody className="w-full">
-                  {
-                    // isLoading ? (
-                    //   <tr>
-                    //     <td colSpan="4" className="py-4 text-center">
-                    //       Loading...
-                    //     </td>
-                    //   </tr>
-                    // ) :
-                    showFilteredData.length > 0 ? (
-                      showFilteredData.map((student, index) => (
-                        <tr
-                          key={index}
-                          onClick={() =>
-                            fetchStudentDetails(student.student_id)
-                          }
-                          className="hover:bg-green-50 transition duration-150 ease-in-out"
-                        >
-                          <td className="py-2 px-4 border-b">
-                            {student?.StudentsId}
-                          </td>
-                          <td className="py-2 px-4 border-b">
-                            {student?.studentName}
-                          </td>
-                          <td className="py-2 px-4 border-b">
-                            {student?.classForAdmission}
-                          </td>
-                          <td className="py-2 px-4 border-b">
-                            {student?.createdAt?.split("T")[0]}
-                          </td>
-                          <td className="py-2 px-4 border-b">
-                            {student?.paymentId}
+        <div className="mb-8">
+          <div className="w-full p-4 bg-gray-100 rounded-xl ">
+            <div className="overflow-x-auto">
+              <div className="max-h-60 overflow-y-auto border border-gray-200 rounded-md shadow-md">
+                <table className="min-w-full bg-white">
+                  <thead className="bg-[#c61d23] text-white sticky top-0 z-10">
+                    <tr>
+                      <th className="py-3 px-4 text-left border-b">
+                        StudentID
+                      </th>
+                      <th className="py-3 px-4 text-left border-b">Name</th>
+                      <th className="py-3 px-4 text-left border-b">Class</th>
+                      <th className="py-3 px-4 text-left border-b">Date</th>
+                      <th className="py-3 px-4 text-left border-b">
+                        Payment Id
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="w-full">
+                    {
+                      // isLoading ? (
+                      //   <tr>
+                      //     <td colSpan="4" className="py-4 text-center">
+                      //       Loading...
+                      //     </td>
+                      //   </tr>
+                      // ) :
+                      showFilteredData.length > 0 ? (
+                        showFilteredData.map((student, index) => (
+                          <tr
+                            key={index}
+                            onClick={() =>
+                              fetchStudentDetails(student.student_id)
+                            }
+                            className="hover:bg-green-50 transition duration-150 ease-in-out"
+                          >
+                            <td className="py-2 px-4 border-b">
+                              {student?.StudentsId}
+                            </td>
+                            <td className="py-2 px-4 border-b">
+                              {student?.studentName}
+                            </td>
+                            <td className="py-2 px-4 border-b">
+                              {student?.classForAdmission}
+                            </td>
+                            <td className="py-2 px-4 border-b">
+                              {student?.createdAt?.split("T")[0]}
+                            </td>
+                            <td className="py-2 px-4 border-b">
+                              {student?.paymentId}
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan="4" className="py-4 text-center">
+                            No students found
                           </td>
                         </tr>
-                      ))
-                    ) : (
-                      <tr>
-                        <td colSpan="4" className="py-4 text-center">
-                          No students found
-                        </td>
-                      </tr>
-                    )
-                  }
-                </tbody>
-              </table>
+                      )
+                    }
+                  </tbody>
+                </table>
+              </div>
             </div>
+          </div>
+          <div className="flex justify-end text-white mt-2 mr-3">
+            <h2 className="mr-2">Total Count : </h2>
+            <span>{showFilteredData.length}</span>
           </div>
         </div>
 

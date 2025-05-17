@@ -73,7 +73,11 @@ const AdminSignup = () => {
   const verifyPhoneNo = async () => {
     setLoading(true);
     try {
-      if (phone == "9719706242" || phone == "9068833360" || phone == "7037550621"){
+      if (
+        phone == "9719706242" ||
+        phone == "9068833360" ||
+        phone == "7037550621"
+      ) {
         if (!validateForm()) {
           return;
         }
@@ -196,11 +200,15 @@ const AdminSignup = () => {
                     <div className="flex flex-col justify-center w-full">
                       <input
                         autoComplete="off"
-                        type="tel"
+                        type="number"
                         id="phone"
                         name="phone"
                         value={phone || ""}
-                        onChange={(e) => setPhone(e.target.value)}
+                        onChange={(e) => {
+                          if (e.target.value.length < 11) {
+                            setPhone(e.target.value);
+                          }
+                        }}
                         placeholder="*Contact Number"
                         className="border-b-2 border-gray-300 focus:outline-none text-black w-full text-lg rounded-lg p-3"
                         style={{ backgroundColor: "#f3f3f3" }}
