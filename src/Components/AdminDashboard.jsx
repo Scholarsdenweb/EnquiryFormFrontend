@@ -3,7 +3,7 @@ import axios from "../../api/axios";
 import { useNavigate } from "react-router-dom"; // Assuming you are using react-router
 import Sidebar from "./Sidebar";
 import PaginatedList from "./Pagination";
-import { downloadExcel } from "./ExcelFileDownload";
+import { downloadExcelForEnquiry } from "./DownloadExcelFile/ExcelFileDownload";
 
 const AdminDashboard = () => {
   const [phone, setPhone] = useState("");
@@ -71,7 +71,7 @@ const AdminDashboard = () => {
   const handleChange = (e) => {
     const value = e.target.value;
     setInputValue(value);
-    setFilterValue(value);
+    setFilterValue("name");
     debouncedFilter(value);
 
     setClassValue("");
@@ -84,7 +84,7 @@ const AdminDashboard = () => {
   const handleChangeEnquiryIDFilter = (e) => {
     const value = e.target.value;
     setFilterByEnquiry(value);
-    setFilterValue(value);
+    setFilterValue("id");
     debouncedFilterForEnquiryNumber(value);
     setClassValue("");
     setInputValue("");
@@ -95,7 +95,8 @@ const AdminDashboard = () => {
 
   const handleChangeClassFilter = async (e) => {
     try {
-            setClassValue(e.target.value);
+      setClassValue(e.target.value);
+      setFilterValue("class");
       const filterByClass = await axios.post("/user/filter/filterByClass", {
         filterByClassName: e.target.value,
         email,
@@ -103,7 +104,6 @@ const AdminDashboard = () => {
 
       // setInputValue(filterByClass.data);
 
-      setFilterValue(e.target.value);
 
       setShowFilteredData(filterByClass.data);
       setInputValue("");
@@ -209,6 +209,73 @@ const AdminDashboard = () => {
       return visible + masked;
     }
   }
+
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+
+    const day = date.getDate();
+    const year = date.getFullYear().toString().slice(-2); // get last two digits of year
+    const monthNames = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+    const month = monthNames[date.getMonth()];
+
+    // Add ordinal suffix to day
+    const getOrdinal = (n) => {
+      if (n > 3 && n < 21) return n + "th";
+      switch (n % 10) {
+        case 1:
+          return n + "st";
+        case 2:
+          return n + "nd";
+        case 3:
+          return n + "rd";
+        default:
+          return n + "th";
+      }
+    };
+
+    return `${getOrdinal(day)} ${month} ${year}`;
+  }
+
+  const filterApplied = () => {
+    console.log("Filter value", filterValue);
+
+    if (startingDate && lastDate) {
+      return `Filtered by Date Range: ${formatDate(
+        startingDate
+      )} to ${formatDate(lastDate)}`;
+    }
+
+    if (filterValue === "class" && classValue) {
+      return `Filtered by Class: ${classValue}`;
+    }
+
+    if (filterValue === "id" && filterByEnquiry) {
+      return `Filtered by Student ID: ${filterByEnquiry}`;
+    }
+
+    if (filterValue === "name" && inputValue) {
+      return `Filtered by Student Name: ${inputValue}`;
+    }
+
+    if (filterValue === "all") {
+      return `Showing all students`;
+    }
+
+    return "No filters applied";
+  };
 
   function maskEmail(email) {
     if (!email) return email; // Return if email is null or undefined
@@ -376,7 +443,7 @@ const AdminDashboard = () => {
         <h2 className="text-3xl font-semibold text-center text-white mb-8">
           Admin Dashboard
         </h2>
-        <div className="flex gap-3 m-3">
+        <div className="flex gap-3 my-3">
           <select
             className=" w-40 p-2 rounded-xl "
             onChange={handleChangeClassFilter}
@@ -396,23 +463,23 @@ const AdminDashboard = () => {
           </select>
 
           <input
-            className="p-2 rounded-xl"
+            className="p-1 rounded-xl"
             placeholder="Find By Student Name"
             type="text"
             value={inputValue}
             onChange={handleChange}
           />
           <input
-            className="p-2 rounded-xl"
+            className="p-1 rounded-xl"
             placeholder="Find By Enquiry Number"
             type="text"
             value={filterByEnquiry}
             onChange={handleChangeEnquiryIDFilter}
           />
-          <div className="flex gap-4 bg-[#ffdd00] px-3 rounded-xl py-2">
+          <div className="flex gap-4 bg-[#ffdd00] items-center px-1 rounded-xl py-2">
+            <label></label>
             <input
               className="p-2 rounded-xl"
-              placeholder="Find By Enquiry Number"
               type="date"
               value={startingDate}
               onChange={(e) => {
@@ -422,9 +489,9 @@ const AdminDashboard = () => {
                 setFilterByEnquiry("");
               }}
             />
+            <p>to</p>
             <input
               className="p-2 rounded-xl"
-              placeholder="Find By Enquiry Number"
               type="date"
               value={lastDate}
               onChange={(e) => {
@@ -434,7 +501,7 @@ const AdminDashboard = () => {
                 setFilterByEnquiry("");
               }}
             />
-            <button className="bg-white rounded-xl px-3" onClick={filerByDate}>
+            <button className="bg-white rounded-xl p-3" onClick={filerByDate}>
               Apply
             </button>
           </div>
@@ -442,6 +509,11 @@ const AdminDashboard = () => {
 
         {filterValue != "" && (
           <div className="mb-8">
+            {filterValue != "all" && (
+              <span className="bg-[#ffdd00] p-2 rounded-sm">
+                {filterApplied()}
+              </span>
+            )}
             <div className="w-full p-4 bg-gray-100 rounded-xl ">
               <div className="overflow-x-auto">
                 <div className="max-h-60 overflow-y-auto border border-gray-200 rounded-md shadow-md">
@@ -529,7 +601,7 @@ const AdminDashboard = () => {
 
               <button
                 className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition"
-                onClick={() => downloadExcel(showFilteredData)}
+                onClick={() => downloadExcelForEnquiry(showFilteredData)}
               >
                 Download as Excel
               </button>

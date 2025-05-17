@@ -3,6 +3,7 @@ import axios from "../../api/axios";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import PaginatedList from "./Pagination";
+import { downloadExcelForSDAT } from "./DownloadExcelFile/ExcelFileDownload";
 
 const SdatData = () => {
   const [contactNumber, setContactNumber] = useState("");
@@ -229,7 +230,7 @@ const SdatData = () => {
     setShowFilteredData(response.data.data);
 
     // setShowFilteredData(response.data.data);
-    // setFilterValue("daterangeData");
+    setFilterValue("daterangeData");
   };
 
   const onClickShowImage = (imageUrl) => {
@@ -266,6 +267,73 @@ const SdatData = () => {
   const handleLogout = () => {
     document.cookie = "phone=; max-age=0; path=/";
     history("/adminsignup");
+  };
+
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+
+    const day = date.getDate();
+    const year = date.getFullYear().toString().slice(-2); // get last two digits of year
+    const monthNames = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+    const month = monthNames[date.getMonth()];
+
+    // Add ordinal suffix to day
+    const getOrdinal = (n) => {
+      if (n > 3 && n < 21) return n + "th";
+      switch (n % 10) {
+        case 1:
+          return n + "st";
+        case 2:
+          return n + "nd";
+        case 3:
+          return n + "rd";
+        default:
+          return n + "th";
+      }
+    };
+
+    return `${getOrdinal(day)} ${month} ${year}`;
+  }
+
+  console.log(formatDate("2025-05-11")); // Output: "11th May 25"
+
+  const filterApplied = () => {
+    if (startingDate && lastDate) {
+      return `Filtered by Date Range: ${formatDate(
+        startingDate
+      )} to ${formatDate(lastDate)}`;
+    }
+
+    if (filterValue === "class" && classValue) {
+      return `Filtered by Class: ${classValue}`;
+    }
+
+    if (filterValue === "id" && inputValue) {
+      return `Filtered by Student ID: ${inputValue}`;
+    }
+
+    if (filterValue === "name" && inputValue) {
+      return `Filtered by Student Name: ${inputValue}`;
+    }
+
+    if (filterValue === "all") {
+      return `Showing all students`;
+    }
+
+    return "No filters applied";
   };
 
   return (
@@ -309,7 +377,7 @@ const SdatData = () => {
 
           {/* Sort controls */}
           <div className="flex flex-col gap-2">
-            <div className="flex items-center ml-auto bg-white py-1 pl-3 rounded-xl justify-around ">
+            <div className="flex items-center ml-auto bg-white py-1 pl-3 pr-1 rounded-xl justify-around ">
               <span className="mr-2 text-gray-700">Sort by Date:</span>
 
               <div>
@@ -336,7 +404,7 @@ const SdatData = () => {
               </div>
             </div>
 
-            <div className="flex gap-4 bg-[#ffdd00] px-3 rounded-xl py-2">
+            <div className="flex gap-4 bg-[#ffdd00] items-center px-3 rounded-xl py-2">
               <input
                 className="p-2 rounded-xl"
                 placeholder="Find By Enquiry Number"
@@ -348,6 +416,8 @@ const SdatData = () => {
                   setClassValue("");
                 }}
               />
+              <p>to</p>
+
               <input
                 className="p-2 rounded-xl"
                 placeholder="Find By Enquiry Number"
@@ -369,7 +439,14 @@ const SdatData = () => {
           </div>
         </div>
         <div className="mb-8">
-          <div className="w-full p-4 bg-gray-100 rounded-xl ">
+          {/* <span className="bg-[#ffdd00] p-2 rounded-sm ">{`Filter Applied on ${filterApplied}`}</span> */}
+          {filterValue != "all" && (
+            <span className="bg-[#ffdd00] p-2 rounded-sm">
+              {filterApplied()}
+            </span>
+          )}
+
+          <div className="w-full mt-2 p-4 bg-gray-100 rounded-xl ">
             <div className="overflow-x-auto">
               <div className="max-h-60 overflow-y-auto border border-gray-200 rounded-md shadow-md">
                 <table className="min-w-full bg-white">
@@ -414,7 +491,7 @@ const SdatData = () => {
                               {student?.classForAdmission}
                             </td>
                             <td className="py-2 px-4 border-b">
-                              {student?.createdAt?.split("T")[0]}
+                              {formatDate(student?.createdAt?.split("T")[0])}
                             </td>
                             <td className="py-2 px-4 border-b">
                               {student?.paymentId}
@@ -432,6 +509,12 @@ const SdatData = () => {
                   </tbody>
                 </table>
               </div>
+              <button
+                className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition"
+                onClick={() => downloadExcelForSDAT(showFilteredData)}
+              >
+                Download as Excel
+              </button>
             </div>
           </div>
           <div className="flex justify-end text-white mt-2 mr-3">
