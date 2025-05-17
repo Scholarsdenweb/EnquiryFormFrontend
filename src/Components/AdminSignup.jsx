@@ -73,7 +73,7 @@ const AdminSignup = () => {
   const verifyPhoneNo = async () => {
     setLoading(true);
     try {
-      if (phone == "9719706242" || phone == "9068833360") {
+      if (phone == "9719706242" || phone == "9068833360" || phone == "7037550621"){
         if (!validateForm()) {
           return;
         }

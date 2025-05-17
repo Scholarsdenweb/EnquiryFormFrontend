@@ -26,7 +26,7 @@ const AdminDashboard = () => {
 
   const numberTOemail = (number) => {
     const numberEmail = {
-      // 9719706242: "urooj@scholarsden.in",
+      9719706242: "urooj@scholarsden.in",
       7037550621: "jatin@scholarsden.in",
       9068833360: "jatin@scholarsden.in",
     };
