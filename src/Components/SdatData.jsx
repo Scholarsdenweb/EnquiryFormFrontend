@@ -46,9 +46,6 @@ const SdatData = () => {
         class: classValue,
         sortOrder: order,
       });
-      setInputValue("");
-      setStartingDate("");
-      setLastDate("");
     } else if (filterValue === "id") {
       fetchFilteredData({
         filterBy: "id",
@@ -87,17 +84,39 @@ const SdatData = () => {
   };
 
   // Unified filter function
-  const fetchFilteredData = async (filterParams = {}) => {
+  const fetchFilteredData = async (filterParams = {}, value) => {
     setIsLoading(true);
     console.log("filterParams from fetchFilteredData", filterParams);
+    console.log(
+      "filterParams from alldata",
+      filterParams.class,
+      filterParams.name,
+      filterParams.startingDate,
+      filterParams.lastDate,
+      sortOrder
+    );
 
     const phone = getCookieValue("phone");
     try {
-      const response = await axios.post("/students/filter", filterParams);
+      // const response = await axios.post("/students/filter", filterParams);
+      const response = await axios.post("students/filter", {
+        filterBy: "multiple",
+        class: filterParams.class || classValue,
+        name: filterParams.name || inputValue,
+        // studentId : filterParams.studentId ,
+
+        startingDate: filterParams.startingDate || startingDate,
+        lastDate: filterParams.lastDate || lastDate,
+        sortOrder: sortOrder || "desc",
+      });
+
+      console.log("Filtered students:", response.data);
+      setShowFilteredData(response.data);
+      setFilterValue("multiple");
 
       console.log("Filter for all response", response);
       setShowFilteredData(response.data);
-      setFilterValue(filterParams.filterBy || "all");
+      setFilterValue(filterParams.filterBy);
     } catch (error) {
       console.error("Error filtering students:", error);
     } finally {
@@ -117,43 +136,48 @@ const SdatData = () => {
     }
     setClassValue(selectedClass);
     fetchFilteredData({ filterBy: "class", class: selectedClass, sortOrder });
-    setInputValue("");
-    setStartingDate("");
-    setLastDate("");
   };
 
   // Handle name/ID search
   const handleSearchChange = (e) => {
     const value = e.target.value;
     console.log("value.length,,,,,,,,,,,,,,,,,,,,,,", value.length);
-    if (value.length < 1) {
-      console.log("value.length.................", value.length);
-      fetchAllStudents({ order: sortOrder });
-      return;
-    } else {
-      setInputValue(value);
-      console.log("VAle from handleSearchChange", value);
+    // if (value.length < 1) {
+    //   console.log("value.length.................", value.length);
+    //    setInputValue(value);
+    //   fetchAllStudents({ order: sortOrder });
+    //   return;
+    // } else {
+    setInputValue(value);
+    console.log("VAle from handleSearchChange", value);
 
-      // Determine if input is likely an ID (numeric)
-      const isIdSearch = /^\d+$/.test(value);
+    // Determine if input is likely an ID (numeric)
+    const isIdSearch = /^\d+$/.test(value);
 
-      if (isIdSearch) {
-        debouncedFilter({ filterBy: "id", studentId: value, sortOrder });
-      } else {
-        debouncedFilter({ filterBy: "name", name: value, sortOrder });
-      }
-    }
-    setClassValue("");
-    setStartingDate("");
-    setLastDate("");
+    // if (isIdSearch) {
+    //   debouncedFilter({ filterBy: "id", studentId: value, sortOrder });
+    // } else {
+    debouncedFilter({ filterBy: "name", name: value, sortOrder });
+    // }
+    // }
+  };
+  const filerByDate = async () => {
+    const response = await axios.post("students/fetchDataByDateRange", {
+      startingDate,
+      lastDate,
+    });
+
+    console.log("filterByDate response", response);
+
+    setShowFilteredData(response.data.data);
+
+    // setShowFilteredData(response.data.data);
+    setFilterValue("daterangeData");
   };
 
   // Fetch all students when no filter is applied
   const fetchAllStudents = (order) => {
     fetchFilteredData({ filterBy: "all", sortOrder: order });
-    setFilterValue("");
-    setInputValue("");
-    setClassValue("");
   };
 
   // Initialize with all students
@@ -217,20 +241,6 @@ const SdatData = () => {
       month: "numeric",
       day: "numeric",
     });
-  };
-
-  const filerByDate = async () => {
-    const response = await axios.post("students/fetchDataByDateRange", {
-      startingDate,
-      lastDate,
-    });
-
-    console.log("filterByDate response", response);
-
-    setShowFilteredData(response.data.data);
-
-    // setShowFilteredData(response.data.data);
-    setFilterValue("daterangeData");
   };
 
   const onClickShowImage = (imageUrl) => {
@@ -311,29 +321,35 @@ const SdatData = () => {
   console.log(formatDate("2025-05-11")); // Output: "11th May 25"
 
   const filterApplied = () => {
+    const filters = [];
+
     if (startingDate && lastDate) {
-      return `Filtered by Date Range: ${formatDate(
-        startingDate
-      )} to ${formatDate(lastDate)}`;
+      filters.push(
+        `Date Range: ${formatDate(startingDate)} to ${formatDate(lastDate)}`
+      );
     }
 
-    if (filterValue === "class" && classValue) {
-      return `Filtered by Class: ${classValue}`;
+    if (classValue) {
+      filters.push(`Class: ${classValue}`);
     }
 
-    if (filterValue === "id" && inputValue) {
-      return `Filtered by Student ID: ${inputValue}`;
-    }
+    // if (inputValue) {
+    //   filters.push(`Student ID: ${inputValue}`);
+    // }
 
-    if (filterValue === "name" && inputValue) {
-      return `Filtered by Student Name: ${inputValue}`;
+    if (inputValue) {
+      filters.push(`Student Name: ${inputValue}`);
     }
 
     if (filterValue === "all") {
-      return `Showing all students`;
+      return "Showing all students";
     }
 
-    return "No filters applied";
+    if (filters.length === 0) {
+      return "No filters applied";
+    }
+
+    return `Showing Data for ${filters.join(" | ")}`;
   };
 
   return (
@@ -354,26 +370,36 @@ const SdatData = () => {
         </h2>
 
         <div className="flex flex-wrap gap-3 m-6 items-center justify-between">
-          <select
-            className="w-40 p-4 rounded-xl "
-            onChange={handleChangeClassFilter}
-            value={classValue}
-          >
-            <option value="Select Class">Select Class</option>
-            {classFilterOptions.map((item, index) => (
-              <option key={index} value={item}>
-                {item}
-              </option>
-            ))}
-          </select>
+          <div className="flex flex-col ">
+            <label className="text-white" htmlFor="">
+              Select Class
+            </label>
+            <select
+              className="w-40 p-4 rounded-xl "
+              onChange={handleChangeClassFilter}
+              value={classValue}
+            >
+              <option value="Select Class">Select Class</option>
+              {classFilterOptions.map((item, index) => (
+                <option key={index} value={item}>
+                  {item}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="flex flex-col">
+            <label className="text-white" htmlFor="">
+              Search by Name
+            </label>
 
-          <input
-            className="p-4 rounded-xl"
-            placeholder="Search by Name or ID"
-            type="text"
-            value={inputValue}
-            onChange={handleSearchChange}
-          />
+            <input
+              className="p-4 rounded-xl"
+              placeholder="Search by Name"
+              type="text"
+              value={inputValue}
+              onChange={handleSearchChange}
+            />
+          </div>
 
           {/* Sort controls */}
           <div className="flex flex-col gap-2">
@@ -412,8 +438,6 @@ const SdatData = () => {
                 value={startingDate}
                 onChange={(e) => {
                   setStartingDate(e.target.value);
-                  setInputValue("");
-                  setClassValue("");
                 }}
               />
               <p>to</p>
@@ -425,13 +449,11 @@ const SdatData = () => {
                 value={lastDate}
                 onChange={(e) => {
                   setLastDate(e.target.value);
-                  setInputValue("");
-                  setClassValue("");
                 }}
               />
               <button
                 className="bg-white rounded-xl px-3"
-                onClick={filerByDate}
+                onClick={fetchFilteredData}
               >
                 Apply
               </button>
@@ -441,9 +463,7 @@ const SdatData = () => {
         <div className="mb-8">
           {/* <span className="bg-[#ffdd00] p-2 rounded-sm ">{`Filter Applied on ${filterApplied}`}</span> */}
           {filterValue != "all" && (
-            <span className="bg-[#ffdd00] p-2 rounded-sm">
-              {filterApplied()}
-            </span>
+            <span className="p-2 text-white rounded-sm">{filterApplied()}</span>
           )}
 
           <div className="w-full mt-2 p-4 bg-gray-100 rounded-xl ">

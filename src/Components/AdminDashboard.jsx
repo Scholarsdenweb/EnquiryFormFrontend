@@ -34,6 +34,67 @@ const AdminDashboard = () => {
     return numberEmail[number] || null;
   };
 
+  const handleApplyFilters = async (data) => {
+    const filterParams = {
+      sortOrder: "desc", // or asc, based on your needs
+      email,
+    };
+
+    if (classValue || data.class) filterParams.class = data.class || classValue;
+    if (inputValue || data.name) {
+      filterParams.name = data.name || inputValue;
+    }
+    if (filterByEnquiry || data.enquiry) {
+      // const isIdSearch = /^\d+$/.test(filterByEnquiry ||);
+      // if (filterByEnquiry)
+      filterParams.enquiryNumber = data.enquiry || filterByEnquiry;
+    }
+    if ((startingDate || data.startingDate)  && (lastDate || data.lastDate) ) {
+      filterParams.startingDate = data.startingDate || startingDate;
+      filterParams.lastDate = data.lastDate || lastDate;
+    }
+
+    console.log("Class", filterParams);
+    console.log("classValue", classValue);
+    console.log("classValue", data);
+    try {
+      const response = await axios.post("/admin/filter", filterParams);
+      console.log("response data", response);
+      setShowFilteredData(response.data);
+      setFilterValue("combined");
+    } catch (error) {
+      console.error("Error ing filters:", error);
+    }
+  };
+const handleClearFilters = (type) => {
+  if (type === "date") {
+    setStartingDate("");
+    setLastDate("");
+    setFilterValue(""); // optional: reset filter label
+    setShowFilteredData([]); // optional: clear results
+  }
+  // You can add other filter types here if needed
+};
+
+  // const handleApplyFilters = () => {
+  //   const filterParams = {
+  //     sortOrder,
+  //   };
+
+  //   if (classValue) filterParams.class = classValue;
+  //   if (inputValue) {
+  //     const isIdSearch = /^\d+$/.test(inputValue);
+  //     if (isIdSearch) filterParams.enquiryNumber = inputValue;
+  //     else filterParams.name = inputValue;
+  //   }
+  //   if (startingDate && lastDate) {
+  //     filterParams.startingDate = startingDate;
+  //     filterParams.lastDate = lastDate;
+  //   }
+
+  //   debouncedFilter(filterParams);
+  // };
+
   const email = numberTOemail(phone);
 
   const filterStudents = async (value) => {
@@ -71,48 +132,33 @@ const AdminDashboard = () => {
   const handleChange = (e) => {
     const value = e.target.value;
     setInputValue(value);
-    setFilterValue("name");
-    debouncedFilter(value);
 
-    setClassValue("");
-
-    setFilterByEnquiry("");
-
-    setStartingDate("");
-    setLastDate("");
+    // Use this instead of debounce
+    setTimeout(() => handleApplyFilters({ name: e.target.value }), 500);
   };
+
   const handleChangeEnquiryIDFilter = (e) => {
     const value = e.target.value;
     setFilterByEnquiry(value);
-    setFilterValue("id");
-    debouncedFilterForEnquiryNumber(value);
-    setClassValue("");
-    setInputValue("");
 
-    setStartingDate("");
-    setLastDate("");
+    setTimeout(() => handleApplyFilters({ enquiry: e.target.value }), 500);
   };
 
   const handleChangeClassFilter = async (e) => {
-    try {
-      setClassValue(e.target.value);
-      setFilterValue("class");
-      const filterByClass = await axios.post("/user/filter/filterByClass", {
-        filterByClassName: e.target.value,
-        email,
-      });
+    setClassValue(e.target.value);
 
-      // setInputValue(filterByClass.data);
+    await handleApplyFilters({ class: e.target.value });
+  };
 
+  const handleDateChange = (e, isStart) => {
+    if (isStart) setStartingDate(e.target.value);
+    else setLastDate(e.target.value);
 
-      setShowFilteredData(filterByClass.data);
-      setInputValue("");
-      setFilterByEnquiry("");
-      setStartingDate("");
-      setLastDate("");
-    } catch (error) {
-      console.log("Error", error);
-    }
+    setTimeout(() => {
+      if (startingDate && lastDate) {
+        handleApplyFilters();
+      }
+    }, 300);
   };
 
   function debounce(func, delay) {
@@ -249,33 +295,38 @@ const AdminDashboard = () => {
     return `${getOrdinal(day)} ${month} ${year}`;
   }
 
-  const filterApplied = () => {
-    console.log("Filter value", filterValue);
+const filterApplied = () => {
+  const filters = [];
 
-    if (startingDate && lastDate) {
-      return `Filtered by Date Range: ${formatDate(
-        startingDate
-      )} to ${formatDate(lastDate)}`;
-    }
+  if (startingDate && lastDate) {
+    filters.push(
+      `Date Range: ${formatDate(startingDate)} to ${formatDate(lastDate)}`
+    );
+  }
 
-    if (filterValue === "class" && classValue) {
-      return `Filtered by Class: ${classValue}`;
-    }
+  if (classValue) {
+    filters.push(`Class: ${classValue}`);
+  }
 
-    if (filterValue === "id" && filterByEnquiry) {
-      return `Filtered by Student ID: ${filterByEnquiry}`;
-    }
+  if (filterByEnquiry) {
+    filters.push(`Enquiry Number: ${filterByEnquiry}`);
+  }
 
-    if (filterValue === "name" && inputValue) {
-      return `Filtered by Student Name: ${inputValue}`;
-    }
+  if (inputValue) {
+    filters.push(`Student Name: ${inputValue}`);
+  }
 
-    if (filterValue === "all") {
-      return `Showing all students`;
-    }
+  if (filters.length === 0 && filterValue === "all") {
+    return "Showing all students";
+  }
 
+  if (filters.length === 0) {
     return "No filters applied";
-  };
+  }
+
+  return `Showing Data for ${filters.join(" | ")}`;
+};
+
 
   function maskEmail(email) {
     if (!email) return email; // Return if email is null or undefined
@@ -444,73 +495,77 @@ const AdminDashboard = () => {
           Admin Dashboard
         </h2>
         <div className="flex gap-3 my-3">
-          <select
-            className=" w-40 p-2 rounded-xl "
-            onChange={handleChangeClassFilter}
-            value={classValue}
-          >
-            <label>Select Class</label>
+          <div className="flex flex-col">
+            {<label className="text-white">Select Class</label>}
+            <select
+              className=" w-40 p-2 rounded-sm "
+              onChange={handleChangeClassFilter}
+              value={classValue}
+            >
+              <option>Select Class</option>
 
-            <option>Select Class</option>
+              {classFilterOptions.map((item, index) => {
+                return (
+                  <option className="" key={index} value={item}>
+                    {item}
+                  </option>
+                );
+              })}
+            </select>
+          </div>
 
-            {classFilterOptions.map((item, index) => {
-              return (
-                <option className="" key={index} value={item}>
-                  {item}
-                </option>
-              );
-            })}
-          </select>
+          <div>
+            {<label className="text-white">Find By Name</label>}
 
-          <input
-            className="p-1 rounded-xl"
-            placeholder="Find By Student Name"
-            type="text"
-            value={inputValue}
-            onChange={handleChange}
-          />
-          <input
-            className="p-1 rounded-xl"
-            placeholder="Find By Enquiry Number"
-            type="text"
-            value={filterByEnquiry}
-            onChange={handleChangeEnquiryIDFilter}
-          />
+            <input
+              className="p-1 rounded-sm"
+              placeholder="Find By Student Name"
+              type="text"
+              value={inputValue}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div>
+            {<label className="text-white">Find By Enquiry Number</label>}
+
+            <input
+              className="p-1 rounded-sm"
+              placeholder="Find By Enquiry Number"
+              type="text"
+              value={filterByEnquiry}
+              onChange={handleChangeEnquiryIDFilter}
+            />
+          </div>
           <div className="flex gap-4 bg-[#ffdd00] items-center px-1 rounded-xl py-2">
             <label></label>
             <input
               className="p-2 rounded-xl"
               type="date"
               value={startingDate}
-              onChange={(e) => {
-                setStartingDate(e.target.value);
-                setClassValue("");
-                setInputValue("");
-                setFilterByEnquiry("");
-              }}
+              onChange={(e) => handleDateChange(e, true)}
             />
-            <p>to</p>
             <input
               className="p-2 rounded-xl"
               type="date"
               value={lastDate}
-              onChange={(e) => {
-                setLastDate(e.target.value);
-                setClassValue("");
-                setInputValue("");
-                setFilterByEnquiry("");
-              }}
+              onChange={(e) => handleDateChange(e, false)}
             />
-            <button className="bg-white rounded-xl p-3" onClick={filerByDate}>
-              Apply
-            </button>
+            <div className="flex gap-1 ">
+              <button className="bg-white  p-1" onClick={handleApplyFilters}>
+                Apply
+              </button>
+              {/* <button className="bg-white p-1" onClick={handleClearFilters}>
+                Clear
+              </button> */}
+            </div>
           </div>
         </div>
 
         {filterValue != "" && (
           <div className="mb-8">
             {filterValue != "all" && (
-              <span className="bg-[#ffdd00] p-2 rounded-sm">
+              <span className=" p-2 rounded-sm text-white">
                 {filterApplied()}
               </span>
             )}
