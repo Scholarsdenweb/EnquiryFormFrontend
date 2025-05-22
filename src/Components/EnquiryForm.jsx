@@ -406,11 +406,12 @@ const EnquiryForm = () => {
                     </option>
                   ))}
                 </select>
-                {errors.state && (
+                {errors.state && otherCity === false && (
                   <p className="text-white text-sm mt-1">{errors.state}</p>
                 )}
               </div>
             )}
+           
           </div>
 
           {/* STUDENT CONTACT */}
