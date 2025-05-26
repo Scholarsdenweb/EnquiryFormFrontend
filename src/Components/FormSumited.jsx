@@ -7,6 +7,8 @@ import FormHeader from "./FormHeader";
 import scholarsDenLogo from "../assets/scholarsDenLogo.png";
 import axios from "../../api/axios";
 import FooterImg from "./FooterImg";
+import { useRef } from "react";
+
 const FormSubmitted = () => {
   const navigate = useNavigate();
 
@@ -15,6 +17,7 @@ const FormSubmitted = () => {
   const { userData } = useSelector((state) => state.userDetails);
 
   const dispatch = useDispatch();
+
   const [time, setTime] = useState("");
 
   const [timeInMin, setTimeInMin] = useState(5);
@@ -37,6 +40,7 @@ const FormSubmitted = () => {
     brochureGiven: "",
   };
 
+  const smsSentRef = useRef(false);
   const clickHandler = async () => {
     await dispatch(updateUserDetails(userdata));
 
@@ -105,6 +109,22 @@ const FormSubmitted = () => {
     console.log("userData from tokenNo", userData);
   }, []);
 
+  const smsMessage = async () => {
+    console.log("userData from smsMessage", userData);
+    const data = await axios.post("/user/formSubmit", {
+      phoneNumber: userData.fatherContactNumber,
+    });
+
+    console.log("data from smsMessage", data);
+  };
+
+  useEffect(() => {
+    if (userData?.fatherContactNumber && !smsSentRef.current) {
+      smsMessage();
+      smsSentRef.current = true;
+    }
+  }, [userData]);
+
   return (
     <div className="min-h-screen flex flex-col bg-[#c61d23] max-w-[768px]">
       <div className="w-full bg-[#c61d23] px-4 md:px-8 pt-2 flex flex-col items-center flex-grow">
@@ -119,10 +139,13 @@ const FormSubmitted = () => {
               className="w-10 md:w-14"
             />
             <div>
-
-            <button className="p-2 rounded-xl hover:bg-[#ffdd00]  bg-white text-lg" onClick={clickHandler}>Home</button>
+              <button
+                className="p-2 rounded-xl hover:bg-[#ffdd00]  bg-white text-lg"
+                onClick={clickHandler}
+              >
+                Home
+              </button>
             </div>
-            
           </div>
 
           <div className="flex flex-col items-center text-white gap-6">
@@ -141,12 +164,13 @@ const FormSubmitted = () => {
               {timeInSec < 10 ? `0${timeInSec}` : timeInSec}
             </div>
           </div>
-          <div className="flex flex-col items-center w-full border rounded p-3 "> 
+          <div className="flex flex-col items-center w-full border rounded p-3 ">
             <div className="flex flex-col items-center text-white ">
               {` Selected Program :  ${userData?.program}`}
             </div>
             <div className="flex  items-center text-white ">
-              Class :  <span className="text-xl px-2 text-gray-300" >{`${userData?.courseOfIntrested}`}</span>
+              Class :{" "}
+              <span className="text-xl px-2 text-gray-300">{`${userData?.courseOfIntrested}`}</span>
             </div>
           </div>
 
