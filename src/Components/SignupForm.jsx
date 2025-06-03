@@ -119,7 +119,7 @@ const SignupForm = () => {
       }
     } catch (error) {
       console.log("Error message", error);
-      setSubmitMessage(`${error.response.data.message.message}`);
+      setSubmitMessage(`${error?.response?.data?.message?.message}`);
     } finally {
       dispatch(setLoading(false));
       // setShowCodeBox(true);
