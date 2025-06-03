@@ -91,7 +91,7 @@ const EnquiryForm = () => {
   // };
 
   const programOptions = {
-    "Foundation": ["VI", "VII", "VIII", "IX", "X"],
+    Foundation: ["VI", "VII", "VIII", "IX", "X"],
     "JEE(Main & Adv)": [
       "XI Engineering",
       "XII Engineering",
@@ -100,15 +100,11 @@ const EnquiryForm = () => {
     "NEET(UG)": ["XI Medical", "XII Medical", "XII Passed Medical"],
   };
 
-
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     console.log("named", [name], name);
     console.log("named", value);
 
-
-    
     if (name === "city") {
       console.log("userData[name]", value);
       if (value === "Other") {
@@ -167,7 +163,6 @@ const EnquiryForm = () => {
       }
     });
 
-
     // if (
     //   userData.studentContactNumber !== "" &&
     //   !/^\d{10}$/.test(userData.studentContactNumber)
@@ -203,7 +198,11 @@ const EnquiryForm = () => {
 
     console.log("fetchUserDetails called", userData["city"]);
     console.log("fetchUserDetails called", userData.city);
-    if (userData["city"] !== "Moradabad" && userData["city"] !== "" && userData["city"] !== undefined) {
+    if (
+      userData["city"] !== "Moradabad" &&
+      userData["city"] !== "" &&
+      userData["city"] !== undefined
+    ) {
       setOtherCity(true);
     }
   }, []);
@@ -353,7 +352,9 @@ const EnquiryForm = () => {
                 <label htmlFor="">Other</label>
               </div>
             </div>
-
+            {!otherCity && errors["city"] && (
+              <p className="text-white text-sm mt-1">{errors["city"]}</p>
+            )}
             {otherCity && (
               <div>
                 <input
@@ -411,7 +412,6 @@ const EnquiryForm = () => {
                 )}
               </div>
             )}
-           
           </div>
 
           {/* STUDENT CONTACT */}
