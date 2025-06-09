@@ -16,7 +16,7 @@ const SdatData = () => {
   const [showFilteredData, setShowFilteredData] = useState([]);
   const [showImageUrl, setShowImageUrl] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [sortOrder, setSortOrder] = useState("desc"); // 'asc' or 'desc'
+  const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
   const [startingDate, setStartingDate] = useState("");
   const [lastDate, setLastDate] = useState("");
   const history = useNavigate();
@@ -63,19 +63,6 @@ const SdatData = () => {
     }
   };
 
-  // Initialize with all students
-  useEffect(() => {
-    const phoneFromCookie = document.cookie
-      .split("; ")
-      .find((row) => row.startsWith("phone="))
-      ?.split("=")[1];
-
-    if (phoneFromCookie) {
-      setContactNumber(phoneFromCookie);
-    }
-
-    fetchAllStudents();
-  }, []);
   const getCookieValue = (name) => {
     return document.cookie
       .split("; ")
@@ -84,15 +71,16 @@ const SdatData = () => {
   };
 
   // Unified filter function
-  const fetchFilteredData = async (filterParams = {}, value) => {
+  const fetchFilteredData = async (filterParams = {}) => {
     setIsLoading(true);
-    console.log("filterParams from fetchFilteredData", filterParams);
+    console.log("filterParams from fetchFilteredData", filterParams, sortOrder);
     console.log(
       "filterParams from alldata",
       filterParams.class,
       filterParams.name,
       filterParams.startingDate,
       filterParams.lastDate,
+      filterParams.sortOrder,
       sortOrder
     );
 
@@ -107,7 +95,7 @@ const SdatData = () => {
 
         startingDate: filterParams.startingDate || startingDate,
         lastDate: filterParams.lastDate || lastDate,
-        sortOrder: sortOrder || "desc",
+        sortOrder: filterParams.sortOrder,
       });
 
       console.log("Filtered students:", response.data);
@@ -191,7 +179,7 @@ const SdatData = () => {
       setContactNumber(phoneFromCookie);
     }
 
-    fetchAllStudents({ order: sortOrder });
+    fetchAllStudents(sortOrder);
   }, []);
 
   const handleCardClick = (student, basic, batch, family) => {
