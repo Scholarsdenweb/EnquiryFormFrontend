@@ -30,7 +30,6 @@ const PaginatedList = ({
 
 
 
-      console.log("response form pagination", response);
 
       setItems(response.data.data || []);
       setTotalPages(response.data.totalPages || 0);

@@ -50,32 +50,28 @@ const AdminDashboard = () => {
       // if (filterByEnquiry)
       filterParams.enquiryNumber = data.enquiry || filterByEnquiry;
     }
-    if ((startingDate || data.startingDate)  && (lastDate || data.lastDate) ) {
+    if ((startingDate || data.startingDate) && (lastDate || data.lastDate)) {
       filterParams.startingDate = data.startingDate || startingDate;
       filterParams.lastDate = data.lastDate || lastDate;
     }
 
-    console.log("Class", filterParams);
-    console.log("classValue", classValue);
-    console.log("classValue", data);
     try {
       const response = await axios.post("/admin/filter", filterParams);
-      console.log("response data", response);
       setShowFilteredData(response.data);
       setFilterValue("combined");
     } catch (error) {
       console.error("Error ing filters:", error);
     }
   };
-const handleClearFilters = (type) => {
-  if (type === "date") {
-    setStartingDate("");
-    setLastDate("");
-    setFilterValue(""); // optional: reset filter label
-    setShowFilteredData([]); // optional: clear results
-  }
-  // You can add other filter types here if needed
-};
+  const handleClearFilters = (type) => {
+    if (type === "date") {
+      setStartingDate("");
+      setLastDate("");
+      setFilterValue(""); // optional: reset filter label
+      setShowFilteredData([]); // optional: clear results
+    }
+    // You can add other filter types here if needed
+  };
 
   // const handleApplyFilters = () => {
   //   const filterParams = {
@@ -111,10 +107,8 @@ const handleClearFilters = (type) => {
     }
   };
   const filterStudentByEnquiryNumber = async (value) => {
-    console.log("value from setFilterByEnquiry", value);
     try {
       if (/^\d+$/.test(value)) {
-        console.log("inputValue filterByEnquiry data", value);
         const allfilterStudent = await axios.post(
           "/user/filter/enquiryNumber",
           {
@@ -202,6 +196,7 @@ const handleClearFilters = (type) => {
   // Handle card click to open modal
   const handleCardClick = (student) => {
     setSelectedStudent(student);
+    console.log("Check Student details", student);
     setIsModalOpen(true);
   };
 
@@ -296,38 +291,37 @@ const handleClearFilters = (type) => {
     return `${getOrdinal(day)} ${month} ${year}`;
   }
 
-const filterApplied = () => {
-  const filters = [];
+  const filterApplied = () => {
+    const filters = [];
 
-  if (startingDate && lastDate) {
-    filters.push(
-      `Date Range: ${formatDate(startingDate)} to ${formatDate(lastDate)}`
-    );
-  }
+    if (startingDate && lastDate) {
+      filters.push(
+        `Date Range: ${formatDate(startingDate)} to ${formatDate(lastDate)}`
+      );
+    }
 
-  if (classValue) {
-    filters.push(`Class: ${classValue}`);
-  }
+    if (classValue) {
+      filters.push(`Class: ${classValue}`);
+    }
 
-  if (filterByEnquiry) {
-    filters.push(`Enquiry Number: ${filterByEnquiry}`);
-  }
+    if (filterByEnquiry) {
+      filters.push(`Enquiry Number: ${filterByEnquiry}`);
+    }
 
-  if (inputValue) {
-    filters.push(`Student Name: ${inputValue}`);
-  }
+    if (inputValue) {
+      filters.push(`Student Name: ${inputValue}`);
+    }
 
-  if (filters.length === 0 && filterValue === "all") {
-    return "Showing all students";
-  }
+    if (filters.length === 0 && filterValue === "all") {
+      return "Showing all students";
+    }
 
-  if (filters.length === 0) {
-    return "No filters applied";
-  }
+    if (filters.length === 0) {
+      return "No filters applied";
+    }
 
-  return `Showing Data for ${filters.join(" | ")}`;
-};
-
+    return `Showing Data for ${filters.join(" | ")}`;
+  };
 
   function maskEmail(email) {
     if (!email) return email; // Return if email is null or undefined
@@ -781,9 +775,9 @@ const filterApplied = () => {
                     </button> */}
                   </div>
 
-                  <p>
+                {selectedStudent.email &&  <p>
                     <strong>Email:</strong> {maskEmail(selectedStudent.email)}
-                  </p>
+                  </p>}
                   <p>
                     <strong>Program:</strong> {selectedStudent.program}
                   </p>
@@ -797,34 +791,34 @@ const filterApplied = () => {
                   <p>
                     <strong>Father's Name:</strong> {selectedStudent.fatherName}
                   </p>
-                  <p>
-                    <strong>Occupation:</strong>{" "}
+                  {/* <p>
+                    <strong>Father's Occupation:</strong>{" "}
                     {selectedStudent.fatherOccupations}
-                  </p>
+                  </p> */}
                   <p>
                     <strong>City:</strong> {selectedStudent.city}
                   </p>
                   <p>
                     <strong>State:</strong> {selectedStudent.state}
                   </p>
-                  <p>
+                {selectedStudent.howToKnow &&  <p>
                     <strong>How to Know:</strong> {selectedStudent.howToKnow}
-                  </p>
-                  <p>
+                  </p>}
+                {selectedStudent.remarks &&  <p>
                     <strong>Remarks:</strong> {selectedStudent.remarks}
-                  </p>
+                  </p>}
 
-                  <p>
+                  {/* <p>
                     <strong>Intime:</strong> {selectedStudent.intime}
-                  </p>
+                  </p> */}
                   <p>
                     <strong>Enquiry Taken By:</strong>{" "}
                     {selectedStudent.enquiryTakenBy}
                   </p>
-                  <p>
+                  {/* <p>
                     <strong>Brochure Given:</strong>{" "}
                     {selectedStudent.brochureGiven}
-                  </p>
+                  </p> */}
                   <p>
                     <strong>Created At:</strong>{" "}
                     {convertToDate(selectedStudent.createdAt)}
