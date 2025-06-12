@@ -2,6 +2,8 @@ import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import axios from "../../../api/axios";
 
+
+
 export const downloadExcelForEnquiry = (showFilteredData) => {
   if (!showFilteredData || showFilteredData.length === 0) {
     alert("No data to export!");
@@ -19,15 +21,22 @@ export const downloadExcelForEnquiry = (showFilteredData) => {
 
   console.log("showFilteredData", showFilteredData);
 
+
   const filteredExportData = showFilteredData.map((student) => ({
-    Name: student.studentName,
-    "Father Name": student.fatherName,
     "Enquiry Number": student.enquiryNumber,
+    Name: student.studentName,
+    "Father Contact": student.fatherContactNumber,
+    "Father Name": student.fatherName,
     Program: student.program,
     Class: student.courseOfIntrested,
+    "School Name": student.schoolName,
+    City: student.city,
+    State: student.state,
+    "Course Of Intrested": student.courseOfIntrested,
+    enquiryTakenBy: student.enquiryTakenBy,
+    // Remarks: student.remarks,
+    // "Student Contact Number": student.studentContactNumber,
     "Created At": formatDate(student.createdAt),
-    "Father Contact": student.fatherContactNumber,
-    "Student Contact": student.studentContact,
   }));
 
   const worksheet = XLSX.utils.json_to_sheet(filteredExportData);
@@ -100,7 +109,6 @@ const fetchStudentDetails = async (studentId) => {
 //     };
 //   });
 
-
 //   console.log(" check data filteredExportData", filteredExportData);
 
 //   const worksheet = XLSX.utils.json_to_sheet(filteredExportData);
@@ -115,10 +123,6 @@ const fetchStudentDetails = async (studentId) => {
 //   const data = new Blob([excelBuffer], { type: "application/octet-stream" });
 //   saveAs(data, "SDAT_data.xlsx");
 // };
-
-
-
-
 
 export const downloadExcelForSDAT = async (showFilteredData) => {
   if (!showFilteredData || showFilteredData.length === 0) {
