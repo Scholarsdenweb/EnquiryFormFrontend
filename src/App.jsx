@@ -9,13 +9,13 @@ import { Provider } from "react-redux";
 import store from "./../redux/store";
 import FormSubmitted from "./Components/FormSumited";
 import Spinner from "./Components/Spinner";
-import AdminSignup from "./Components/AdminSignup";
 import AdminDashboard from "./Components/AdminDashboard";
 import FirstPage from "./Components/FirstPage";
 import FirstPageContant from "./Components/FirstPageContant";
 import SdatData from "./Components/SdatData";
 import Pagination from "./Components/Pagination";
 import PrivateRoute from "./Components/PrivateRoute";
+import AdminLogin from "./Components/AdminLogin";
 // import { useSelector } from "react-redux";
 
 function App() {
@@ -29,7 +29,7 @@ function App() {
             <Route path="/enquiryform" element={<EnquiryForm />} />
             <Route path="/enquiryform/takenBy" element={<TakenBy />} />
             <Route path="/FormSubmitted" element={<FormSubmitted />} />
-            <Route path="/adminSignup" element={<AdminSignup />} />
+            <Route path="/adminSignup" element={<AdminLogin />} />
             <Route
               path="/adminDashboard"
               element={<PrivateRoute component={AdminDashboard} />}

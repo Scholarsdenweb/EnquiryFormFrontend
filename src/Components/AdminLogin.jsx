@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import scholarsDenLogo from "../assets/scholarsDenLogo.png";
 import FormHeader from "./FormHeader";
 
-
 import Spinner from "../../api/Spinner";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -11,10 +10,9 @@ import axios from "../../api/axios";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
-const AdminSignup = () => {
+const AdminLogin = () => {
   const dispatch = useDispatch();
-    const { login } = useAuth(); // ADD THIS LINE
-
+  const { login } = useAuth(); // ADD THIS LINE
 
   const navigate = useNavigate();
   const userData = useSelector((state) => state.userData);
@@ -74,27 +72,20 @@ const AdminSignup = () => {
   //   }
   // };
 
-
-
-
-
-
-
-
-const onSubmit = async (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
-    
+
     try {
       const codeChecked = await checkVerificationCode();
-            // let codeChecked =true;
+      // let codeChecked =true;
 
       console.log("codeChecked", codeChecked);
-      
+
       if (!codeChecked) {
         console.log("Verification failed");
         return;
       }
-      
+
       // Call login API after OTP verification
       const loginResponse = await axios.post("/auth/admin_login", {
         contactNumber: phone,
@@ -103,73 +94,71 @@ const onSubmit = async (e) => {
       if (loginResponse.data.success) {
         // Store token in localStorage
         localStorage.setItem("token", loginResponse.data.token);
-        
+
         // Set cookie (for backup)
         const expiryDate = new Date();
         expiryDate.setDate(expiryDate.getDate() + 7);
         document.cookie = `phone=${phone}; path=/; expires=${expiryDate.toUTCString()}`;
-        document.cookie = `token=${loginResponse.data.token}; path=/; expires=${expiryDate.toUTCString()}`;
-        
+        document.cookie = `token=${
+          loginResponse.data.token
+        }; path=/; expires=${expiryDate.toUTCString()}`;
+
         // Update auth context - NOW login is available
         login(loginResponse.data.token);
-        
+
         // Navigate to dashboard
         navigate("/adminDashboard");
       }
-      
     } catch (error) {
       console.error("Error from onSubmit:", error);
-      setSubmitMessage(error.response?.data?.message || "Login failed. Please try again.");
+      setSubmitMessage(
+        error.response?.data?.message || "Login failed. Please try again."
+      );
     }
   };
 
-const checkVerificationCode = async () => {
-  setSubmitMessage("");
-  
-  if (!phone || !code) {
-    setSubmitMessage("Please enter both phone number and verification code.");
-    return false;
-  }
-  
-  try {
-    const response = await axios.post("/user/verifyNumber", {
-      mobileNumber: phone,
-      otp: code,
-    });
-    
-    console.log("Verification response:", response);
-    
-    if (response.status === 200 && response.data.success) {
-      setSubmitMessage("Phone number verified successfully!");
-      setCodeVerified(true);
-      setShowCodeBox(false);
-      return true;
+  const checkVerificationCode = async () => {
+    setSubmitMessage("");
+
+    if (!phone || !code) {
+      setSubmitMessage("Please enter both phone number and verification code.");
+      return false;
     }
-    
-    setSubmitMessage("Verification failed. Please check your code.");
-    setCodeVerified(false);
-    return false;
-    
-  } catch (error) {
-    console.error("Verification error:", error);
-    
-    let errorMessage = "Error verifying phone number.";
-    
-    if (error.response?.data?.message) {
-      errorMessage = error.response.data.message;
-    } else if (error.request) {
-      errorMessage = "Network error. Please check your internet connection.";
+
+    try {
+      const response = await axios.post("/user/verifyNumber", {
+        mobileNumber: phone,
+        otp: code,
+      });
+
+      console.log("Verification response:", response);
+
+      if (response.status === 200 && response.data.success) {
+        setSubmitMessage("Phone number verified successfully!");
+        setCodeVerified(true);
+        setShowCodeBox(false);
+        return true;
+      }
+
+      setSubmitMessage("Verification failed. Please check your code.");
+      setCodeVerified(false);
+      return false;
+    } catch (error) {
+      console.error("Verification error:", error);
+
+      let errorMessage = "Error verifying phone number.";
+
+      if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.request) {
+        errorMessage = "Network error. Please check your internet connection.";
+      }
+
+      setSubmitMessage(errorMessage);
+      setCodeVerified(false);
+      return false;
     }
-    
-    setSubmitMessage(errorMessage);
-    setCodeVerified(false);
-    return false;
-  }
-};
-
-
-
-
+  };
 
   const verifyPhoneNo = async () => {
     setLoading(true);
@@ -180,8 +169,6 @@ const checkVerificationCode = async () => {
         phone == "8171091333" ||
         phone == "7037550621"
       ) {
-
-
         console.log("Testdata", phone);
         if (!validateForm()) {
           return;
@@ -277,12 +264,11 @@ const checkVerificationCode = async () => {
 
   return (
     <div
-      className="overflow-auto items-center px-2 sm:px-6 max-w-{768px] h-screen"
-      style={{ backgroundColor: "#c61d23" }}
+      className="w-full min-h-screen flex flex-col gap-7 bg-[#c61d23] max-w-[768px]"
     >
       {/* {loading && <Spinner />} */}
-      <div className="grid grid-rows-8 flex-col w-full h-full">
-        <div className="row-span-2">
+      {/* <div className="grid grid-rows-8 flex-col w-full h-full"> */}
+        <div className="flex px-4 md:px-8 py-2">
           <FormHeader />
         </div>
 
@@ -293,7 +279,7 @@ const checkVerificationCode = async () => {
               style={{ backgroundColor: "#c61d23" }}
             >
               <h1 className="text-4xl font-semibold text-white text-center mb-6">
-                Admin Signup
+                Admin Login
               </h1>
               <form
                 autoComplete="off"
@@ -324,7 +310,7 @@ const checkVerificationCode = async () => {
                         </p>
                       )}
                     </div>
-                    
+
                     {!showCodeBox && !codeVerified && (
                       <button
                         type="button"
@@ -389,9 +375,9 @@ const checkVerificationCode = async () => {
             <img src={scholarsDenLogo} alt="Scholars Den Logo" />
           </div>
         </div>
-      </div>
+      {/* </div> */}
     </div>
   );
 };
 
-export default AdminSignup;
+export default AdminLogin;
