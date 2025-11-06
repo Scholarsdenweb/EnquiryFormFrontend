@@ -86,6 +86,8 @@ const onSubmit = async (e) => {
     
     try {
       const codeChecked = await checkVerificationCode();
+            // let codeChecked =true;
+
       console.log("codeChecked", codeChecked);
       
       if (!codeChecked) {
@@ -94,7 +96,7 @@ const onSubmit = async (e) => {
       }
       
       // Call login API after OTP verification
-      const loginResponse = await axios.post("/user/admin_login", {
+      const loginResponse = await axios.post("/auth/admin_login", {
         contactNumber: phone,
       });
 
@@ -322,6 +324,7 @@ const checkVerificationCode = async () => {
                         </p>
                       )}
                     </div>
+                    
                     {!showCodeBox && !codeVerified && (
                       <button
                         type="button"
