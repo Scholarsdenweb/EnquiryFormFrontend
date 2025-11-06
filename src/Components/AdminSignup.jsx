@@ -3,14 +3,18 @@ import React, { useState } from "react";
 import scholarsDenLogo from "../assets/scholarsDenLogo.png";
 import FormHeader from "./FormHeader";
 
+
 import Spinner from "../../api/Spinner";
 
 import { useDispatch, useSelector } from "react-redux";
 import axios from "../../api/axios";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 const AdminSignup = () => {
   const dispatch = useDispatch();
+    const { login } = useAuth(); // ADD THIS LINE
+
 
   const navigate = useNavigate();
   const userData = useSelector((state) => state.userData);
@@ -46,29 +50,124 @@ const AdminSignup = () => {
 
   const [loading, setLoading] = useState(false);
 
-  const onSubmit = async (e) => {
+  // const onSubmit = async (e) => {
+  //   e.preventDefault();
+  //   try {
+  //     let codeChecked = await checkVerificationCode();
+  //     // let codeChecked =true;
+
+  //     console.log("codeChecked", codeChecked);
+
+  //     console.log("Button Clicked");
+  //     if (codeChecked === false) {
+  //       return true;
+  //     } else {
+  //       document.cookie = `phone=${phone}; path=/`;
+  //       navigate("/adminDashboard");
+  //     }
+  //     document.cookie = `phone=${phone}; path=/`;
+  //     navigate("/adminDashboard");
+  //   } catch (error) {
+  //     console.log("error from onSubmit", error);
+  //   } finally {
+  //     //   await dispatch(setLoading(false));
+  //   }
+  // };
+
+
+
+
+
+
+
+
+const onSubmit = async (e) => {
     e.preventDefault();
+    
     try {
-      let codeChecked = await checkVerificationCode();
-      // let codeChecked =true;
-
+      const codeChecked = await checkVerificationCode();
       console.log("codeChecked", codeChecked);
+      
+      if (!codeChecked) {
+        console.log("Verification failed");
+        return;
+      }
+      
+      // Call login API after OTP verification
+      const loginResponse = await axios.post("/user/admin_login", {
+        contactNumber: phone,
+      });
 
-      console.log("Button Clicked");
-      if (codeChecked === false) {
-        return true;
-      } else {
-        document.cookie = `phone=${phone}; path=/`;
+      if (loginResponse.data.success) {
+        // Store token in localStorage
+        localStorage.setItem("token", loginResponse.data.token);
+        
+        // Set cookie (for backup)
+        const expiryDate = new Date();
+        expiryDate.setDate(expiryDate.getDate() + 7);
+        document.cookie = `phone=${phone}; path=/; expires=${expiryDate.toUTCString()}`;
+        document.cookie = `token=${loginResponse.data.token}; path=/; expires=${expiryDate.toUTCString()}`;
+        
+        // Update auth context - NOW login is available
+        login(loginResponse.data.token);
+        
+        // Navigate to dashboard
         navigate("/adminDashboard");
       }
-      document.cookie = `phone=${phone}; path=/`;
-      navigate("/adminDashboard");
+      
     } catch (error) {
-      console.log("error from onSubmit", error);
-    } finally {
-      //   await dispatch(setLoading(false));
+      console.error("Error from onSubmit:", error);
+      setSubmitMessage(error.response?.data?.message || "Login failed. Please try again.");
     }
   };
+
+const checkVerificationCode = async () => {
+  setSubmitMessage("");
+  
+  if (!phone || !code) {
+    setSubmitMessage("Please enter both phone number and verification code.");
+    return false;
+  }
+  
+  try {
+    const response = await axios.post("/user/verifyNumber", {
+      mobileNumber: phone,
+      otp: code,
+    });
+    
+    console.log("Verification response:", response);
+    
+    if (response.status === 200 && response.data.success) {
+      setSubmitMessage("Phone number verified successfully!");
+      setCodeVerified(true);
+      setShowCodeBox(false);
+      return true;
+    }
+    
+    setSubmitMessage("Verification failed. Please check your code.");
+    setCodeVerified(false);
+    return false;
+    
+  } catch (error) {
+    console.error("Verification error:", error);
+    
+    let errorMessage = "Error verifying phone number.";
+    
+    if (error.response?.data?.message) {
+      errorMessage = error.response.data.message;
+    } else if (error.request) {
+      errorMessage = "Network error. Please check your internet connection.";
+    }
+    
+    setSubmitMessage(errorMessage);
+    setCodeVerified(false);
+    return false;
+  }
+};
+
+
+
+
 
   const verifyPhoneNo = async () => {
     setLoading(true);
@@ -149,30 +248,30 @@ const AdminSignup = () => {
   //     return true;
   //   };
 
-  const checkVerificationCode = async () => {
-    try {
-      const response = await axios.post("/user/verifyNumber", {
-        mobileNumber: `${phone}`,
-        otp: code,
-      });
-      console.log("response from checkVerificationCode", response);
-      if (response.status === 200) {
-        setSubmitMessage("Phone number verified successfully!");
-        setCodeVerified(true);
-        setShowCodeBox(false);
-        return true;
-      }
-      setCodeVerified(true);
-      setShowCodeBox(false);
-      return true;
-    } catch (error) {
-      console.log("Error messagefor checkVerificationCode", error);
-      //   setSubmitMessage("Error verifying fatherContactNumber number");
-      return false;
-    } finally {
-      //   dispatch(setLoading(false));
-    }
-  };
+  // const checkVerificationCode = async () => {
+  //   try {
+  //     const response = await axios.post("/user/verifyNumber", {
+  //       mobileNumber: `${phone}`,
+  //       otp: code,
+  //     });
+  //     console.log("response from checkVerificationCode", response);
+  //     if (response.status === 200) {
+  //       setSubmitMessage("Phone number verified successfully!");
+  //       setCodeVerified(true);
+  //       setShowCodeBox(false);
+  //       return true;
+  //     }
+  //     setCodeVerified(true);
+  //     setShowCodeBox(false);
+  //     return true;
+  //   } catch (error) {
+  //     console.log("Error messagefor checkVerificationCode", error);
+  //     //   setSubmitMessage("Error verifying fatherContactNumber number");
+  //     return false;
+  //   } finally {
+  //     //   dispatch(setLoading(false));
+  //   }
+  // };
 
   return (
     <div

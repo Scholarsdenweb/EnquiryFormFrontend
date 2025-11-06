@@ -92,12 +92,20 @@ const TakenBy = () => {
   ];
 
   const enquiryTakenBy = [
-    "sonali@scholarsden.in",
-    "urooj@scholarsden.in",
-    "diya@scholarsden.in",
-    "priya@scholarsden.in",
-    "admission@scholarsden.in",
+    { label: "Sonali Ma'am", value: "sonali@scholarsden.in" },
+    { label: "Urooj Ma'am", value: "urooj@scholarsden.in" },
+    { label: "Diya Ma'am", value: "diya@scholarsden.in" },
+    { label: "Priya Ma'am", value: "priya@scholarsden.in" },
+    { label: "Kavita Ma'am", value: "admission@scholarsden.in" },
   ];
+
+  // const enquiryTakenBy = [
+  //   "sonali@scholarsden.in",
+  //   "urooj@scholarsden.in",
+  //   "diya@scholarsden.in",
+  //   "priya@scholarsden.in",
+  //   "admission@scholarsden.in",
+  // ];
 
   const rendomNumber = Math.floor(Math.random() * 4);
 
@@ -128,6 +136,12 @@ const TakenBy = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
+    if(name==="enquiryTakenBy"){
+
+      
+      dispatch(updateUserDetails({ [name]: value }));
+    }
     dispatch(updateUserDetails({ [name]: value }));
 
     if (name === "howToKnow") {
@@ -445,7 +459,7 @@ const TakenBy = () => {
                 )}
 
                 {/* Enquiry Taken By */}
-                <SelectField
+                {/* <SelectField
                   label="Enquiry Taken By"
                   name="enquiryTakenBy"
                   value={userData.enquiryTakenBy}
@@ -453,7 +467,47 @@ const TakenBy = () => {
                   onChange={handleChange}
                   placeholder="Enquiry Taken By"
                   error={errors.enquiryTakenBy}
-                />
+                /> */}
+
+                <div className="flex flex-col">
+                  <label
+                    htmlFor="enquiryTakenBy"
+                    className=" text-white mb-1"
+                  >
+                    Enquiry Taken By
+                  </label>
+                  <select
+                    name="enquiryTakenBy"
+                    value={userData.enquiryTakenBy || ""}
+                    onChange={handleChange}
+                    className="border-b-2 text-white py-2 bg-[#c61d23] focus:outline-none  appearance-none "
+                    style={{
+                      backgroundImage: `url(${Neeche})`,
+
+                      backgroundRepeat: "no-repeat",
+                      backgroundPosition: "right 10px center",
+                      backgroundSize: "16px",
+                    }}
+                  >
+                    <option value="" className="bg-white " disabled>
+                      Enquiry Taken By
+                    </option>
+                    {enquiryTakenBy?.map(({label, value}, index) => (
+                      <option
+                        className="bg-white text-black border-2 border-black-2"
+                        key={value}
+                        value={value}
+                      >
+                        {label}
+                      </option>
+                    ))}
+                  </select>
+                  {errors.enquiryTakenBy && (
+                    <span className="text-white text-sm mt-1">
+                      {errors.enquiryTakenBy}
+                    </span>
+                  )}
+                </div>
 
                 {/* Remarks */}
                 <InputField
