@@ -16,13 +16,14 @@ import SdatData from "./Components/SdatData";
 import Pagination from "./Components/Pagination";
 import PrivateRoute from "./Components/PrivateRoute";
 import AdminLogin from "./Components/AdminLogin";
+import NotFound from "./Components/NotFound";
 // import { useSelector } from "react-redux";
 
 function App() {
   return (
     <Provider store={store}>
       <Router>
-        <div className="flex  justify-center items-center ">
+        <div className="flex justify-center items-center">
           <Routes>
             <Route path="/" element={<Signup />} />
             <Route path="/firstPage" element={<FirstPageContant />} />
@@ -34,8 +35,10 @@ function App() {
               path="/adminDashboard"
               element={<PrivateRoute component={AdminDashboard} />}
             />
-            <Route path="/sdatForm" element={<PrivateRoute component={ SdatData} />} />
-            <Route path="/pagination" element={<PrivateRoute component={ Pagination} />} />
+            <Route path="/sdatForm" element={<PrivateRoute component={SdatData} />} />
+            <Route path="/pagination" element={<PrivateRoute component={Pagination} />} />
+            {/* Catch-all route for undefined paths */}
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </div>
       </Router>
