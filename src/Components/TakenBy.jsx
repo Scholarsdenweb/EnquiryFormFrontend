@@ -92,11 +92,12 @@ const TakenBy = () => {
   ];
 
   const enquiryTakenBy = [
-    { label: "Sonali Ma'am", value: "sonali@scholarsden.in" },
+
+    { label: "Adi Ma'am", value: "adi@scholarsden.in" },
     { label: "Urooj Ma'am", value: "urooj@scholarsden.in" },
     { label: "Diya Ma'am", value: "diya@scholarsden.in" },
     { label: "Priya Ma'am", value: "priya@scholarsden.in" },
-    { label: "Kavita Ma'am", value: "admission@scholarsden.in" },
+    { label: "Yasir Sir", value: "yasir@scholarsden.in" },
   ];
 
   // const enquiryTakenBy = [
