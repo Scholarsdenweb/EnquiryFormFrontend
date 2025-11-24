@@ -45,12 +45,11 @@ const SignupForm = () => {
     const { name, value } = e.target;
     console.log("name", name, "value", value);
 
-     if (name === "fatherContactNumber") {
+    if (name === "fatherContactNumber") {
       if (value.length > 10) {
         return;
       }
     }
-
 
     dispatch(updateUserDetails({ [name]: value }));
 
@@ -157,7 +156,8 @@ const SignupForm = () => {
     try {
       setIsSubmittingForm(true); // ⬅️ Only show LoadingPage now
 
-      let codeChecked = await checkVerificationCode();
+      // let codeChecked = await checkVerificationCode();
+      let codeChecked = true;
       if (codeChecked === false) {
         // setShowCodeBox(false);
         setCodeVerified(false);
@@ -186,6 +186,9 @@ const SignupForm = () => {
       setIsSubmittingForm(false); // ⬅️ always reset this
     }
   };
+
+
+  
 
   const handleOTPChange = async (e) => {
     if (e.target.value.length <= 4) {
@@ -231,7 +234,7 @@ const SignupForm = () => {
               placeholder="Enter Contact Number"
               className="flex-1 bg-white/10 text-white border border-white px-4 py-2 focus:outline-none placeholder-gray-400"
             />
-            {!showCodeBox && !codeVerified && (
+            {/* {!showCodeBox && !codeVerified && (
               <button
                 type="button"
                 onClick={verifyPhoneNo}
@@ -239,7 +242,7 @@ const SignupForm = () => {
               >
                 Send OTP
               </button>
-            )}
+            )} */}
           </div>
           {errors.fatherContactNumber && (
             <p className="text-sm text-yellow-300">
@@ -249,7 +252,7 @@ const SignupForm = () => {
         </div>
 
         {/* OTP Input */}
-        {showCodeBox && (
+        {/* {showCodeBox && (
           <div className="space-y-2">
             <label htmlFor="otp" className="block text-sm font-medium">
               *Verification Code
@@ -264,7 +267,7 @@ const SignupForm = () => {
               className="w-full bg-white/20 text-white border border-white px-4 py-2 focus:outline-none placeholder-gray-400"
             />
           </div>
-        )}
+        )} */}
 
         {/* Message */}
         {submitMessage && (
@@ -280,17 +283,15 @@ const SignupForm = () => {
 
         {/* Submit */}
 
-
-
-        {showCodeBox && (
-          <button
-            type="submit"
-            className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 rounded-xl transition-all disabled:bg-yellow-800"
-            disabled={!codeEntered}
-          >
-            Next
-          </button>
-         )} 
+        {/* {showCodeBox && ( */}
+        <button
+          type="submit"
+          className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 rounded-xl transition-all disabled:bg-yellow-800"
+          // disabled={!codeEntered}
+        >
+          Next
+        </button>
+        {/* )}  */}
       </form>
     </div>
   );
