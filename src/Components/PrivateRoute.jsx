@@ -10,7 +10,7 @@ const PrivateRoute = ({ component: Component }) => {
 
   // If the user is not authenticated, redirect to the login page
   if (!isAuthenticated) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/adminSignup" replace />;
   }
 
   // If authenticated, render the desired component

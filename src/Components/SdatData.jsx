@@ -263,9 +263,28 @@ const SdatData = () => {
   };
 
   const handleLogout = () => {
-    document.cookie = "phone=; max-age=0; path=/";
-    history("/adminsignup");
+  // Clear cookie with multiple attempts to cover different scenarios
+  const clearCookie = (name) => {
+    
+    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+    
+    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${window.location.hostname};`;
+    
+    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC;`;
+    
+    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/adminsignup;`;
   };
+
+  clearCookie("phone");
+  clearCookie("token"); // Clear token too if needed
+  
+  // Also clear localStorage
+  localStorage.removeItem("token");
+  localStorage.removeItem("phone");
+  
+  // Redirect to AdminSignup page
+  history("/adminsignup");
+}
 
   function formatDate(dateString) {
     const date = new Date(dateString);
