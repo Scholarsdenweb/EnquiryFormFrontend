@@ -12,6 +12,7 @@ import { setLoading } from "../../redux/loadingSlice";
 import scholarsDenLogo from "../assets/scholarsDenLogo.png";
 import Spinner from "./Spinner";
 import FormHeader from "./FormHeader";
+import axios from "../../api/axios";
 
 // Reusable Input Component
 const InputField = ({
@@ -92,11 +93,11 @@ const TakenBy = () => {
   ];
 
   const enquiryTakenBy = [
-    { label: "Sonali Ma'am", value: "sonali@scholarsden.in" },
+    { label: "Adi Ma'am", value: "adi@scholarsden.in" },
     { label: "Urooj Ma'am", value: "urooj@scholarsden.in" },
     { label: "Diya Ma'am", value: "diya@scholarsden.in" },
     { label: "Priya Ma'am", value: "priya@scholarsden.in" },
-    { label: "Kavita Ma'am", value: "admission@scholarsden.in" },
+    { label: "Yasir Sir", value: "yasir@scholarsden.in" },
   ];
 
   // const enquiryTakenBy = [
@@ -137,9 +138,7 @@ const TakenBy = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    if(name==="enquiryTakenBy"){
-
-      
+    if (name === "enquiryTakenBy") {
       dispatch(updateUserDetails({ [name]: value }));
     }
     dispatch(updateUserDetails({ [name]: value }));
@@ -187,161 +186,157 @@ const TakenBy = () => {
 
   // const putDataOnExtraEdge = async () => {
   //   console.log("userData from putDataOnExtraEdge", userData);
-  //   // API URL
+
   //   const url = "https://thirdpartyapi.extraaedge.com/api/SaveRequest";
 
-  //   // Request Headers
   //   const headers = {
-  //     "Content-Type": "application/json", // Define the content type as JSON
-  //     AuthToken: "SCHOLARSDEN-30-03-2024", // Add the AuthToken
-
+  //     "Content-Type": "application/json",
   //   };
 
-  //   // API Data (Replace this with your actual payload if necessary)
-  //   const apiData = {...userData, "Source": "scholarsden"};
+  //   // const apiData = { Source: "scholarsden", AuthToken: "SCHOLARSDEN-30-03-2024", FirstName : userData.studente };
 
-  //   console.log("apiData.............................................. from putDataOnExtraEdge", apiData);
+  //   const apiData = {
+  //     Source: "scholarsden",
+  //     AuthToken: "SCHOLARSDEN-30-03-2024",
+  //     FirstName: userData.studentName || "",
+  //     Email: userData.email || "",
+  //     Center: userData.courseOfIntrested || "",
+  //     Course: userData.program || "", // Assuming 'program' corresponds to 'Center'
+  //     State: userData.state || "", // No mapping in provided data, you may need to add this
+  //     City: userData.city || "",
+  //     Remarks: userData.remarks || "",
+  //     leadCampaign: "Walk-in",
+  //     LeadSource: "140",
 
-  //   // Sending the POST request using fetch
-  // fetch(url, {
-  //     method: "POST", // Request type is POST
-  //     headers: headers, // Setting the headers
-  //     body: JSON.stringify(apiData), // Convert the data to JSON format
-  //   })
-  //     .then((response) => {
-  //       // Check if the response status is OK (status code 200)
+  //     Field4: userData.brochureGiven,
+  //     Field5: userData.howToKnow,
+  //     ReferredToEmail: userData.enquiryTakenBy,
+  //     Textb1: userData.intime,
 
-  //       if (response.ok) {
-  //         console.log("Request was successful!");
-  //         return response.json(); // Parse the response body as JSON
-  //       } else {
-  //         throw new Error("Request failed with status: " + response.status);
-  //       }
-  //     })
-  //     .then((responseData) => {
-  //       console.log("Request was successful!");
-  //       console.log("Response Data:", responseData); // Log the response data
-  //     })
-  //     .catch((error) => {
-  //       console.log("Error:", error); // Log any errors
-  //     });
-  // };
+  //     Textb3: userData.schoolName,
+  //     Textb2: userData.fatherOccupations,
+  //     FathersName: userData.fatherName || "",
 
-  // const putDataOnExtraEdge = async () => {
-  //   console.log("userData from putDataOnExtraEdge", userData);
-  //   // API URL
-  //   const url = "https://thirdpartyapi.extraaedge.com/api/SaveRequest";
+  //     // imporovement Available
+  //     // MobileNumber: userData.studentContactNumber || "",
+  //     // FathersPhoneNumber: userData.fatherContactNumber || "",
 
-  //   // Request Headers
-  //   const headers = {
-  //     "Content-Type": "application/json", // Define the content type as JSON
-  //     AuthToken: "SCHOLARSDEN-30-03-2024", // Add the AuthToken
+  //     MobileNumber: userData.fatherContactNumber || "",
+  //     FathersPhoneNumber: userData.studentContactNumber || "",
+
+  //     // Not added yet
+
+  //     // SchoolName: userData.schoolName || "",
+  //     // // EnquiryTakenBy: userData.enquiryTakenBy || "",
+  //     // // BrochureGiven: userData.brochureGiven || "",
+  //     // enquiryTakenBy: data?.enquiryTakenBy || "",
+  //     // fatherOccupations: userData.fatherOccupations || "",
   //   };
 
-  //   // API Data (Replace this with your actual payload if necessary)
-  //   const apiData = {...userData, "Source": "scholarsden"};
+  //   console.log("apiData", apiData);
 
-  //   console.log("apiData.............................................. from putDataOnExtraEdge", apiData);
+  //   console.log("apiData from putDataOnExtraEdge", apiData);
 
-  //   // Sending the POST request using fetch
-  //   fetch(url, {
-  //     method: "POST", // Request type is POST
-  //     headers: headers, // Setting the headers
-  //     body: JSON.stringify(apiData), // Convert the data to JSON format
-  //   })
-  //     .then((response) => {
-  //       console.log("Raw response:", response);
-  //       // Check if the response is OK (status code 200)
-  //       if (response.ok) {
-  //         // Try parsing the response body as JSON
-  //         return response.json();
-  //       } else {
-  //         throw new Error("Request failed with status: " + response.status);
-  //       }
-  //     })
-  //     .then((responseData) => {
-  //       console.log("Response Data:", responseData); // Log the response data
-  //     })
-  //     .catch((error) => {
-  //       console.log("Error:", error); // Log any errors
+  //   try {
+  //     const response = await fetch(url, {
+  //       method: "POST",
+  //       headers: headers,
+  //       body: JSON.stringify(apiData),
   //     });
+
+  //     console.log("Raw response:", response);
+
+  //     const contentType = response.headers.get("content-type");
+
+  //     if (!response.ok) {
+  //       throw new Error(`Request failed with status: ${response.status}`);
+  //     }
+
+  //     if (contentType && contentType.includes("application/json")) {
+  //       const responseData = await response.json();
+  //       console.log("Response Data:", responseData);
+  //     } else {
+  //       const textResponse = await response.text();
+  //       console.log("Non-JSON Response:", textResponse);
+  //     }
+  //   } catch (error) {
+  //     console.log("Error:", error);
+  //   }
   // };
 
-  const putDataOnExtraEdge = async () => {
-    console.log("userData from putDataOnExtraEdge", userData);
+  // const putDataOnZohoCrm = async () => {
+  //   try {
+  //     console.log("data from putDataOnZohoCrm", userData);
+  //     const url = "https://www.zohoapis.com/crm/v7/Leads";
 
-    const url = "https://thirdpartyapi.extraaedge.com/api/SaveRequest";
+  //     console.log("Url from putDataOnZohoCrm", url);
 
-    const headers = {
-      "Content-Type": "application/json",
-    };
+  //     const headers = {
+  //       "Content-Type": "application/json",
+  //       Authorization:
+  //         "Zoho-oauthtoken 1000.b5f11f322b7ab943d9d387d7ad1ae834.8d060d2cab9bcf5f35fc571141191fdc",
+  //     };
 
-    // const apiData = { Source: "scholarsden", AuthToken: "SCHOLARSDEN-30-03-2024", FirstName : userData.studente };
+  //     const apiData = {
+  //       FirstName: userData.studentName || "",
+  //       "Last_Name​": "test",
+  //       "Lead_Source​": "enquiry",
+  //       Last_Name: "Test",
+  //       Email: "testapi@ebc.com",
+  //       "Contact Number": userData.fatherContactNumber,
+  //       Lead_Status: userData.remarks,
+  //       TakenBy: userData.enquiryTakenBy,
+  //       testingField: "test",
+  //     };
 
-    const apiData = {
-      Source: "scholarsden",
-      AuthToken: "SCHOLARSDEN-30-03-2024",
-      FirstName: userData.studentName || "",
-      Email: userData.email || "",
-      Center: userData.courseOfIntrested || "",
-      Course: userData.program || "", // Assuming 'program' corresponds to 'Center'
-      State: userData.state || "", // No mapping in provided data, you may need to add this
-      City: userData.city || "",
-      Remarks: userData.remarks || "",
-      leadCampaign: "Walk-in",
-      LeadSource: "140",
+  //     const response = await fetch(url, {
+  //       method: "POST",
+  //       headers: headers,
+  //       body: JSON.stringify(apiData),
+  //     });
 
-      Field4: userData.brochureGiven,
-      Field5: userData.howToKnow,
-      ReferredToEmail: userData.enquiryTakenBy,
-      Textb1: userData.intime,
+  //     console.log("response from putDataOnZOhoCrm", response);
+  //   } catch (error) {
+  //     console.log("Error form onSubmit ", error);
+  //   }
+  // };
 
-      Textb3: userData.schoolName,
-      Textb2: userData.fatherOccupations,
-      FathersName: userData.fatherName || "",
-
-      // imporovement Available
-      // MobileNumber: userData.studentContactNumber || "",
-      // FathersPhoneNumber: userData.fatherContactNumber || "",
-
-      MobileNumber: userData.fatherContactNumber || "",
-      FathersPhoneNumber: userData.studentContactNumber || "",
-
-      // Not added yet
-
-      // SchoolName: userData.schoolName || "",
-      // // EnquiryTakenBy: userData.enquiryTakenBy || "",
-      // // BrochureGiven: userData.brochureGiven || "",
-      // enquiryTakenBy: data?.enquiryTakenBy || "",
-      // fatherOccupations: userData.fatherOccupations || "",
-    };
-
-    console.log("apiData", apiData);
-
-    console.log("apiData from putDataOnExtraEdge", apiData);
-
+  const putDataOnZohoCrm = async () => {
     try {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: headers,
-        body: JSON.stringify(apiData),
+      console.log("userData from putDataOnZohoCrm", userData);
+
+      const api_data = {
+        Mobile: userData.fatherContactNumber,
+        Last_Name: userData?.studentName || "test",
+        FatherName: userData.fatherName,
+        FatherOccupations: userData.fatherOccupations,
+        Email: "te@gmail.com",
+        Lead_Status: "Fresh Lead",
+        Description: "Message",
+        TakenBy: "webdeveloper@scholarsden.in",
+        testingField: "test",
+        Lead_Source: "enquiry Form",
+      };
+
+      // const api_data = {
+      //   "Lead_Source​": "enquiry",
+      //   Last_Name: "Test",
+      //   Email: "testapi@ebc.com",
+      //   Mobile: "8876986310",
+      //   Company: "Google",
+      //   Industry: "NBFC",
+      //   Description: "Message",
+      //   TakenBy: "webdeveloper@scholarsden.in",
+      //   Products_Services: "Recharge",
+      //   testingField: "test",
+      // };
+
+      const response = await axios.post("/user/zoho/leads", {
+        data: [api_data],
       });
 
-      console.log("Raw response:", response);
-
-      const contentType = response.headers.get("content-type");
-
-      if (!response.ok) {
-        throw new Error(`Request failed with status: ${response.status}`);
-      }
-
-      if (contentType && contentType.includes("application/json")) {
-        const responseData = await response.json();
-        console.log("Response Data:", responseData);
-      } else {
-        const textResponse = await response.text();
-        console.log("Non-JSON Response:", textResponse);
-      }
+      const data = await response.json();
+      console.log("Zoho response:", data);
     } catch (error) {
       console.log("Error:", error);
     }
@@ -356,10 +351,12 @@ const TakenBy = () => {
     if (validateForm()) {
       await dispatch(putFormData(userData));
 
-      await putDataOnExtraEdge();
+      console.log("Testdata from the onSUBMIT", userData);
+
+      await putDataOnZohoCrm();
 
       // document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
-      navigate("/FormSubmitted");
+      // navigate("/FormSubmitted");
     }
     dispatch(setLoading(false));
   };
@@ -470,10 +467,7 @@ const TakenBy = () => {
                 /> */}
 
                 <div className="flex flex-col">
-                  <label
-                    htmlFor="enquiryTakenBy"
-                    className=" text-white mb-1"
-                  >
+                  <label htmlFor="enquiryTakenBy" className=" text-white mb-1">
                     Enquiry Taken By
                   </label>
                   <select
@@ -492,7 +486,7 @@ const TakenBy = () => {
                     <option value="" className="bg-white " disabled>
                       Enquiry Taken By
                     </option>
-                    {enquiryTakenBy?.map(({label, value}, index) => (
+                    {enquiryTakenBy?.map(({ label, value }, index) => (
                       <option
                         className="bg-white text-black border-2 border-black-2"
                         key={value}
@@ -523,7 +517,7 @@ const TakenBy = () => {
                 <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mt-8">
                   <button
                     type="button"
-                    onClick={() => navigate("/enquiryForm")}
+                    onClick={() => navigate("/enquiryform")}
                     className="w-full sm:w-1/3 border border-gray-400 rounded-xl bg-yellow-500 hover:bg-yellow-600 py-2 px-4 "
                   >
                     Back
