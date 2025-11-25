@@ -26,7 +26,7 @@ function App() {
         <div className="flex justify-center items-center">
           <Routes>
             <Route path="/" element={<Signup />} />
-            <Route path="/firstPage" element={<FirstPageContant />} />
+            <Route path="/firstPage" element={<FirstPage />} />
             <Route path="/enquiryform" element={<EnquiryForm />} />
             <Route path="/enquiryform/takenBy" element={<TakenBy />} />
             <Route path="/FormSubmitted" element={<FormSubmitted />} />
