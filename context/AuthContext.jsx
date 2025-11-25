@@ -19,7 +19,7 @@
 //     // Check localStorage first
 //     const localToken = localStorage.getItem("token");
 //     if (localToken) return true;
-    
+
 //     // Then check cookies
 //     const cookieToken = document.cookie.replace(
 //       /(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/,
@@ -58,14 +58,63 @@
 //   );
 // };
 
+// // src/context/AuthContext.js
+// import React, { createContext, useState, useContext, useEffect } from "react";
+
+// // Create Context
+// const AuthContext = createContext();
+
+// // Custom hook to access auth context - MAKE SURE THIS IS EXPORTED
+// export const useAuth = () => {
+//   const context = useContext(AuthContext);
+//   if (!context) {
+//     throw new Error("useAuth must be used within an AuthProvider");
+//   }
+//   return context;
+// };
+
+// // AuthProvider component
+// export const AuthProvider = ({ children }) => {
+//   const getInitialAuthState = () => {
+//     const localToken = localStorage.getItem("token");
+//     return !!localToken;
+//   };
+
+//   const [isAuthenticated, setIsAuthenticated] = useState(getInitialAuthState());
+
+//   useEffect(() => {
+//     console.log("isAuthenticated", isAuthenticated);
+//   }, [isAuthenticated]);
+
+//   const login = (token) => {
+//     if (token) {
+//       localStorage.setItem("token", token);
+//     }
+//     setIsAuthenticated(true);
+//   };
+
+//   const logout = () => {
+//     localStorage.removeItem("token");
+//     localStorage.removeItem("phone");
+//     document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+//     document.cookie = "phone=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+//     setIsAuthenticated(false);
+//   };
+
+//   return (
+//     <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+//       {children}
+//     </AuthContext.Provider>
+//   );
+// };
 
 // src/context/AuthContext.js
 import React, { createContext, useState, useContext, useEffect } from "react";
 
-// Create Context
+import axios from "../api/axios";
+
 const AuthContext = createContext();
 
-// Custom hook to access auth context - MAKE SURE THIS IS EXPORTED
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
@@ -74,37 +123,95 @@ export const useAuth = () => {
   return context;
 };
 
-// AuthProvider component
 export const AuthProvider = ({ children }) => {
-  const getInitialAuthState = () => {
-    const localToken = localStorage.getItem("token");
-    return !!localToken;
-  };
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(null);
 
-  const [isAuthenticated, setIsAuthenticated] = useState(getInitialAuthState());
-
+  // Verify authentication on mount
   useEffect(() => {
-    console.log("isAuthenticated", isAuthenticated);
-  }, [isAuthenticated]);
+    verifyAuth();
+  }, []);
 
-  const login = (token) => {
-    if (token) {
-      localStorage.setItem("token", token);
+  const verifyAuth = async () => {
+    try {
+      // Call your backend to verify if user is authenticated
+      const response = await axios.get("/auth/verify", {
+        credentials: "include", // Important: sends httpOnly cookies
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      console.log("Auth verification response:", response);
+      console.log("Auth verification response:", response.ok);
+
+      if (response?.data?.authenticated) {
+        setIsAuthenticated(true);
+        setUser(response.data.user);
+      } else {
+        setIsAuthenticated(false);
+        setUser(null);
+      }
+    } catch (error) {
+      console.error("Auth verification failed:", error);
+      setIsAuthenticated(false);
+      setUser(null);
+    } finally {
+      setLoading(false);
     }
-    setIsAuthenticated(true);
   };
 
-  const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("phone");
-    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    document.cookie = "phone=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    setIsAuthenticated(false);
+  const login = async (credentials) => {
+    console.log("credentials", credentials);
+    try {
+      const response = await axios.post(
+        "/auth/admin_login",
+
+        credentials
+      );
+
+
+
+      console.log("response from login", response);
+
+      if (response?.data?.success) {
+        console.log("Login successful:", response);
+        setIsAuthenticated(true);
+        setUser(response?.data?.admin);
+        return { success: true };
+      } else {
+        const error = await response.data;
+        return { success: false, error: error.message };
+      }
+    } catch (error) {
+      console.error("Login failed:", error);
+      return { success: false, error: "Login failed" };
+    }
   };
 
-  return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  const logout = async () => {
+    try {
+      await fetch("/api/auth/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+    } catch (error) {
+      console.error("Logout failed:", error);
+    } finally {
+      setIsAuthenticated(false);
+      setUser(null);
+    }
+  };
+
+  const value = {
+    isAuthenticated,
+    user,
+    login,
+    logout,
+    loading,
+    verifyAuth,
+  };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

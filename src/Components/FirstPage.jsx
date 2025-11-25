@@ -9,7 +9,7 @@ const FirstPage = () => {
   return (
     <div className="w-full min-h-full overflow-auto bg-[#c61d23] ">
       <div className="flex-grow px-4">
-      <FormHeader />
+      {/* <FormHeader /> */}
       </div>
       <div className="flex-grow">
         <FirstPageContant />

@@ -25,8 +25,8 @@ const AdminLogin = () => {
   const [code, setCode] = useState("");
 
   const [phone, setPhone] = useState("");
-  const [codeVerified, setCodeVerified] = useState(false);
-  // const [codeVerified, setCodeVerified] = useState(true);
+  // const [codeVerified, setCodeVerified] = useState(false);
+  const [codeVerified, setCodeVerified] = useState(true);
   const [errors, setErrors] = useState({
     phone: "",
   });
@@ -76,8 +76,8 @@ const AdminLogin = () => {
     e.preventDefault();
 
     try {
-      const codeChecked = await checkVerificationCode();
-      // let codeChecked =true;
+      // const codeChecked = await checkVerificationCode();
+      let codeChecked = true;
 
       console.log("codeChecked", codeChecked);
 
@@ -85,30 +85,35 @@ const AdminLogin = () => {
         console.log("Verification failed");
         return;
       }
+      const isLogin = await login({ contactNumber: phone });
 
-      // Call login API after OTP verification
-      const loginResponse = await axios.post("/auth/admin_login", {
-        contactNumber: phone,
-      });
+      console.log("isLogin", isLogin);
 
-      if (loginResponse.data.success) {
-        // Store token in localStorage
-        localStorage.setItem("token", loginResponse.data.token);
-
-        // Set cookie (for backup)
-        const expiryDate = new Date();
-        expiryDate.setDate(expiryDate.getDate() + 7);
-        document.cookie = `phone=${phone}; path=/; expires=${expiryDate.toUTCString()}`;
-        document.cookie = `token=${
-          loginResponse.data.token
-        }; path=/; expires=${expiryDate.toUTCString()}`;
-
-        // Update auth context - NOW login is available
-        login(loginResponse.data.token);
-
-        // Navigate to dashboard
+      if (isLogin.success) {
         navigate("/adminDashboard");
       }
+      // Call login API after OTP verification
+      // const loginResponse = await axios.post("/auth/admin_login", {
+      //   contactNumber: phone,
+      // });
+
+      // if (loginResponse.data.success) {
+      //   // Store token in localStorage
+      //   localStorage.setItem("token", loginResponse.data.token);
+
+      //   // Set cookie (for backup)
+      //   const expiryDate = new Date();
+      //   expiryDate.setDate(expiryDate.getDate() + 7);
+      //   document.cookie = `phone=${phone}; path=/; expires=${expiryDate.toUTCString()}`;
+      //   document.cookie = `token=${
+      //     loginResponse.data.token
+      //   }; path=/; expires=${expiryDate.toUTCString()}`;
+
+      //   // Update auth context - NOW login is available
+      //   // login(loginResponse.data.token);
+
+      //   // Navigate to dashboard
+      // }
     } catch (error) {
       console.error("Error from onSubmit:", error);
       setSubmitMessage(
@@ -263,118 +268,116 @@ const AdminLogin = () => {
   // };
 
   return (
-    <div
-      className="w-full min-h-screen flex flex-col gap-7 bg-[#c61d23] max-w-[768px]"
-    >
+    <div className="w-full min-h-screen flex flex-col gap-7 bg-[#c61d23] max-w-[768px]">
       {/* {loading && <Spinner />} */}
       {/* <div className="grid grid-rows-8 flex-col w-full h-full"> */}
-        <div className="flex px-4 md:px-8 py-2">
-          <FormHeader />
-        </div>
+      <div className="flex px-4 md:px-8 py-2">
+        <FormHeader />
+      </div>
 
-        <div className="row-span-4 px-3 sm:px-9 flex flex-col justify-center items-center gap-6 overflow-auto">
-          <div className=" w-full sm:w-2/3">
-            <div
-              className="flex flex-col gap-4"
-              style={{ backgroundColor: "#c61d23" }}
+      <div className="row-span-4 px-3 sm:px-9 flex flex-col justify-center items-center gap-6 overflow-auto">
+        <div className=" w-full sm:w-2/3">
+          <div
+            className="flex flex-col gap-4"
+            style={{ backgroundColor: "#c61d23" }}
+          >
+            <h1 className="text-4xl font-semibold text-white text-center mb-6">
+              Admin Login
+            </h1>
+            <form
+              autoComplete="off"
+              className="bg-white/10 backdrop-blur-md shadow-lg p-6 rounded-xl w-full max-w-lg space-y-6 text-white"
+              onSubmit={onSubmit}
             >
-              <h1 className="text-4xl font-semibold text-white text-center mb-6">
-                Admin Login
-              </h1>
-              <form
-                autoComplete="off"
-                className="bg-white/10 backdrop-blur-md shadow-lg p-6 rounded-xl w-full max-w-lg space-y-6 text-white"
-                onSubmit={onSubmit}
-              >
-                <div className="w-full flex flex-col gap-3">
-                  <div className="flex flex-col sm:flex-row gap-3">
-                    <div className="flex flex-col justify-center w-full">
-                      <input
-                        autoComplete="off"
-                        type="number"
-                        id="phone"
-                        name="phone"
-                        value={phone || ""}
-                        onChange={(e) => {
-                          if (e.target.value.length < 11) {
-                            setPhone(e.target.value);
-                          }
-                        }}
-                        placeholder="*Contact Number"
-                        className="border-b-2 border-gray-300 focus:outline-none text-black w-full text-lg rounded-lg p-3"
-                        style={{ backgroundColor: "#f3f3f3" }}
-                      />
-                      {errors.phone && (
-                        <p className="text-red-600 text-sm mt-1">
-                          {errors.phone}
-                        </p>
-                      )}
-                    </div>
-
-                    {!showCodeBox && !codeVerified && (
-                      <button
-                        type="button"
-                        onClick={verifyPhoneNo}
-                        className="px-4 py-2 sm:py-0 rounded-md bg-yellow-500 hover:bg-yellow-600 text-black font-semibold"
-                      >
-                        Send OTP
-                      </button>
+              <div className="w-full flex flex-col gap-3">
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <div className="flex flex-col justify-center w-full">
+                    <input
+                      autoComplete="off"
+                      type="number"
+                      id="phone"
+                      name="phone"
+                      value={phone || ""}
+                      onChange={(e) => {
+                        if (e.target.value.length < 11) {
+                          setPhone(e.target.value);
+                        }
+                      }}
+                      placeholder="*Contact Number"
+                      className="border-b-2 border-gray-300 focus:outline-none text-black w-full text-lg rounded-lg p-3"
+                      style={{ backgroundColor: "#f3f3f3" }}
+                    />
+                    {errors.phone && (
+                      <p className="text-red-600 text-sm mt-1">
+                        {errors.phone}
+                      </p>
                     )}
                   </div>
 
-                  {showCodeBox && (
-                    <div className="flex flex-col w-full max-w-sm gap-3">
-                      <input
-                        autoComplete="off"
-                        type="text"
-                        id="code"
-                        name="code"
-                        value={code}
-                        onChange={handleOTPChange}
-                        placeholder="*Verification Code"
-                        className="w-full bg-white/20 text-white border border-white px-4 py-2  focus:outline-none placeholder-gray-400"
-                      />
-                    </div>
-                  )}
+                  {/* {!showCodeBox && !codeVerified && (
+                    <button
+                      type="button"
+                      onClick={verifyPhoneNo}
+                      className="px-4 py-2 sm:py-0 rounded-md bg-yellow-500 hover:bg-yellow-600 text-black font-semibold"
+                    >
+                      Send OTP
+                    </button>
+                  )} */}
                 </div>
 
-                {submitMessage && (
-                  <p className="text-sm text-center text-yellow-300">
-                    {submitMessage}
-                  </p>
-                )}
-
-                {loading && (
-                  <div className="flex justify-center items-center">
-                    <div className="animate-spin  rounded-full h-5 w-5 border-b-2 border-white"></div>
+                {showCodeBox && (
+                  <div className="flex flex-col w-full max-w-sm gap-3">
+                    <input
+                      autoComplete="off"
+                      type="text"
+                      id="code"
+                      name="code"
+                      value={code}
+                      onChange={handleOTPChange}
+                      placeholder="*Verification Code"
+                      className="w-full bg-white/20 text-white border border-white px-4 py-2  focus:outline-none placeholder-gray-400"
+                    />
                   </div>
                 )}
+              </div>
 
-                {showCodeBox && (
-                  <button
-                    type="submit"
-                    className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 rounded-xl transition-all disabled:bg-yellow-800"
-                    disabled={!codeEntered}
-                  >
-                    Login
-                  </button>
-                )}
-                {/* <button
-                  className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 rounded-xl transition-all"
+              {submitMessage && (
+                <p className="text-sm text-center text-yellow-300">
+                  {submitMessage}
+                </p>
+              )}
+
+              {loading && (
+                <div className="flex justify-center items-center">
+                  <div className="animate-spin  rounded-full h-5 w-5 border-b-2 border-white"></div>
+                </div>
+              )}
+              {/* 
+              {showCodeBox && (
+                <button
                   type="submit"
+                  className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 rounded-xl transition-all disabled:bg-yellow-800"
+                  disabled={!codeEntered}
                 >
                   Login
-                </button> */}
-              </form>
-            </div>
+                </button>
+              )} */}
+              <button
+                className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 rounded-xl transition-all"
+                type="submit"
+              >
+                Login
+              </button>
+            </form>
           </div>
         </div>
+      </div>
 
-        <div className="row-span-1 w-full h-full flex justify-center items-center">
-          <div className="w-24">
-            <img src={scholarsDenLogo} alt="Scholars Den Logo" />
-          </div>
+      <div className="row-span-1 w-full h-full flex justify-center items-center">
+        <div className="w-24">
+          <img src={scholarsDenLogo} alt="Scholars Den Logo" />
         </div>
+      </div>
       {/* </div> */}
     </div>
   );
