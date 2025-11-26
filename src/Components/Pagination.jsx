@@ -29,6 +29,9 @@ const PaginatedList = ({
       });
 
 
+      console.log("response from fetchData ", response);
+
+
 
 
       setItems(response.data.data || []);

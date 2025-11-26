@@ -662,13 +662,13 @@ const EnquiryForm = () => {
     }
   }, []);
 
-  useEffect(() => {
-    if (document.cookie === "") {
-      navigate("/");
-      return;
-    }
-    setProgram(userData.program || "");
-  }, [dataExist]);
+  // useEffect(() => {
+  //   if (document.cookie === "") {
+  //     navigate("/");
+  //     return;
+  //   }
+  //   setProgram(userData.program || "");
+  // }, [dataExist]);
 
   return (
     <div className="min-h-screen w-full max-w-[768px] mx-auto bg-gradient-to-br from-[#fdf5f6] via-white to-[#f5eff0]">

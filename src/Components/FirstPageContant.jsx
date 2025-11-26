@@ -240,8 +240,6 @@
 
 // export default FirstPageContant;
 
-
-
 import { useEffect, useState } from "react";
 import axios from "../../api/axios";
 import { useNavigate, Link } from "react-router-dom";
@@ -277,7 +275,7 @@ const FirstPageContant = () => {
   const [errors, setErrors] = useState({
     studentName: "",
     fatherName: "",
-    email: ""
+    email: "",
   });
 
   const handleChange = (e) => {
@@ -330,9 +328,12 @@ const FirstPageContant = () => {
       console.log("Button Clicked");
 
       if (validateForm()) {
-        await dispatch(putFormData(userData));
+        const dataFromPutFormData = await dispatch(putFormData(userData));
 
-        if (document.cookie !== "") {
+        console.log("dataFromPutFormData", dataFromPutFormData.type);
+
+        if (dataFromPutFormData.type == "userDetails/putFormData/fulfilled") {
+          console.log("Navigate to enquiryForm");
           navigate("/enquiryform");
         }
 
@@ -349,7 +350,7 @@ const FirstPageContant = () => {
   return (
     <div className="relative py-8 sm:py-12">
       {loading && <Spinner />}
-      
+
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Progress Indicator */}
         <div className="mb-8">
@@ -437,7 +438,9 @@ const FirstPageContant = () => {
             >
               <Mail size={18} className="text-[#c61d23]" />
               Email Address
-              <span className="text-xs text-gray-500 font-normal">(Optional)</span>
+              <span className="text-xs text-gray-500 font-normal">
+                (Optional)
+              </span>
             </label>
             <input
               autoComplete="off"

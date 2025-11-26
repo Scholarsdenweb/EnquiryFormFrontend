@@ -65,7 +65,7 @@ export const submitFormData = createAsyncThunk(
             console.log("formData from submitFormData", formData);
             const response = await axios.post('/user', formData);
 
-            document.cookie = `token=${response.data.token}`;
+            // document.cookie = `token=${response.data.token}`;
 
             console.log("response from submitsuserDetails", response);
 

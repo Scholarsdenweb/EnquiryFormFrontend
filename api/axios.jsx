@@ -9,6 +9,7 @@ const instance = axios.create({
   // baseURL: "http://localhost:5000/api", // Replace with your actual backend URL
   // baseURL: /api/v1, // Replace with your actual backend URL
   credentials: "include", // Important: receives httpOnly cookies
+  withCredentials : true,
 
   headers: {
     "Content-Type": "application/json",
