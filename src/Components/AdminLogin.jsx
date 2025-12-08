@@ -26,8 +26,8 @@ const AdminLogin = () => {
   const [showCodeBox, setShowCodeBox] = useState(false);
   const [code, setCode] = useState("");
   const [phone, setPhone] = useState("");
-  const [codeVerified, setCodeVerified] = useState(true);
-  // const [codeVerified, setCodeVerified] = useState(false);
+  // const [codeVerified, setCodeVerified] = useState(true);
+  const [codeVerified, setCodeVerified] = useState(false);
   const [errors, setErrors] = useState({
     phone: "",
   });
@@ -53,8 +53,8 @@ const AdminLogin = () => {
     e.preventDefault();
 
     try {
-      const codeChecked = true;
-      // const codeChecked = await checkVerificationCode();
+      // const codeChecked = true;
+      const codeChecked = await checkVerificationCode();
 
       console.log("codeChecked", codeChecked);
 
@@ -245,7 +245,7 @@ const AdminLogin = () => {
                       +91
                     </div>
                   </div>
-                  {/* {!showCodeBox && !codeVerified && (
+                  {!showCodeBox && !codeVerified && (
                     <button
                       type="button"
                       onClick={verifyPhoneNo}
@@ -254,7 +254,7 @@ const AdminLogin = () => {
                       <Send size={16} />
                       <span>Send OTP</span>
                     </button>
-                  )} */}
+                  )}
                 </div>
                 {errors.phone && (
                   <div className="flex items-center gap-2 text-red-500 text-xs mt-2">
@@ -341,7 +341,7 @@ const AdminLogin = () => {
               )}
 
               {/* Login Button */}
-              {/* {showCodeBox && ( */}
+              {showCodeBox && (
               <button
                 type="submit"
                 // disabled={!codeEntered || loading}
@@ -350,7 +350,7 @@ const AdminLogin = () => {
                 <LogIn size={18} />
                 <span>{loading ? "Logging in..." : "Login"}</span>
               </button>
-              {/* )} */}
+             )}
             </form>
 
             {/* Security Note */}

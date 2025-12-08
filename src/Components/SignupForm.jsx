@@ -1,17 +1,6 @@
-// import { useEffect, useState } from "react";
-// import axios from "../../api/axios";
-// import { useNavigate, Link } from "react-router-dom";
-// import {
-//   fetchUserDetails,
-//   submitFormData,
-//   updateUserDetails,
-// } from "../../redux/formDataSlice";
-// import { useDispatch, useSelector } from "react-redux";
-// import { loading, setLoading } from "../../redux/loadingSlice";
-// import Spinner from "./Spinner";
-// import LoadingPage from "./LoadingPage";
 
-// // import ScholarsDenLogo from "../assets/scholarsDenLogo.png";
+
+// import ScholarsDenLogo from "../assets/scholarsDenLogo.png";
 
 // const SignupForm = () => {
 //   const navigate = useNavigate();
@@ -156,8 +145,8 @@
 //     try {
 //       setIsSubmittingForm(true); // ⬅️ Only show LoadingPage now
 
-//       // let codeChecked = await checkVerificationCode();
-//       let codeChecked = true;
+//       let codeChecked = await checkVerificationCode();
+//       // let codeChecked = true;
 //       if (codeChecked === false) {
 //         // setShowCodeBox(false);
 //         setCodeVerified(false);
@@ -234,7 +223,7 @@
 //               placeholder="Enter Contact Number"
 //               className="flex-1 bg-white/10 text-white border border-white px-4 py-2 focus:outline-none placeholder-gray-400"
 //             />
-//             {/* {!showCodeBox && !codeVerified && (
+//             {!showCodeBox && !codeVerified && (
 //               <button
 //                 type="button"
 //                 onClick={verifyPhoneNo}
@@ -242,7 +231,7 @@
 //               >
 //                 Send OTP
 //               </button>
-//             )} */}
+//             )}
 //           </div>
 //           {errors.fatherContactNumber && (
 //             <p className="text-sm text-yellow-300">
@@ -252,7 +241,7 @@
 //         </div>
 
 //         {/* OTP Input */}
-//         {/* {showCodeBox && (
+//          {showCodeBox && (
 //           <div className="space-y-2">
 //             <label htmlFor="otp" className="block text-sm font-medium">
 //               *Verification Code
@@ -267,7 +256,7 @@
 //               className="w-full bg-white/20 text-white border border-white px-4 py-2 focus:outline-none placeholder-gray-400"
 //             />
 //           </div>
-//         )} */}
+//         )}
 
 //         {/* Message */}
 //         {submitMessage && (
@@ -305,7 +294,7 @@
 
 
 
-
+import { Phone, Shield, AlertCircle, CheckCircle, ArrowRight } from 'lucide-react';
 import { useEffect, useState } from "react";
 import axios from "../../api/axios";
 import { useNavigate, Link } from "react-router-dom";
@@ -318,13 +307,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { loading, setLoading } from "../../redux/loadingSlice";
 import Spinner from "./Spinner";
 import LoadingPage from "./LoadingPage";
-import {
-  ArrowRight,
-  Phone,
-  AlertCircle,
-  Shield,
-  CheckCircle,
-} from "lucide-react";
 
 const SignupForm = () => {
   const navigate = useNavigate();
@@ -346,6 +328,7 @@ const SignupForm = () => {
   const [showLoadingPage, setShowLoadingPage] = useState(false);
 
   const phoneRegex = /^\+91[0-9]{10}$/;
+  // const [codeVerified, setCodeVerified] = useState(true);
   const [codeVerified, setCodeVerified] = useState(false);
 
   // State hooks
@@ -398,6 +381,20 @@ const SignupForm = () => {
     return isValid;
   };
 
+  // useEffect(() => {
+  //   dispatch(fetchUserDetails());
+  // }, []);
+
+  // useEffect(() => {
+  //   console.log("error in useEffect", error);
+  // }, [error]);
+
+  // useEffect(() => {
+  //   if (document.cookie !== "") {
+  //     navigate("/enquiryform");
+  //   }
+  // }, [dataExist, userData]);
+
   const verifyPhoneNo = async () => {
     try {
       if (!validateForm()) {
@@ -405,19 +402,21 @@ const SignupForm = () => {
       }
 
       dispatch(setLoading(true));
+      // setShowCodeBox(true);
 
       const response = await axios.post("/user/sendVerification", {
         mobileNumber: `${userData.fatherContactNumber}`,
       });
       if (response.status === 200) {
         setShowCodeBox(true);
-        setSubmitMessage("OTP sent successfully");
+        setSubmitMessage("OTP sent successfully"); // Update the message to "OTP sent successfully" in the set
       }
     } catch (error) {
       console.log("Error message", error);
       setSubmitMessage(`${error?.response?.data?.message?.message}`);
     } finally {
       dispatch(setLoading(false));
+      // setShowCodeBox(true);
     }
   };
 
@@ -430,9 +429,14 @@ const SignupForm = () => {
       });
       console.log("response from checkVerificationCode", response);
       if (response.status === 200) {
+        // setSubmitMessage("fatherContactNumber number verified successfully!");
         setCodeVerified(true);
+        // setShowCodeBox(false);
         return true;
       }
+      // setCodeVerified(true);
+      // setShowCodeBox(false);
+      // return true;
     } catch (error) {
       console.log("Error message for checkVerificationCode", error);
       setSubmitMessage("Invalid OTP. Please try again.");
@@ -445,12 +449,15 @@ const SignupForm = () => {
   const onSubmit = async (e) => {
     e.preventDefault();
     try {
-      setIsSubmittingForm(true);
+      setIsSubmittingForm(true); // ⬅️ Only show LoadingPage now
 
-      let codeChecked = true;
+      let codeChecked = await checkVerificationCode();
+      // let codeChecked = true;
       if (codeChecked === false) {
+        // setShowCodeBox(false);
         setCodeVerified(false);
-        setIsSubmittingForm(false);
+        // setSubmitMessage("Please Verify Your Phone Number");
+        setIsSubmittingForm(false); // ⬅️ reset if verification fails
         return;
       }
 
@@ -458,13 +465,25 @@ const SignupForm = () => {
         await dispatch(submitFormData(userData));
         navigate("/firstPage");
 
+        // if (document.cookie !== "") {
+        //   setShowLoadingPage(true); // Show your full-screen LoadingPage
+
+        //   setTimeout(() => {
+
+        //     setShowLoadingPage(false);
+        //   }, 3000);
+        // }
+
         console.log("userData for onSubmit", userData);
       }
     } catch (error) {
       console.log("error from onSubmit", error);
-      setIsSubmittingForm(false);
+      setIsSubmittingForm(false); // ⬅️ always reset this
     }
   };
+
+
+  
 
   const handleOTPChange = async (e) => {
     if (e.target.value.length <= 4) {
@@ -481,12 +500,12 @@ const SignupForm = () => {
     console.log("e.target.value", e.target.value.length);
   };
 
+
+
   return (
-    <div className="relative py-4 sm:py-6 md:py-8 w-full">
-      {isSubmittingForm && showLoadingPage && <LoadingPage />}
+    <div className="relative py-4 sm:py-6 md:py-8 w-full min-h-screen bg-gray-50">
 
       <div className="max-w-3xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
-        {/* Progress Indicator */}
         <div className="mb-6 sm:mb-8">
           <div className="flex items-center justify-between mb-2 sm:mb-3">
             <h2 className="text-sm sm:text-base md:text-lg font-semibold text-gray-900">
@@ -499,17 +518,12 @@ const SignupForm = () => {
           <div className="w-full bg-gray-200 rounded-full h-2">
             <div
               className="bg-gradient-to-r from-[#c61d23] to-[#a01818] h-2 rounded-full transition-all duration-300"
-              style={{ width: "10%" }}
+              style={{ width: showCodeBox ? "50%" : "10%" }}
             ></div>
           </div>
         </div>
 
-        {/* Form Container */}
-        <form
-          onSubmit={onSubmit}
-          className="flex flex-col gap-4 sm:gap-5"
-        >
-          {/* Phone Number Input */}
+        <div className="flex flex-col gap-4 sm:gap-5">
           <div className="bg-white rounded-xl sm:rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all p-4 sm:p-5 md:p-6">
             <label
               htmlFor="fatherContactNumber"
@@ -522,19 +536,32 @@ const SignupForm = () => {
               <span className="flex-1">Contact Number (Parent)</span>
               <span className="text-[#c61d23]">*</span>
             </label>
-            <div className="relative">
-              <input
-                type="number"
-                id="fatherContactNumber"
-                name="fatherContactNumber"
-                value={userData?.fatherContactNumber || ""}
-                onChange={handleChange}
-                placeholder="Enter 10-digit mobile number"
-                className="w-full text-sm sm:text-base border border-gray-200 rounded-lg p-3 pl-10 focus:ring-2 focus:ring-[#c61d23] focus:border-transparent focus:outline-none transition-all"
-              />
-              <div className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400 text-sm sm:text-base">
-                +91
+            <div className="flex flex-col sm:flex-row gap-2">
+              <div className="relative flex-1">
+                <input
+                  type="number"
+                  id="fatherContactNumber"
+                  name="fatherContactNumber"
+                  value={userData?.fatherContactNumber || ""}
+                  onChange={handleChange}
+                  placeholder="Enter 10-digit mobile number"
+                  disabled={showCodeBox && codeVerified}
+                  className="w-full text-sm sm:text-base border border-gray-200 rounded-lg p-3 pl-10 focus:ring-2 focus:ring-[#c61d23] focus:border-transparent focus:outline-none transition-all disabled:bg-gray-100 disabled:cursor-not-allowed"
+                />
+                <div className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400 text-sm sm:text-base">
+                  +91
+                </div>
               </div>
+              {!showCodeBox && !codeVerified && (
+                <button
+                  type="button"
+                  onClick={verifyPhoneNo}
+                  disabled={loading}
+                  className="px-4 sm:px-6 py-3 bg-yellow-500 hover:bg-yellow-600 text-black text-sm sm:text-base font-semibold rounded-lg transition-all duration-300 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed active:scale-95 whitespace-nowrap"
+                >
+                  {loading ? "Sending..." : "Send OTP"}
+                </button>
+              )}
             </div>
             {errors.fatherContactNumber && (
               <div className="flex items-center gap-2 text-red-500 text-xs mt-2">
@@ -543,7 +570,6 @@ const SignupForm = () => {
               </div>
             )}
             
-            {/* Info Box */}
             <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg flex items-start gap-2">
               <Shield size={16} className="text-blue-600 flex-shrink-0 mt-0.5" />
               <p className="text-xs text-blue-700">
@@ -552,7 +578,6 @@ const SignupForm = () => {
             </div>
           </div>
 
-          {/* OTP Input */}
           {showCodeBox && (
             <div className="bg-white rounded-xl sm:rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all p-4 sm:p-5 md:p-6">
               <label
@@ -574,7 +599,8 @@ const SignupForm = () => {
                 onChange={handleOTPChange}
                 placeholder="Enter 4-digit OTP"
                 maxLength={4}
-                className="w-full text-sm sm:text-base border border-gray-200 rounded-lg p-2.5 sm:p-3 focus:ring-2 focus:ring-[#c61d23] focus:border-transparent focus:outline-none transition-all text-center tracking-widest  font-bold"
+                disabled={codeVerified}
+                className="w-full text-sm sm:text-base border border-gray-200 rounded-lg p-2.5 sm:p-3 focus:ring-2 focus:ring-[#c61d23] focus:border-transparent focus:outline-none transition-all text-center tracking-widest font-bold disabled:bg-gray-100 disabled:cursor-not-allowed"
               />
               {codeVerified && (
                 <div className="flex items-center gap-2 text-green-600 text-xs mt-2">
@@ -585,7 +611,6 @@ const SignupForm = () => {
             </div>
           )}
 
-          {/* Success/Error Messages */}
           {submitMessage && (
             <div className={`${submitMessage.includes("successfully") ? "bg-green-50 border-green-200" : "bg-yellow-50 border-yellow-200"} border rounded-xl p-3 sm:p-4 flex items-start gap-2 sm:gap-3`}>
               <AlertCircle
@@ -608,28 +633,35 @@ const SignupForm = () => {
             </div>
           )}
 
-          {/* Loading Spinner */}
-          {!isSubmittingForm && loading && (
+          {!isSubmittingForm && loading && showCodeBox && (
             <div className="flex justify-center items-center py-4">
               <div className="animate-spin rounded-full h-8 w-8 border-4 border-[#c61d23] border-t-transparent"></div>
             </div>
           )}
 
-          {/* Submit Button */}
-          <div className="flex gap-3 mt-4 sm:mt-6 md:mt-8">
-            <button
-              type="submit"
-              disabled={loading || isSubmittingForm}
-              className="w-full flex items-center justify-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-[#c61d23] to-[#a01818] hover:from-[#b01820] hover:to-[#8f1515] text-white text-sm sm:text-base font-semibold rounded-lg transition-all duration-300 shadow-lg hover:shadow-red-500/30 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
-            >
-              <span>{loading || isSubmittingForm ? "Processing..." : "Get Started"}</span>
-              {!loading && !isSubmittingForm && <ArrowRight size={18} />}
-            </button>
-          </div>
-        </form>
+          {showCodeBox && (
+            <div className="flex gap-3 mt-4 sm:mt-6 md:mt-8">
+              <button
+                onClick={onSubmit}
+                disabled={loading || isSubmittingForm || !code || code.length !== 4}
+                className="w-full flex items-center justify-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-[#c61d23] to-[#a01818] hover:from-[#b01820] hover:to-[#8f1515] text-white text-sm sm:text-base font-semibold rounded-lg transition-all duration-300 shadow-lg hover:shadow-red-500/30 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
+              >
+                <span>{loading || isSubmittingForm ? "Verifying..." : "Verify & Continue"}</span>
+                {!loading && !isSubmittingForm && <ArrowRight size={18} />}
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
 };
 
 export default SignupForm;
+
+
+
+
+
+
+

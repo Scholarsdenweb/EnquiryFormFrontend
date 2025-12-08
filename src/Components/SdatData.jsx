@@ -1042,7 +1042,7 @@ const SdatData = () => {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row h-screen bg-gradient-to-br from-gray-50 to-gray-100 max-w-[1920px] mx-auto">
+    <div className="flex flex-col lg:flex-row h-screen bg-gradient-to-br from-gray-50 to-gray-100 w-full">
       {isLoading && (
         <div className="fixed inset-0 z-50 backdrop-blur-sm bg-black bg-opacity-10 flex items-center justify-center">
           <div className="w-12 h-12 border-4 border-[#c61d23] border-dashed rounded-full animate-spin"></div>
@@ -1056,7 +1056,7 @@ const SdatData = () => {
 
       {/* Main Content */}
       <div className="flex-1 overflow-auto w-full">
-        <div className="max-w-7xl mx-auto p-3 sm:p-4 lg:p-6">
+        <div className="p-3 sm:p-4 lg:p-6">
           {/* Header */}
           <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 mb-4 sm:mb-6">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
@@ -1180,13 +1180,13 @@ const SdatData = () => {
 
             {/* Filter Actions */}
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mt-4">
-              <button
+              {/* <button
                 className="flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-[#c61d23] to-[#a01818] hover:from-[#b01820] hover:to-[#8f1515] text-white text-sm font-semibold rounded-lg transition-all duration-300 shadow-md hover:shadow-lg active:scale-95"
                 onClick={handleApplyFilters}
               >
                 <Filter size={16} />
                 Apply Filters
-              </button>
+              </button> */}
               <button
                 className="flex items-center justify-center gap-2 px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white text-sm font-semibold rounded-lg transition-all duration-300 shadow-md hover:shadow-lg active:scale-95"
                 onClick={handleClearFilters}
@@ -1266,7 +1266,7 @@ const SdatData = () => {
 
                   {showFilteredData?.length === 0 && (
                     <div className="text-center py-12 text-gray-500">
-                      <FileText size={48} className="mx-auto mb-3 opacity-30" />
+                      <FileText size={48} className=" mb-3 opacity-30" />
                       <p className="text-sm">No data found matching your filters</p>
                     </div>
                   )}
@@ -1276,7 +1276,7 @@ const SdatData = () => {
           )}
 
           {/* Paginated List */}
-          {contactNumber && (
+          {/* {contactNumber && (
             <PaginatedList
               apiEndpoint="/adminData/getData"
               queryParams={{ contactNumber }}
@@ -1289,14 +1289,14 @@ const SdatData = () => {
                 handleCardClick(student, basic, batch, family);
               }}
             />
-          )}
+          )} */}
         </div>
       </div>
 
       {/* Modal */}
       {isModalOpen && selectedStudent && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-3 sm:p-4">
-          <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-auto shadow-2xl">
+          <div className="bg-white rounded-2xl w-full max-h-[90vh] overflow-auto shadow-2xl">
             <div className="sticky top-0 bg-gradient-to-r from-[#c61d23] to-[#a01818] text-white p-4 sm:p-6 rounded-t-2xl">
               <div className="flex items-center justify-between">
                 <h3 className="text-xl sm:text-2xl font-bold">Student Details</h3>
@@ -1473,7 +1473,7 @@ const SdatData = () => {
       {/* Image Preview Modal */}
       {showImage && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-3 sm:p-4">
-          <div className="relative max-w-4xl w-full">
+          <div className="relative  w-full">
             <img
               src={showImageUrl}
               alt="Profile"
