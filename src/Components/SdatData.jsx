@@ -265,23 +265,23 @@
 //   const handleLogout = () => {
 //   // Clear cookie with multiple attempts to cover different scenarios
 //   const clearCookie = (name) => {
-    
+
 //     document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-    
+
 //     document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${window.location.hostname};`;
-    
+
 //     document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC;`;
-    
+
 //     document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/adminsignup;`;
 //   };
 
 //   clearCookie("phone");
 //   clearCookie("token"); // Clear token too if needed
-  
+
 //   // Also clear localStorage
 //   localStorage.removeItem("token");
 //   localStorage.removeItem("phone");
-  
+
 //   // Redirect to AdminSignup page
 //   history("/adminsignup");
 // }
@@ -717,27 +717,6 @@
 
 // export default SdatData;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 import React, { useEffect, useState, useMemo } from "react";
 import axios from "../../api/axios";
 import { useNavigate } from "react-router-dom";
@@ -764,6 +743,16 @@ import {
   Briefcase,
   ArrowUpDown,
 } from "lucide-react";
+
+const InfoItem = ({ icon: Icon, label, value }) => (
+  <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+    <Icon size={18} className="text-[#c61d23] mt-0.5" />
+    <div>
+      <p className="text-xs text-gray-600">{label}</p>
+      <p className="text-sm font-semibold">{value || "—"}</p>
+    </div>
+  </div>
+);
 
 const SdatData = () => {
   const [contactNumber, setContactNumber] = useState("");
@@ -918,6 +907,8 @@ const SdatData = () => {
       const response = await axios.get(`/students/${studentId}`);
       const student = response.data;
 
+      console.log("Studnet fetchStudentDetails", student);
+
       setSelectedStudent({
         ...student,
         ...student.basicDetails,
@@ -997,18 +988,32 @@ const SdatData = () => {
     const day = date.getDate();
     const year = date.getFullYear().toString().slice(-2);
     const monthNames = [
-      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
     ];
     const month = monthNames[date.getMonth()];
 
     const getOrdinal = (n) => {
       if (n > 3 && n < 21) return n + "th";
       switch (n % 10) {
-        case 1: return n + "st";
-        case 2: return n + "nd";
-        case 3: return n + "rd";
-        default: return n + "th";
+        case 1:
+          return n + "st";
+        case 2:
+          return n + "nd";
+        case 3:
+          return n + "rd";
+        default:
+          return n + "th";
       }
     };
 
@@ -1019,7 +1024,9 @@ const SdatData = () => {
     const filters = [];
 
     if (startingDate && lastDate) {
-      filters.push(`Date: ${formatDate(startingDate)} to ${formatDate(lastDate)}`);
+      filters.push(
+        `Date: ${formatDate(startingDate)} to ${formatDate(lastDate)}`
+      );
     }
     if (classValue) filters.push(`Class: ${classValue}`);
     if (inputValue) filters.push(`Name: ${inputValue}`);
@@ -1061,8 +1068,12 @@ const SdatData = () => {
           <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 mb-4 sm:mb-6">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
               <div>
-                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">SDAT Dashboard</h1>
-                <p className="text-xs sm:text-sm text-gray-600 mt-1">Manage student admission data</p>
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+                  SDAT Dashboard
+                </h1>
+                <p className="text-xs sm:text-sm text-gray-600 mt-1">
+                  Manage student admission data
+                </p>
               </div>
               <button
                 onClick={handleLogout}
@@ -1078,7 +1089,9 @@ const SdatData = () => {
           <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 mb-4 sm:mb-6">
             <div className="flex items-center gap-2 mb-4">
               <Filter size={20} className="text-[#c61d23]" />
-              <h2 className="text-base sm:text-lg font-semibold text-gray-900">Filters</h2>
+              <h2 className="text-base sm:text-lg font-semibold text-gray-900">
+                Filters
+              </h2>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
@@ -1202,12 +1215,19 @@ const SdatData = () => {
             <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 mb-4 sm:mb-6">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 mb-4">
                 <div className="w-full sm:w-auto">
-                  <h2 className="text-base sm:text-lg font-semibold text-gray-900">Search Results</h2>
-                  <p className="text-xs text-gray-600 mt-1 break-words">{filterApplied()}</p>
+                  <h2 className="text-base sm:text-lg font-semibold text-gray-900">
+                    Search Results
+                  </h2>
+                  <p className="text-xs text-gray-600 mt-1 break-words">
+                    {filterApplied()}
+                  </p>
                 </div>
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
                   <span className="text-sm font-medium text-gray-600 text-center sm:text-left">
-                    Total: <span className="text-[#c61d23] font-bold">{showFilteredData.length}</span>
+                    Total:{" "}
+                    <span className="text-[#c61d23] font-bold">
+                      {showFilteredData.length}
+                    </span>
                   </span>
                   <button
                     className="flex items-center justify-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-semibold rounded-lg transition-all duration-300 shadow-md hover:shadow-lg active:scale-95"
@@ -1225,13 +1245,27 @@ const SdatData = () => {
                   <table className="min-w-full bg-white">
                     <thead className="bg-gradient-to-r from-[#c61d23] to-[#a01818] text-white sticky top-0 z-10">
                       <tr>
-                        <th className="py-3 px-2 sm:px-4 text-left text-xs font-semibold">#</th>
-                        <th className="py-3 px-2 sm:px-4 text-left text-xs font-semibold whitespace-nowrap">Student ID</th>
-                        <th className="py-3 px-2 sm:px-4 text-left text-xs font-semibold">Name</th>
-                        <th className="py-3 px-2 sm:px-4 text-left text-xs font-semibold">Class</th>
-                        <th className="py-3 px-2 sm:px-4 text-left text-xs font-semibold">Date</th>
-                        <th className="py-3 px-2 sm:px-4 text-left text-xs font-semibold whitespace-nowrap">Payment ID</th>
-                        <th className="py-3 px-2 sm:px-4 text-left text-xs font-semibold">Actions</th>
+                        <th className="py-3 px-2 sm:px-4 text-left text-xs font-semibold">
+                          #
+                        </th>
+                        <th className="py-3 px-2 sm:px-4 text-left text-xs font-semibold whitespace-nowrap">
+                          Student ID
+                        </th>
+                        <th className="py-3 px-2 sm:px-4 text-left text-xs font-semibold">
+                          Name
+                        </th>
+                        <th className="py-3 px-2 sm:px-4 text-left text-xs font-semibold">
+                          Class
+                        </th>
+                        <th className="py-3 px-2 sm:px-4 text-left text-xs font-semibold">
+                          Date
+                        </th>
+                        <th className="py-3 px-2 sm:px-4 text-left text-xs font-semibold whitespace-nowrap">
+                          Payment ID
+                        </th>
+                        <th className="py-3 px-2 sm:px-4 text-left text-xs font-semibold">
+                          Actions
+                        </th>
                       </tr>
                     </thead>
                     <tbody>
@@ -1240,19 +1274,29 @@ const SdatData = () => {
                           key={index}
                           className="hover:bg-blue-50 transition-colors duration-150 border-b border-gray-100"
                         >
-                          <td className="py-3 px-2 sm:px-4 text-xs sm:text-sm">{index + 1}</td>
+                          <td className="py-3 px-2 sm:px-4 text-xs sm:text-sm">
+                            {index + 1}
+                          </td>
                           <td className="py-3 px-2 sm:px-4 text-xs sm:text-sm font-medium text-[#c61d23]">
                             {student?.StudentsId}
                           </td>
-                          <td className="py-3 px-2 sm:px-4 text-xs sm:text-sm font-medium">{student?.studentName}</td>
-                          <td className="py-3 px-2 sm:px-4 text-xs sm:text-sm">{student?.classForAdmission}</td>
+                          <td className="py-3 px-2 sm:px-4 text-xs sm:text-sm font-medium">
+                            {student?.studentName}
+                          </td>
+                          <td className="py-3 px-2 sm:px-4 text-xs sm:text-sm">
+                            {student?.classForAdmission}
+                          </td>
                           <td className="py-3 px-2 sm:px-4 text-xs sm:text-sm whitespace-nowrap">
                             {dateFormatting(student?.createdAt?.split("T")[0])}
                           </td>
-                          <td className="py-3 px-2 sm:px-4 text-xs sm:text-sm">{student?.paymentId}</td>
+                          <td className="py-3 px-2 sm:px-4 text-xs sm:text-sm">
+                            {student?.paymentId}
+                          </td>
                           <td className="py-3 px-2 sm:px-4">
                             <button
-                              onClick={() => fetchStudentDetails(student.student_id)}
+                              onClick={() =>
+                                fetchStudentDetails(student.student_id)
+                              }
                               className="flex items-center gap-1 px-2 sm:px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white text-xs font-semibold rounded transition-all active:scale-95"
                             >
                               <Eye size={14} />
@@ -1267,7 +1311,9 @@ const SdatData = () => {
                   {showFilteredData?.length === 0 && (
                     <div className="text-center py-12 text-gray-500">
                       <FileText size={48} className=" mb-3 opacity-30" />
-                      <p className="text-sm">No data found matching your filters</p>
+                      <p className="text-sm">
+                        No data found matching your filters
+                      </p>
                     </div>
                   )}
                 </div>
@@ -1294,12 +1340,14 @@ const SdatData = () => {
       </div>
 
       {/* Modal */}
-      {isModalOpen && selectedStudent && (
+      {/* {isModalOpen && selectedStudent && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-3 sm:p-4">
           <div className="bg-white rounded-2xl w-full max-h-[90vh] overflow-auto shadow-2xl">
             <div className="sticky top-0 bg-gradient-to-r from-[#c61d23] to-[#a01818] text-white p-4 sm:p-6 rounded-t-2xl">
               <div className="flex items-center justify-between">
-                <h3 className="text-xl sm:text-2xl font-bold">Student Details</h3>
+                <h3 className="text-xl sm:text-2xl font-bold">
+                  Student Details
+                </h3>
                 <button
                   onClick={closeModal}
                   className="p-2 hover:bg-white/20 rounded-lg transition-colors"
@@ -1315,7 +1363,9 @@ const SdatData = () => {
                   <User size={18} className="text-[#c61d23] mt-0.5" />
                   <div>
                     <p className="text-xs text-gray-600">Student Name</p>
-                    <p className="text-sm font-semibold">{selectedStudent.studentName}</p>
+                    <p className="text-sm font-semibold">
+                      {selectedStudent.studentName}
+                    </p>
                   </div>
                 </div>
 
@@ -1323,7 +1373,9 @@ const SdatData = () => {
                   <Mail size={18} className="text-[#c61d23] mt-0.5" />
                   <div>
                     <p className="text-xs text-gray-600">Email</p>
-                    <p className="text-sm font-semibold">{selectedStudent.email}</p>
+                    <p className="text-sm font-semibold">
+                      {selectedStudent.email}
+                    </p>
                   </div>
                 </div>
 
@@ -1331,7 +1383,9 @@ const SdatData = () => {
                   <Phone size={18} className="text-[#c61d23] mt-0.5" />
                   <div>
                     <p className="text-xs text-gray-600">Contact Number</p>
-                    <p className="text-sm font-semibold">{selectedStudent.contactNumber}</p>
+                    <p className="text-sm font-semibold">
+                      {selectedStudent.contactNumber}
+                    </p>
                   </div>
                 </div>
 
@@ -1339,7 +1393,9 @@ const SdatData = () => {
                   <User size={18} className="text-[#c61d23] mt-0.5" />
                   <div>
                     <p className="text-xs text-gray-600">Father's Name</p>
-                    <p className="text-sm font-semibold">{selectedStudent.FatherName}</p>
+                    <p className="text-sm font-semibold">
+                      {selectedStudent.FatherName}
+                    </p>
                   </div>
                 </div>
 
@@ -1347,7 +1403,9 @@ const SdatData = () => {
                   <Phone size={18} className="text-[#c61d23] mt-0.5" />
                   <div>
                     <p className="text-xs text-gray-600">Father Contact</p>
-                    <p className="text-sm font-semibold">{selectedStudent.FatherContactNumber}</p>
+                    <p className="text-sm font-semibold">
+                      {selectedStudent.FatherContactNumber}
+                    </p>
                   </div>
                 </div>
 
@@ -1355,7 +1413,9 @@ const SdatData = () => {
                   <Briefcase size={18} className="text-[#c61d23] mt-0.5" />
                   <div>
                     <p className="text-xs text-gray-600">Father Occupation</p>
-                    <p className="text-sm font-semibold">{selectedStudent.FatherOccupation}</p>
+                    <p className="text-sm font-semibold">
+                      {selectedStudent.FatherOccupation}
+                    </p>
                   </div>
                 </div>
 
@@ -1363,7 +1423,9 @@ const SdatData = () => {
                   <User size={18} className="text-[#c61d23] mt-0.5" />
                   <div>
                     <p className="text-xs text-gray-600">Mother's Name</p>
-                    <p className="text-sm font-semibold">{selectedStudent.MotherName}</p>
+                    <p className="text-sm font-semibold">
+                      {selectedStudent.MotherName}
+                    </p>
                   </div>
                 </div>
 
@@ -1371,7 +1433,9 @@ const SdatData = () => {
                   <Phone size={18} className="text-[#c61d23] mt-0.5" />
                   <div>
                     <p className="text-xs text-gray-600">Mother Contact</p>
-                    <p className="text-sm font-semibold">{selectedStudent.MotherContactNumber}</p>
+                    <p className="text-sm font-semibold">
+                      {selectedStudent.MotherContactNumber}
+                    </p>
                   </div>
                 </div>
 
@@ -1379,7 +1443,9 @@ const SdatData = () => {
                   <Briefcase size={18} className="text-[#c61d23] mt-0.5" />
                   <div>
                     <p className="text-xs text-gray-600">Mother Occupation</p>
-                    <p className="text-sm font-semibold">{selectedStudent.MotherOccupation}</p>
+                    <p className="text-sm font-semibold">
+                      {selectedStudent.MotherOccupation}
+                    </p>
                   </div>
                 </div>
 
@@ -1387,7 +1453,9 @@ const SdatData = () => {
                   <GraduationCap size={18} className="text-[#c61d23] mt-0.5" />
                   <div>
                     <p className="text-xs text-gray-600">Class for Admission</p>
-                    <p className="text-sm font-semibold">{selectedStudent.classForAdmission}</p>
+                    <p className="text-sm font-semibold">
+                      {selectedStudent.classForAdmission}
+                    </p>
                   </div>
                 </div>
 
@@ -1395,7 +1463,9 @@ const SdatData = () => {
                   <GraduationCap size={18} className="text-[#c61d23] mt-0.5" />
                   <div>
                     <p className="text-xs text-gray-600">Subject Combination</p>
-                    <p className="text-sm font-semibold">{selectedStudent.program}</p>
+                    <p className="text-sm font-semibold">
+                      {selectedStudent.program}
+                    </p>
                   </div>
                 </div>
 
@@ -1403,7 +1473,9 @@ const SdatData = () => {
                   <FileText size={18} className="text-[#c61d23] mt-0.5" />
                   <div>
                     <p className="text-xs text-gray-600">Exam Name</p>
-                    <p className="text-sm font-semibold">{selectedStudent.examName}</p>
+                    <p className="text-sm font-semibold">
+                      {selectedStudent.examName}
+                    </p>
                   </div>
                 </div>
 
@@ -1411,7 +1483,9 @@ const SdatData = () => {
                   <Calendar size={18} className="text-[#c61d23] mt-0.5" />
                   <div>
                     <p className="text-xs text-gray-600">Exam Date</p>
-                    <p className="text-sm font-semibold">{selectedStudent.examDate}</p>
+                    <p className="text-sm font-semibold">
+                      {selectedStudent.examDate}
+                    </p>
                   </div>
                 </div>
 
@@ -1419,7 +1493,9 @@ const SdatData = () => {
                   <Calendar size={18} className="text-[#c61d23] mt-0.5" />
                   <div>
                     <p className="text-xs text-gray-600">Date of Birth</p>
-                    <p className="text-sm font-semibold">{convertToDate(selectedStudent.dob)}</p>
+                    <p className="text-sm font-semibold">
+                      {convertToDate(selectedStudent.dob)}
+                    </p>
                   </div>
                 </div>
 
@@ -1427,17 +1503,21 @@ const SdatData = () => {
                   <Calendar size={18} className="text-[#c61d23] mt-0.5" />
                   <div>
                     <p className="text-xs text-gray-600">Created At</p>
-                    <p className="text-sm font-semibold">{convertToDate(selectedStudent.created_at)}</p>
+                    <p className="text-sm font-semibold">
+                      {convertToDate(selectedStudent.created_at)}
+                    </p>
                   </div>
                 </div>
               </div>
 
-              {/* Profile Picture and Admit Card */}
-              {(selectedStudent.profilePicture || selectedStudent.admitCard) && (
+              {(selectedStudent.profilePicture ||
+                selectedStudent.admitCard) && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mt-4">
                   {selectedStudent.profilePicture && (
                     <button
-                      onClick={() => onClickShowImage(selectedStudent.profilePicture)}
+                      onClick={() =>
+                        onClickShowImage(selectedStudent.profilePicture)
+                      }
                       className="flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-lg transition-all duration-300 shadow-md hover:shadow-lg active:scale-95 text-sm"
                     >
                       <ImageIcon size={18} />
@@ -1447,7 +1527,9 @@ const SdatData = () => {
 
                   {selectedStudent.admitCard && (
                     <button
-                      onClick={() => window.open(selectedStudent.admitCard, "_blank")}
+                      onClick={() =>
+                        window.open(selectedStudent.admitCard, "_blank")
+                      }
                       className="flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-lg transition-all duration-300 shadow-md hover:shadow-lg active:scale-95 text-sm"
                     >
                       <CreditCard size={18} />
@@ -1462,6 +1544,230 @@ const SdatData = () => {
               <button
                 onClick={closeModal}
                 className="w-full px-4 py-3 bg-gradient-to-r from-[#c61d23] to-[#a01818] hover:from-[#b01820] hover:to-[#8f1515] text-white font-semibold rounded-lg transition-all duration-300 shadow-md hover:shadow-lg active:scale-95 text-sm sm:text-base"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )} */}
+
+      {console.log("selectedStudent ", selectedStudent)}
+
+      {/* Modal */}
+      {isModalOpen && selectedStudent && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-3 sm:p-4">
+          <div className="bg-white rounded-2xl w-full max-h-[90vh] overflow-auto shadow-2xl">
+            {/* Header */}
+            <div className="sticky top-0 bg-gradient-to-r from-[#c61d23] to-[#a01818] text-white p-4 sm:p-6 rounded-t-2xl">
+              <div className="flex items-center justify-between">
+                <h3 className="text-xl sm:text-2xl font-bold">
+                  Student Details
+                </h3>
+                <button
+                  onClick={closeModal}
+                  className="p-2 hover:bg-white/20 rounded-lg transition-colors"
+                >
+                  <X size={24} />
+                </button>
+              </div>
+            </div>
+
+            <div className="p-4 sm:p-6 space-y-6">
+              {/* ==============================
+            SECTION 1 : STUDENT BASIC INFO
+        =============================== */}
+              <h4 className="text-lg font-bold text-gray-700">
+                Student Information
+              </h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <InfoItem
+                  icon={User}
+                  label="Student Name"
+                  value={selectedStudent.studentName}
+                />
+                <InfoItem
+                  icon={Mail}
+                  label="Email"
+                  value={selectedStudent.email}
+                />
+                <InfoItem
+                  icon={Phone}
+                  label="Contact Number"
+                  value={selectedStudent.contactNumber}
+                />
+              </div>
+
+              {/* ==============================
+            SECTION 2 : BASIC DETAILS SCHEMA
+        =============================== */}
+              <h4 className="text-lg font-bold text-gray-700">
+                Exam & Basic Details
+              </h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <InfoItem
+                  icon={FileText}
+                  label="Exam Name"
+                  value={selectedStudent.basicDetails?.examName}
+                />
+                <InfoItem
+                  icon={Calendar}
+                  label="Exam Date"
+                  value={selectedStudent.basicDetails?.examDate}
+                />
+                <InfoItem
+                  icon={Calendar}
+                  label="Date of Birthz"
+                  value={convertToDate(selectedStudent.basicDetails?.dob)}
+                />
+                <InfoItem
+                  icon={Calendar}
+                  label="Created At"
+                  value={convertToDate(
+                    selectedStudent.basicDetails?.created_at
+                  )}
+                />
+                <InfoItem
+                  icon={User}
+                  label="Gender"
+                  value={selectedStudent.basicDetails?.gender}
+                />
+              </div>
+
+              {/* ==============================
+            SECTION 3 : BATCH RELATED DETAILS
+        =============================== */}
+              <h4 className="text-lg font-bold text-gray-700">
+                Batch & Program Details
+              </h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <InfoItem
+                  icon={GraduationCap}
+                  label="Class for Admission"
+                  value={selectedStudent?.classForAdmission}
+                />
+                <InfoItem
+                  icon={GraduationCap}
+                  label="Program"
+                  value={selectedStudent?.program}
+                />
+              </div>
+
+              {/* ==============================
+            SECTION 4 : EDUCATIONAL DETAILS
+        =============================== */}
+              <h4 className="text-lg font-bold text-gray-700">
+                Educational Details
+              </h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <InfoItem
+                  icon={FileText}
+                  label="School Name"
+                  value={selectedStudent?.SchoolName}
+                />
+                <InfoItem
+                  icon={FileText}
+                  label="Percentage"
+                  value={selectedStudent?.educationalDetails.Percentage}
+                />
+                <InfoItem
+                  icon={FileText}
+                  label="Class"
+                  value={selectedStudent?.Class}
+                />
+                <InfoItem
+                  icon={Calendar}
+                  label="Year of Passing"
+                  value={selectedStudent?.YearOfPassing}
+                />
+                <InfoItem
+                  icon={FileText}
+                  label="Board"
+                  value={selectedStudent?.Board}
+                />
+              </div>
+
+              {/* ==============================
+            SECTION 5 : FAMILY DETAILS
+        =============================== */}
+              <h4 className="text-lg font-bold text-gray-700">
+                Family Details
+              </h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <InfoItem
+                  icon={User}
+                  label="Father Name"
+                  value={selectedStudent?.FatherName}
+                />
+                <InfoItem
+                  icon={Phone}
+                  label="Father Contact"
+                  value={selectedStudent?.FatherContactNumber}
+                />
+                <InfoItem
+                  icon={Briefcase}
+                  label="Father Occupation"
+                  value={selectedStudent?.FatherOccupation}
+                />
+
+                <InfoItem
+                  icon={User}
+                  label="Mother Name"
+                  value={selectedStudent?.MotherName}
+                />
+                <InfoItem
+                  icon={Phone}
+                  label="Mother Contact"
+                  value={selectedStudent?.MotherContactNumber}
+                />
+                <InfoItem
+                  icon={Briefcase}
+                  label="Mother Occupation"
+                  value={selectedStudent?.MotherOccupation}
+                />
+
+                <InfoItem
+                  icon={FileText}
+                  label="Family Income"
+                  value={selectedStudent?.FamilyIncome}
+                />
+              </div>
+
+              {/* ==============================
+            SECTION 6 : DOCUMENTS
+        =============================== */}
+              {(selectedStudent?.profilePicture ||
+                selectedStudent?.admitCard) && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+                  {selectedStudent.profilePicture && (
+                    <button
+                      onClick={() =>
+                        onClickShowImage(selectedStudent.profilePicture)
+                      }
+                      className="btn-blue"
+                    >
+                      <ImageIcon size={18} /> View Profile Picture
+                    </button>
+                  )}
+                  {selectedStudent.admitCard && (
+                    <button
+                      onClick={() =>
+                        window.open(selectedStudent.admitCard, "_blank")
+                      }
+                      className="btn-green"
+                    >
+                      <CreditCard size={18} /> View Admit Card
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Footer */}
+            <div className="sticky bottom-0 bg-gray-50 p-4 rounded-b-2xl border-t">
+              <button
+                onClick={closeModal}
+                className="w-full px-4 py-3 bg-gradient-to-r from-[#c61d23] to-[#a01818] text-white rounded-lg font-semibold shadow-md"
               >
                 Close
               </button>
