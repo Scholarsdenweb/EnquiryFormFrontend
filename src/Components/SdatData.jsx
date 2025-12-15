@@ -1617,7 +1617,7 @@ const SdatData = () => {
                 />
                 <InfoItem
                   icon={Calendar}
-                  label="Date of Birthz"
+                  label="Date of Birth"
                   value={convertToDate(selectedStudent.basicDetails?.dob)}
                 />
                 <InfoItem
