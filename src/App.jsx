@@ -31,12 +31,19 @@ function App() {
             <Route path="/enquiryform/takenBy" element={<TakenBy />} />
             <Route path="/FormSubmitted" element={<FormSubmitted />} />
             <Route path="/adminSignup" element={<AdminLogin />} />
+            {/* <Route path="/adminDashboard" element={<AdminDashboard />} /> */}
             <Route
               path="/adminDashboard"
               element={<PrivateRoute component={AdminDashboard} />}
             />
-            <Route path="/sdatForm" element={<PrivateRoute component={SdatData} />} />
-            <Route path="/pagination" element={<PrivateRoute component={Pagination} />} />
+            <Route
+              path="/sdatForm"
+              element={<PrivateRoute component={SdatData} />}
+            />
+            <Route
+              path="/pagination"
+              element={<PrivateRoute component={Pagination} />}
+            />
             {/* Catch-all route for undefined paths */}
             <Route path="*" element={<NotFound />} />
           </Routes>

@@ -38,6 +38,9 @@ const AdminDashboard = () => {
   const [lastDate, setLastDate] = useState("");
   const [showFilteredData, setShowFilteredData] = useState([]);
 
+    const { logout } = useAuth();
+  
+
   const numberTOemail = (number) => {
     const numberEmail = {
       9719706242: "urooj@scholarsden.in",
@@ -117,6 +120,8 @@ const AdminDashboard = () => {
       .split("; ")
       .find((row) => row.startsWith("phone="))
       ?.split("=")[1];
+
+    console.log("phoneFromCookie useEffect ", phoneFromCookie);
 
     if (phoneFromCookie) {
       setPhone(phoneFromCookie);
@@ -251,16 +256,18 @@ const AdminDashboard = () => {
   };
 
   const handleLogout = () => {
-    const clearCookie = (name) => {
-      document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-      document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${window.location.hostname};`;
-    };
+    // const clearCookie = (name) => {
+    //   document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+    //   document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${window.location.hostname};`;
+    // };
 
-    clearCookie("phone");
-    clearCookie("token");
-    localStorage.removeItem("token");
-    localStorage.removeItem("phone");
-    history("/adminsignup");
+    // clearCookie("phone");
+    // clearCookie("token");
+    // localStorage.removeItem("token");
+    // localStorage.removeItem("phone");
+
+    logout();
+    // history("/adminsignup");
   };
 
   const renderStudentCard = (student, index, onClick) => {
@@ -282,7 +289,8 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="flex h-screen bg-gradient-to-br from-gray-50 to-gray-100 w-full  ">
+    <div className="flex flex-col lg:flex-row h-screen bg-gradient-to-br gap-14 lg:gap-1 from-gray-50 to-gray-100 w-full  ">
+      
       {/* Sidebar */}
       <div className="lg:w-64 w-full bg-gradient-to-b from-[#c61d23] to-[#a01818] shadow-xl lg:h-screen">
         <Sidebar />

@@ -1049,7 +1049,7 @@ const SdatData = () => {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row h-screen bg-gradient-to-br from-gray-50 to-gray-100 w-full">
+    <div className="flex flex-col lg:flex-row h-screen bg-gradient-to-br gap-14 lg:gap-1 from-gray-50 to-gray-100 w-full">
       {isLoading && (
         <div className="fixed inset-0 z-50 backdrop-blur-sm bg-black bg-opacity-10 flex items-center justify-center">
           <div className="w-12 h-12 border-4 border-[#c61d23] border-dashed rounded-full animate-spin"></div>

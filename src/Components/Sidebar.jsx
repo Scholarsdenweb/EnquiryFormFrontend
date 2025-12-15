@@ -100,7 +100,7 @@ const Sidebar = () => {
       >
         <div className="p-4 space-y-2">
           <NavLinks mobile={true} />
-          <button
+          {/* <button
             onClick={() => {
               handleLogout();
               setIsMobileMenuOpen(false);
@@ -109,7 +109,7 @@ const Sidebar = () => {
           >
             <LogOut size={20} />
             <span className="font-medium">Logout</span>
-          </button>
+          </button> */}
         </div>
       </div>
 
@@ -132,7 +132,7 @@ const Sidebar = () => {
         </div>
 
         {/* Logout Button */}
-        <div className="p-4 mb-4">
+        {/* <div className="p-4 mb-4">
           <button
             onClick={handleLogout}
             className="flex items-center justify-center gap-3 w-full px-4 py-3 text-white hover:bg-white/10 rounded-lg transition-all duration-200"
@@ -140,7 +140,7 @@ const Sidebar = () => {
             <LogOut size={20} />
             <span className="font-medium">Logout</span>
           </button>
-        </div>
+        </div> */}
       </div>
     </>
   );
