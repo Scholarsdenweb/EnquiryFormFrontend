@@ -1744,7 +1744,7 @@ const SdatData = () => {
                       onClick={() =>
                         onClickShowImage(selectedStudent.profilePicture)
                       }
-                      className="btn-blue"
+                      className="bg-blue-100 p-4 rounded-lg"
                     >
                       <ImageIcon size={18} /> View Profile Picture
                     </button>
@@ -1754,7 +1754,7 @@ const SdatData = () => {
                       onClick={() =>
                         window.open(selectedStudent.admitCard, "_blank")
                       }
-                      className="btn-green"
+                      className=" bg-green-100 p-4 rounded-lg"
                     >
                       <CreditCard size={18} /> View Admit Card
                     </button>

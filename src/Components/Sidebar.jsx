@@ -23,12 +23,12 @@ const Sidebar = () => {
       label: "S.DAT Form Data",
       icon: FileText,
     },
-    {
-      path: "/registration",
-      label: "Admission Form Data",
-      icon: UserPlus,
-      matchPaths: ["/registration/basicDetailsForm", "/registration/educationalDetailsForm"],
-    },
+    // {
+    //   path: "/registration",
+    //   label: "Admission Form Data",
+    //   icon: UserPlus,
+    //   matchPaths: ["/registration/basicDetailsForm", "/registration/educationalDetailsForm"],
+    // },
   ];
 
   const isActive = (item) => {

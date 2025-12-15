@@ -249,12 +249,12 @@ const TakenBy = () => {
                   <input
                     type="radio"
                     name="howToKnow"
-                    value="Internet"
-                    checked={userData.howToKnow === "Internet"}
+                    value="Social Media"
+                    checked={userData.howToKnow === "Social Media"}
                     onChange={handleChange}
                     className="w-4 h-4 text-[#c61d23] focus:ring-[#c61d23]"
                   />
-                  <span className="text-sm text-gray-700">Internet</span>
+                  <span className="text-sm text-gray-700">Social Media</span>
                 </label>
               </div>
 
