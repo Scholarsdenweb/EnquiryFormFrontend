@@ -32,10 +32,16 @@ function App() {
             <Route path="/FormSubmitted" element={<FormSubmitted />} />
             <Route path="/adminSignup" element={<AdminLogin />} />
             {/* <Route path="/adminDashboard" element={<AdminDashboard />} /> */}
-            <Route
+            {/* <Route
               path="/adminDashboard"
               element={<PrivateRoute component={AdminDashboard} />}
+            /> */}
+
+  <Route
+              path="/adminDashboard"
+              element={<AdminDashboard />}
             />
+
             <Route
               path="/sdatForm"
               element={<PrivateRoute component={SdatData} />}

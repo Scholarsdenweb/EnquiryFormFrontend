@@ -66,9 +66,9 @@ const AdminLogin = () => {
 
       console.log("isLogin", isLogin);
 
-      if (isLogin.success) {
+      // if (isLogin.success) {
         navigate("/adminDashboard");
-      }
+      // }
     } catch (error) {
       console.error("Error from onSubmit:", error);
       setSubmitMessage(

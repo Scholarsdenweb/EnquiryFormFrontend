@@ -1159,6 +1159,13 @@ const SdatData = () => {
                     onChange={(e) => handleDateChange(e, false)}
                   />
                 </div>
+                 <button
+                className="flex w-full items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-[#c61d23] to-[#a01818] hover:from-[#b01820] hover:to-[#8f1515] text-white text-sm font-semibold rounded-lg transition-all duration-300 shadow-md hover:shadow-lg active:scale-95"
+                onClick={handleApplyFilters}
+              >
+                <Filter size={16} />
+                Apply Filters
+              </button>
               </div>
 
               {/* Sort Order */}
@@ -1193,13 +1200,7 @@ const SdatData = () => {
 
             {/* Filter Actions */}
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mt-4">
-              {/* <button
-                className="flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-[#c61d23] to-[#a01818] hover:from-[#b01820] hover:to-[#8f1515] text-white text-sm font-semibold rounded-lg transition-all duration-300 shadow-md hover:shadow-lg active:scale-95"
-                onClick={handleApplyFilters}
-              >
-                <Filter size={16} />
-                Apply Filters
-              </button> */}
+             
               <button
                 className="flex items-center justify-center gap-2 px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white text-sm font-semibold rounded-lg transition-all duration-300 shadow-md hover:shadow-lg active:scale-95"
                 onClick={handleClearFilters}

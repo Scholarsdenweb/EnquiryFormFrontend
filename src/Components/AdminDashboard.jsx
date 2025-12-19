@@ -398,6 +398,9 @@ const AdminDashboard = () => {
                 <label className="block text-xs font-medium text-gray-700 mb-1">
                   Date Range
                 </label>
+                <div className="flex flex-col justify-end items-end">
+
+              
                 <div className="flex gap-2">
                   <input
                     className="flex-1 text-xs border border-gray-200 rounded-lg p-2 focus:ring-2 focus:ring-[#c61d23] focus:border-transparent"
@@ -412,18 +415,26 @@ const AdminDashboard = () => {
                     onChange={(e) => handleDateChange(e, false)}
                   />
                 </div>
-              </div>
-            </div>
-
-            {/* Filter Actions */}
-            <div className="flex items-center gap-3 mt-4">
-              {/* <button
+                  <button
                 className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#c61d23] to-[#a01818] hover:from-[#b01820] hover:to-[#8f1515] text-white text-sm font-semibold rounded-lg transition-all duration-300 shadow-md hover:shadow-lg active:scale-95"
                 onClick={handleApplyFilters}
               >
                 <Filter size={16} />
                 Apply Filters
-              </button> */}
+              </button> 
+              </div>
+                </div>
+            </div>
+
+            {/* Filter Actions */}
+            <div className="flex items-center gap-3 mt-4">
+               {/* <button
+                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#c61d23] to-[#a01818] hover:from-[#b01820] hover:to-[#8f1515] text-white text-sm font-semibold rounded-lg transition-all duration-300 shadow-md hover:shadow-lg active:scale-95"
+                onClick={handleApplyFilters}
+              >
+                <Filter size={16} />
+                Apply Filters
+              </button>  */}
               <button
                 className="flex items-center gap-2 px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white text-sm font-semibold rounded-lg transition-all duration-300 shadow-md hover:shadow-lg active:scale-95"
                 onClick={handleClearFilters}
@@ -506,7 +517,7 @@ const AdminDashboard = () => {
                         >
                           <td className="py-3 px-4 text-sm">{index + 1}</td>
                           <td className="py-3 px-4 text-sm">
-                            {dateFormatting(student.createdAt.split("T")[0])}
+                            {/* {dateFormatting(student.createdAt.split("T")[0])} */}
                           </td>
                           <td className="py-3 px-4 text-sm font-medium text-[#c61d23]">
                             {student.enquiryNumber}

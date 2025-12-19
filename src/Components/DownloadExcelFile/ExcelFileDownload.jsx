@@ -34,9 +34,10 @@ export const downloadExcelForEnquiry = (showFilteredData) => {
     State: student.state,
     "Course Of Intrested": student.courseOfIntrested,
     enquiryTakenBy: student.enquiryTakenBy,
+    Source : student.howToKnow,
     // Remarks: student.remarks,
     // "Student Contact Number": student.studentContactNumber,
-    "Created At": formatDate(student.createdAt),
+    // "Created At": student?.createdAt && formatDate(student?.createdAt),
   }));
 
   const worksheet = XLSX.utils.json_to_sheet(filteredExportData);
@@ -160,6 +161,8 @@ export const downloadExcelForSDAT = async (showFilteredData) => {
         FatherName: response?.familyDetails?.FatherName,
         FatherOccupation: response?.familyDetails?.FatherOccupation,
         SchoolName: response?.educationalDetails?.SchoolName,
+        fatherContactNumber : response.familyDetails.FatherContactNumber,
+        motherContactNumber : response.familyDetails.MotherContactNumber
       };
     })
   );
