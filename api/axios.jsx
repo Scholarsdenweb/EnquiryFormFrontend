@@ -6,7 +6,7 @@ import axios from "axios";
 const instance = axios.create({
   baseURL: `${import.meta.env.VITE_APP_API_URL}/api`, // Replace with your actual backend URL
 
-  credentials: "include",
+  // credentials: "include",
   withCredentials : true,
 
   headers: {
