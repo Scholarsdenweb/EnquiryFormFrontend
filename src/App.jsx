@@ -37,9 +37,9 @@ function App() {
               element={<PrivateRoute component={AdminDashboard} />}
             /> */}
 
-  <Route
+            <Route
               path="/adminDashboard"
-              element={<AdminDashboard />}
+              element={<PrivateRoute component={AdminDashboard} />}
             />
 
             <Route

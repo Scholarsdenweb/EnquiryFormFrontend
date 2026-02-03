@@ -28,10 +28,13 @@ const TakenBy = () => {
   const dispatch = useDispatch();
 
   const enquiryTakenBy = [
+    { label: "Anamika Ma'am", value: "anamika@scholarsden.in" },
     { label: "Adi Ma'am", value: "adi@scholarsden.in" },
     { label: "Urooj Ma'am", value: "urooj@scholarsden.in" },
     { label: "Diya Ma'am", value: "diya@scholarsden.in" },
     { label: "Priya Ma'am", value: "priya@scholarsden.in" },
+    { label: "Farman Sir", value: "farman@scholarsden.in" },
+    { label: "Akshay Sir", value: "akshay@scholarsden.in" },
     { label: "Yasir Sir", value: "yasir@scholarsden.in" },
   ];
 

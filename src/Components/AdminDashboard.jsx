@@ -68,6 +68,8 @@ const AdminDashboard = () => {
 
     try {
       const response = await axios.post("/admin/filter", filterParams);
+
+      console.log("response from the adminDashboard", response);
       setShowFilteredData(response.data);
       setFilterValue("combined");
     } catch (error) {
