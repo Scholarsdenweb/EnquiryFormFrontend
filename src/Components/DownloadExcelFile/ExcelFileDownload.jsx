@@ -19,7 +19,7 @@ export const downloadExcelForEnquiry = (showFilteredData) => {
     return `${day}-${month}-${year}`;
   };
 
-  console.log("showFilteredData", showFilteredData);
+  console.log("showFilteredData downloadExcelForEnquiry", showFilteredData);
 
 
   const filteredExportData = showFilteredData.map((student) => ({
@@ -35,6 +35,7 @@ export const downloadExcelForEnquiry = (showFilteredData) => {
     "Course Of Intrested": student.courseOfIntrested,
     enquiryTakenBy: student.enquiryTakenBy,
     Source : student.howToKnow,
+    "Created At" : student.updatedAt
     // Remarks: student.remarks,
     // "Student Contact Number": student.studentContactNumber,
     // "Created At": student?.createdAt && formatDate(student?.createdAt),
@@ -140,29 +141,33 @@ export const downloadExcelForSDAT = async (showFilteredData) => {
     return `${day}-${month}-${year}`;
   };
 
-  console.log("showFilteredData", showFilteredData);
+  console.log("showFilteredData downloadExcelForSDAT", showFilteredData);
 
   // Use Promise.all to wait for all async operations to complete
   const filteredExportData = await Promise.all(
     showFilteredData.map(async (student) => {
       const response = await fetchStudentDetails(student.student_id);
+      console.log("response from filteredExportData", response)
 
       return {
         StudentsId: response.StudentsId,
+        paymentId: response.paymentId,
         studentName: response.studentName,
+        dob: response.basicDetails.dob,
         contactNumber: response.contactNumber,
         email: response.email,
         enquiryNumber: response.enquiryNumber,
-        paymentId: response.paymentId,
-        admitCard: response.admitCard,
+        // admitCard: response.admitCard,
         classForAdmission: response?.batchDetails?.classForAdmission,
         program: response?.batchDetails?.program,
         examDate: response?.basicDetails?.examDate,
         FatherName: response?.familyDetails?.FatherName,
+        MotherName: response?.familyDetails?.MotherName,
         FatherOccupation: response?.familyDetails?.FatherOccupation,
         SchoolName: response?.educationalDetails?.SchoolName,
         fatherContactNumber : response.familyDetails.FatherContactNumber,
-        motherContactNumber : response.familyDetails.MotherContactNumber
+        motherContactNumber : response.familyDetails.MotherContactNumber,
+        created_at : formatDate(response.created_at.split('T')[0]),
       };
     })
   );

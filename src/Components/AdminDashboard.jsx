@@ -12,7 +12,7 @@ import {
   X,
   Phone,
   Mail,
-  Calendar,
+  Calenter,
   User,
   GraduationCap,
   MapPin,
@@ -39,7 +39,7 @@ const AdminDashboard = () => {
   const [showFilteredData, setShowFilteredData] = useState([]);
 
     const { logout } = useAuth();
-  
+
 
   const numberTOemail = (number) => {
     const numberEmail = {
@@ -402,35 +402,35 @@ const AdminDashboard = () => {
                 </label>
                 <div className="flex flex-col justify-end items-end">
 
-              
-                <div className="flex gap-2">
-                  <input
-                    className="flex-1 text-xs border border-gray-200 rounded-lg p-2 focus:ring-2 focus:ring-[#c61d23] focus:border-transparent"
-                    type="date"
-                    value={startingDate}
-                    onChange={(e) => handleDateChange(e, true)}
-                  />
-                  <input
-                    className="flex-1 text-xs border border-gray-200 rounded-lg p-2 focus:ring-2 focus:ring-[#c61d23] focus:border-transparent"
-                    type="date"
-                    value={lastDate}
-                    onChange={(e) => handleDateChange(e, false)}
-                  />
-                </div>
+                  
+                  <div className="flex gap-2">
+                    <input
+                      className="flex-1 text-xs border border-gray-200 rounded-lg p-2 focus:ring-2 focus:ring-[#c61d23] focus:border-transparent"
+                      type="date"
+                      value={startingDate}
+                      onChange={(e) => handleDateChange(e, true)}
+                    />
+                    <input
+                      className="flex-1 text-xs border border-gray-200 rounded-lg p-2 focus:ring-2 focus:ring-[#c61d23] focus:border-transparent"
+                      type="date"
+                      value={lastDate}
+                      onChange={(e) => handleDateChange(e, false)}
+                    />
+                  </div>
                   <button
-                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#c61d23] to-[#a01818] hover:from-[#b01820] hover:to-[#8f1515] text-white text-sm font-semibold rounded-lg transition-all duration-300 shadow-md hover:shadow-lg active:scale-95"
-                onClick={handleApplyFilters}
-              >
-                <Filter size={16} />
-                Apply Filters
-              </button> 
-              </div>
+                    className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#c61d23] to-[#a01818] hover:from-[#b01820] hover:to-[#8f1515] text-white text-sm font-semibold rounded-lg transition-all duration-300 shadow-md hover:shadow-lg active:scale-95"
+                    onClick={handleApplyFilters}
+                  >
+                    <Filter size={16} />
+                    Apply Filters
+                  </button>
                 </div>
+              </div>
             </div>
 
             {/* Filter Actions */}
             <div className="flex items-center gap-3 mt-4">
-               {/* <button
+              {/* <button
                 className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#c61d23] to-[#a01818] hover:from-[#b01820] hover:to-[#8f1515] text-white text-sm font-semibold rounded-lg transition-all duration-300 shadow-md hover:shadow-lg active:scale-95"
                 onClick={handleApplyFilters}
               >
