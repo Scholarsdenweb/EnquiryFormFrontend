@@ -150,13 +150,13 @@ export const downloadExcelForSDAT = async (showFilteredData) => {
       console.log("response from filteredExportData", response)
 
       return {
-        StudentsId: response.StudentsId,
-        paymentId: response.paymentId,
-        studentName: response.studentName,
-        dob: response.basicDetails.dob,
-        contactNumber: response.contactNumber,
-        email: response.email,
-        enquiryNumber: response.enquiryNumber,
+        StudentsId: response?.StudentsId,
+        paymentId: response?.paymentId,
+        studentName: response?.studentName,
+        dob: response?.basicDetails?.dob,
+        contactNumber: response?.contactNumber,
+        email: response?.email,
+        enquiryNumber: response?.enquiryNumber,
         // admitCard: response.admitCard,
         classForAdmission: response?.batchDetails?.classForAdmission,
         program: response?.batchDetails?.program,
@@ -165,9 +165,9 @@ export const downloadExcelForSDAT = async (showFilteredData) => {
         MotherName: response?.familyDetails?.MotherName,
         FatherOccupation: response?.familyDetails?.FatherOccupation,
         SchoolName: response?.educationalDetails?.SchoolName,
-        fatherContactNumber : response.familyDetails.FatherContactNumber,
-        motherContactNumber : response.familyDetails.MotherContactNumber,
-        created_at : formatDate(response.created_at.split('T')[0]),
+        fatherContactNumber : response?.familyDetails?.FatherContactNumber,
+        motherContactNumber : response.familyDetails?.MotherContactNumber,
+        created_at : formatDate(response?.created_at?.split('T')[0]),
       };
     })
   );
