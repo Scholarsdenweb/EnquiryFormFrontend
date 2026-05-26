@@ -282,7 +282,12 @@ export const AuthProvider = ({ children }) => {
         setUser(response?.data?.admin);
         // Store token if needed
         if (response?.data?.token) {
+          
           localStorage.setItem("token", response.data.token);
+           const expires = new Date();
+  expires.setDate(expires.getDate() + 7); // cookie valid for 7 days
+  document.cookie = `authToken=${response?.data?.token}; expires=${expires.toUTCString()}; path=/; Secure; SameSite=Lax`;
+
         }
         return { success: true };
       } else {
